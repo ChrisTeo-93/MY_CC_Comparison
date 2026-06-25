@@ -35,12 +35,18 @@ export default function HomePage() {
           value, and we&apos;ll recommend the card — or combo of cards — that earns you the
           most, in real ringgit.
         </p>
-        <div className="mt-8 flex justify-center gap-4">
+        <div className="mt-8 flex flex-wrap justify-center gap-3">
           <Link
             href="/recommend"
             className="rounded-lg bg-brand-dark px-6 py-3 text-base font-semibold text-white shadow-sm transition hover:bg-brand"
           >
             Find my card →
+          </Link>
+          <Link
+            href="/evaluate"
+            className="rounded-lg border border-slate-300 px-6 py-3 text-base font-semibold text-slate-700 transition hover:border-brand-dark hover:text-brand-dark"
+          >
+            I already have cards
           </Link>
         </div>
         <p className="mt-3 text-sm text-slate-500">
