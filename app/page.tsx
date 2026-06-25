@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { CARDS } from "@/lib/domain/cards";
+import { ACTIVE_CARDS } from "@/lib/domain/cards";
 
 const STEPS = [
   {
@@ -44,7 +44,7 @@ export default function HomePage() {
           </Link>
         </div>
         <p className="mt-3 text-sm text-slate-500">
-          Free · No sign-up · {CARDS.length} cards compared
+          Free · No sign-up · {ACTIVE_CARDS.length} cards compared
         </p>
       </div>
 

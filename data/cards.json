@@ -1,0 +1,723 @@
+[
+  {
+    "id": "maybank-2-gold",
+    "name": "Maybank 2 Gold Cards (Amex)",
+    "bank": "Maybank",
+    "network": "Amex",
+    "rewardType": "cashback",
+    "color": "#f59e0b",
+    "annualFee": 0,
+    "feeWaiver": {
+      "type": "always"
+    },
+    "minAnnualIncome": 30000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.0025,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "general",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 50,
+        "notes": "5% weekend (Sat/Sun) cashback on the Amex, capped RM50/month. Excludes govt, utilities and e-wallet reloads."
+      }
+    ],
+    "perks": [
+      "No annual fee for life",
+      "Weekend cashback"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://ringgitplus.com/en/credit-card/Maybank-2-Gold-Cards.html",
+    "confidence": "high"
+  },
+  {
+    "id": "cimb-cashback",
+    "name": "CIMB Cash Rebate Platinum",
+    "bank": "CIMB",
+    "network": "Mastercard",
+    "rewardType": "cashback",
+    "color": "#dc2626",
+    "annualFee": 0,
+    "feeWaiver": {
+      "type": "always"
+    },
+    "minAnnualIncome": 24000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "groceries",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 3000,
+        "notes": "5% on groceries/petrol/utilities only in months with ≥RM3,000 total spend (else 2%). RM30/month cap is SHARED across these categories."
+      },
+      {
+        "category": "petrol",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 3000
+      },
+      {
+        "category": "bills",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 3000
+      }
+    ],
+    "perks": [
+      "No annual fee",
+      "Shared 5% bonus categories"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://ringgitplus.com/en/credit-card/CIMB-Cash-Rebate-Platinum-Credit-Card.html",
+    "confidence": "medium",
+    "dataNote": "Corrected: the previously-modelled 8% petrol does not exist (that's a different CIMB card). Shared RM30 cap is approximated per-category here."
+  },
+  {
+    "id": "hlb-wse-cashback",
+    "name": "Hong Leong WISE Card",
+    "bank": "Hong Leong",
+    "network": "Mastercard",
+    "rewardType": "cashback",
+    "color": "#1d4ed8",
+    "annualFee": 98,
+    "feeWaiver": {
+      "type": "none"
+    },
+    "minAnnualIncome": 24000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "dining",
+        "rate": 0.15,
+        "unit": "percent",
+        "monthlyCap": 20,
+        "minMonthlySpend": 1000,
+        "notes": "Weekend (Sat/Sun) only, requires ≥RM1,000/month retail. Weekday rate is 0.5%."
+      },
+      {
+        "category": "petrol",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 15,
+        "minMonthlySpend": 1000
+      },
+      {
+        "category": "groceries",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 15,
+        "minMonthlySpend": 1000
+      },
+      {
+        "category": "ewallet",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 15,
+        "minMonthlySpend": 1000
+      }
+    ],
+    "perks": [
+      "High weekend dining cashback"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.hlb.com.my/en/personal-banking/news-updates/hlb-wise-credit-card-revision-effective-1-jan-2025.html",
+    "confidence": "high",
+    "dataNote": "Revised 1 Jan 2025: now carries a RM98 annual fee (no waiver); 15%/10% rates apply on weekends only."
+  },
+  {
+    "id": "uob-one",
+    "name": "UOB ONE Platinum Card",
+    "bank": "UOB",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#0e7490",
+    "annualFee": 195,
+    "feeWaiver": {
+      "type": "spend",
+      "threshold": 20000
+    },
+    "minAnnualIncome": 36000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "petrol",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 15,
+        "minMonthlySpend": 1500,
+        "notes": "10% requires ≥RM1,500 spend that statement month. Each category has its own RM15/month cap."
+      },
+      {
+        "category": "groceries",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 15,
+        "minMonthlySpend": 1500
+      },
+      {
+        "category": "dining",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 15,
+        "minMonthlySpend": 1500
+      },
+      {
+        "category": "ewallet",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 15,
+        "minMonthlySpend": 1500
+      }
+    ],
+    "perks": [
+      "10% on key everyday categories for steady spenders"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.uob.com.my/personal/cards/credit-cards/uob-one-card.page",
+    "confidence": "high",
+    "dataNote": "Corrected from Singapore-style quarterly tiers: MY structure is monthly, 10% per-category capped RM15, min RM1,500/month."
+  },
+  {
+    "id": "alliance-visa-signature",
+    "name": "Alliance Bank Visa Signature",
+    "bank": "Alliance",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#9333ea",
+    "annualFee": 148,
+    "feeWaiver": {
+      "type": "none"
+    },
+    "minAnnualIncome": 48000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.0025,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "online",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 18,
+        "minMonthlySpend": 2001,
+        "notes": "Up to 5% is tiered by total monthly spend (top tier RM2,001–3,000). Total cashback capped ~RM55/month across categories."
+      },
+      {
+        "category": "groceries",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 18,
+        "minMonthlySpend": 2001
+      },
+      {
+        "category": "petrol",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 18,
+        "minMonthlySpend": 2001
+      }
+    ],
+    "perks": [
+      "Tiered up-to-5% retail cashback"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://ringgitplus.com/en/credit-card/Alliance-Bank-Visa-Signature.html",
+    "confidence": "low",
+    "dataNote": "Replaces the old 'Alliance Visa Cashback', which no longer exists. Exact per-tier percentages and category eligibility are unconfirmed."
+  },
+  {
+    "id": "publicbank-quantum",
+    "name": "Public Bank Quantum",
+    "bank": "Public Bank",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#b91c1c",
+    "annualFee": 0,
+    "feeWaiver": {
+      "type": "always"
+    },
+    "minAnnualIncome": 36000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.001,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "contactless",
+        "rate": 0.01,
+        "unit": "percent",
+        "monthlyCap": 20,
+        "notes": "1% contactless (min RM100/transaction), capped RM20/month. Cut from 2% on 1 Feb 2025."
+      },
+      {
+        "category": "travel",
+        "rate": 0.02,
+        "unit": "percent",
+        "monthlyCap": 20,
+        "notes": "2% on overseas/foreign-currency spend (Mastercard), capped RM20/month."
+      }
+    ],
+    "perks": [
+      "No annual fee"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://ringgitplus.com/en/blog/credit-cards/public-bank-revises-cashback-features-for-quantum-visa-mastercard.html",
+    "confidence": "medium",
+    "dataNote": "Revised 1 Feb 2025: dining cashback removed, contactless cut to 1%. The old 5% online/dining structure no longer applies."
+  },
+  {
+    "id": "rhb-cashback",
+    "name": "RHB Cash Back Credit Card",
+    "bank": "RHB",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#1e40af",
+    "annualFee": 70,
+    "feeWaiver": {
+      "type": "spend",
+      "threshold": 10000
+    },
+    "minAnnualIncome": 24000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "groceriesOnline",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 10,
+        "minMonthlySpend": 2500,
+        "notes": "10% on online groceries/dining needs ≥RM2,500 total monthly spend. RM10 cap PER category."
+      },
+      {
+        "category": "dining",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 10,
+        "minMonthlySpend": 2500
+      },
+      {
+        "category": "petrol",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 10,
+        "minMonthlySpend": 2500
+      },
+      {
+        "category": "groceries",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 10,
+        "minMonthlySpend": 2500
+      },
+      {
+        "category": "bills",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 10,
+        "minMonthlySpend": 2500
+      }
+    ],
+    "perks": [
+      "Tiered 1%/2%/up-to-10% cashback"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.rhbgroup.com/personal/cards/credit-cards/rhb-cash-back-credit-card/index.html",
+    "confidence": "medium",
+    "dataNote": "Renamed from 'RHB Smart Value'. RM10/category cap and RM2,500 spend tier confirmed across secondary sources."
+  },
+  {
+    "id": "maybank-2-platinum",
+    "name": "Maybank 2 Platinum Card (Visa)",
+    "bank": "Maybank",
+    "network": "Visa",
+    "rewardType": "points",
+    "color": "#7c3aed",
+    "annualFee": 0,
+    "feeWaiver": {
+      "type": "always"
+    },
+    "minAnnualIncome": 60000,
+    "pointValueRM": 0.003,
+    "baseRule": {
+      "category": "general",
+      "rate": 1,
+      "unit": "pointsPerRM"
+    },
+    "earnRules": [
+      {
+        "category": "general",
+        "rate": 5,
+        "unit": "pointsPerRM",
+        "notes": "5x TreatsPoints on weekends (the Visa side of the 2-card bundle)."
+      }
+    ],
+    "perks": [
+      "No annual fee for life",
+      "TreatsPoints rewards catalogue"
+    ],
+    "lastVerified": "2026-02-01",
+    "sourceUrl": "https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/cards/credit/maybank_2_platinum.page",
+    "confidence": "low",
+    "dataNote": "NOT re-verified this pass (research pending). TreatsPoints value reduced to a conservative ~RM0.003/point; treat figures with caution."
+  },
+  {
+    "id": "cimb-visa-signature",
+    "name": "CIMB Visa Signature",
+    "bank": "CIMB",
+    "network": "Visa",
+    "rewardType": "points",
+    "color": "#be123c",
+    "annualFee": 0,
+    "feeWaiver": {
+      "type": "always"
+    },
+    "minAnnualIncome": 36000,
+    "pointValueRM": 0.002,
+    "baseRule": {
+      "category": "general",
+      "rate": 1,
+      "unit": "pointsPerRM"
+    },
+    "earnRules": [
+      {
+        "category": "travel",
+        "rate": 2,
+        "unit": "pointsPerRM",
+        "notes": "2x Bonus Points on overseas/foreign-currency spend (the card's only accelerated category)."
+      }
+    ],
+    "perks": [
+      "No annual fee",
+      "Overseas bonus points"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.cimb.com.my/en/personal/day-to-day-banking/cards/credit-card/cimb-visa-signature-credit-card.html",
+    "confidence": "medium",
+    "dataNote": "Corrected: no 10x online/travel/groceries (that's the CIMB e Card). Point value cut to ~RM0.002 (500 pts = RM1); cashback redemption ended Sep 2023."
+  },
+  {
+    "id": "hlb-sutera-points",
+    "name": "Hong Leong Sutera Platinum",
+    "bank": "Hong Leong",
+    "network": "Mastercard",
+    "rewardType": "points",
+    "color": "#0f766e",
+    "annualFee": 250,
+    "feeWaiver": {
+      "type": "spend",
+      "threshold": 25000
+    },
+    "minAnnualIncome": 36000,
+    "pointValueRM": 0.002,
+    "baseRule": {
+      "category": "general",
+      "rate": 1,
+      "unit": "pointsPerRM"
+    },
+    "earnRules": [
+      {
+        "category": "online",
+        "rate": 8,
+        "unit": "pointsPerRM",
+        "notes": "8x Reward Points on online, groceries, dining, e-wallet and overseas. Pay-with-points value ~RM0.002 (500 pts = RM1)."
+      },
+      {
+        "category": "groceries",
+        "rate": 8,
+        "unit": "pointsPerRM"
+      },
+      {
+        "category": "dining",
+        "rate": 8,
+        "unit": "pointsPerRM"
+      },
+      {
+        "category": "ewallet",
+        "rate": 8,
+        "unit": "pointsPerRM"
+      },
+      {
+        "category": "travel",
+        "rate": 8,
+        "unit": "pointsPerRM"
+      }
+    ],
+    "perks": [
+      "8x points on everyday categories"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.hlb.com.my/en/personal-banking/credit-cards/rewards-points/sutera-platinum-card.html",
+    "confidence": "medium",
+    "dataNote": "Replaces the discontinued HLB-Emirates co-brand card (ended Jun 2024). Exact annual fee (RM250?) and waiver threshold (RM15k vs RM25k) vary by source."
+  },
+  {
+    "id": "ambank-bonuslink-signature",
+    "name": "AmBank BonusLink Visa Signature",
+    "bank": "AmBank",
+    "network": "Visa",
+    "rewardType": "points",
+    "color": "#ea580c",
+    "annualFee": 583,
+    "feeWaiver": {
+      "type": "swipes",
+      "threshold": 12
+    },
+    "minAnnualIncome": 80000,
+    "pointValueRM": 0.01,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.2,
+      "unit": "pointsPerRM"
+    },
+    "earnRules": [
+      {
+        "category": "petrol",
+        "rate": 5,
+        "unit": "pointsPerRM",
+        "monthlyCap": 3000,
+        "notes": "5x BonusLink Points at Shell + Parkson, shared cap 3,000 bonus pts/month. 1 BLP ≈ RM0.01 (100 BLP = RM1)."
+      },
+      {
+        "category": "dining",
+        "rate": 2,
+        "unit": "pointsPerRM"
+      },
+      {
+        "category": "groceries",
+        "rate": 2,
+        "unit": "pointsPerRM"
+      },
+      {
+        "category": "travel",
+        "rate": 2,
+        "unit": "pointsPerRM"
+      }
+    ],
+    "perks": [
+      "BonusLink points redeemable at Shell/Parkson",
+      "First 2 years fee-free"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.ambank.com.my/cards/credit-cards/ambank-bonuslink-visa-card",
+    "confidence": "medium",
+    "dataNote": "Corrected: 5x is on Shell petrol + Parkson (NOT groceries — those are 2x). Annual fee figure from secondary sources."
+  },
+  {
+    "id": "uob-ppv",
+    "name": "UOB PRVI Miles Card",
+    "bank": "UOB",
+    "network": "Visa",
+    "rewardType": "points",
+    "color": "#155e75",
+    "annualFee": 198,
+    "feeWaiver": {
+      "type": "spend",
+      "threshold": 20000
+    },
+    "minAnnualIncome": 60000,
+    "pointValueRM": 0.00125,
+    "baseRule": {
+      "category": "general",
+      "rate": 1,
+      "unit": "pointsPerRM"
+    },
+    "earnRules": [
+      {
+        "category": "travel",
+        "rate": 5,
+        "unit": "pointsPerRM",
+        "notes": "5 UNIRinggit per RM1 on overseas/travel. UNIRM cash value ~RM0.00125 (800 = RM1); worth more if redeemed for miles (12,000 = 1,000 miles)."
+      }
+    ],
+    "perks": [
+      "Accelerated overseas earn",
+      "Airport lounge access"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.uob.com.my/personal/cards/credit-cards/uob-prvi-miles-card.page",
+    "confidence": "medium",
+    "dataNote": "Corrected to the Malaysian card (previously modelled on Singapore terms). Standard tier may be closed to new applicants; UNIRM cash floor used for scoring."
+  },
+  {
+    "id": "maybank-visa-infinite",
+    "name": "Maybank Visa Infinite",
+    "bank": "Maybank",
+    "network": "Visa",
+    "rewardType": "miles",
+    "color": "#0891b2",
+    "annualFee": 800,
+    "feeWaiver": {
+      "type": "spend",
+      "threshold": 80000
+    },
+    "minAnnualIncome": 120000,
+    "mileValueRM": 0.045,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.16,
+      "unit": "milesPerRM"
+    },
+    "earnRules": [
+      {
+        "category": "travel",
+        "rate": 0.4,
+        "unit": "milesPerRM",
+        "notes": "Earns TreatsPoints (5/RM overseas, 2/RM local) converting at 12,500 TP = 1,000 miles. Effective ~0.4 miles/RM overseas."
+      }
+    ],
+    "perks": [
+      "Airport lounge access",
+      "Travel insurance"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/cards/credit/maybank_visa_infinite.page",
+    "confidence": "high",
+    "dataNote": "Replaces the modelled 'Premier Visa'. Rates are EFFECTIVE miles after TreatsPoints conversion; a RM80k-spend fee waiver does exist."
+  },
+  {
+    "id": "standard-chartered-journey",
+    "name": "Standard Chartered Journey",
+    "bank": "Standard Chartered",
+    "network": "Mastercard",
+    "rewardType": "miles",
+    "color": "#047857",
+    "annualFee": 600,
+    "feeWaiver": {
+      "type": "spend",
+      "threshold": 60000
+    },
+    "minAnnualIncome": 96000,
+    "mileValueRM": 0.05,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.1,
+      "unit": "milesPerRM"
+    },
+    "earnRules": [
+      {
+        "category": "travel",
+        "rate": 0.5,
+        "unit": "milesPerRM",
+        "notes": "Earns in-house Journey Miles converting 2:1 to airline miles. 1 JM/RM1 on dining/travel/overseas ⇒ ~0.5 airline miles/RM."
+      },
+      {
+        "category": "dining",
+        "rate": 0.5,
+        "unit": "milesPerRM"
+      }
+    ],
+    "perks": [
+      "Flexible miles transfer",
+      "Lounge access"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.sc.com/my/credit-cards/journey/",
+    "confidence": "medium",
+    "dataNote": "Corrected: 'miles' are in-house points at 2:1 to airline miles, so effective rates are half the headline. The previously-modelled 1.5x online category was not confirmed."
+  },
+  {
+    "id": "hsbc-travelone",
+    "name": "HSBC TravelOne",
+    "bank": "HSBC",
+    "network": "Visa",
+    "rewardType": "miles",
+    "color": "#b91c1c",
+    "annualFee": 300,
+    "feeWaiver": {
+      "type": "spend",
+      "threshold": 20000
+    },
+    "minAnnualIncome": 60000,
+    "mileValueRM": 0.045,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.33,
+      "unit": "milesPerRM"
+    },
+    "earnRules": [
+      {
+        "category": "travel",
+        "rate": 2.67,
+        "unit": "milesPerRM",
+        "monthlyCap": 6667,
+        "notes": "8x Reward Points on overseas (cap +20k pts/mo); 5x on local travel. ~3:1 points-to-miles transfer. Effective ~2.7 miles/RM overseas."
+      },
+      {
+        "category": "dining",
+        "rate": 1.67,
+        "unit": "milesPerRM",
+        "monthlyCap": 3333,
+        "notes": "5x Reward Points on local dining, cap +10k bonus pts/month."
+      }
+    ],
+    "perks": [
+      "17 airline/hotel transfer partners",
+      "Accessible income requirement"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.hsbc.com.my/credit-cards/products/travelone/",
+    "confidence": "medium",
+    "dataNote": "Corrected: has a RM300 fee (waived at RM20k spend) and RM60k income (not free / RM100k). Dining & travel are both 5x; overseas 8x. Beware SG figures online."
+  },
+  {
+    "id": "ambank-enrich",
+    "name": "AmBank Enrich Visa Infinite",
+    "bank": "AmBank",
+    "network": "Visa",
+    "rewardType": "miles",
+    "color": "#c2410c",
+    "annualFee": 500,
+    "feeWaiver": {
+      "type": "spend",
+      "threshold": 100000
+    },
+    "minAnnualIncome": 100000,
+    "mileValueRM": 0.045,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.167,
+      "unit": "milesPerRM"
+    },
+    "earnRules": [
+      {
+        "category": "travel",
+        "rate": 0.5,
+        "unit": "milesPerRM",
+        "notes": "Earns Enrich (Malaysia Airlines) miles directly. 1 mile per RM2 on overseas/MAS spend; 1 per RM6 base. Devalued 1 Aug 2025."
+      }
+    ],
+    "perks": [
+      "Malaysia Airlines Enrich miles",
+      "Golden Lounge access"
+    ],
+    "lastVerified": "2026-06-25",
+    "sourceUrl": "https://www.ambank.com.my/cards/credit-cards/ambank-enrich-visa-infinite-credit-cards",
+    "confidence": "high",
+    "dataNote": "Corrected: fee RM500 with 100% waiver only at RM100k spend (not RM488/RM48k). Significantly devalued Aug 2025 — base now 1 mile per RM6."
+  }
+]

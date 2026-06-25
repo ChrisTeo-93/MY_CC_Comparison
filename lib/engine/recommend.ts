@@ -1,4 +1,4 @@
-import { CARDS } from "../domain/cards";
+import { ACTIVE_CARDS } from "../domain/cards";
 import type {
   Card,
   Persona,
@@ -19,7 +19,7 @@ import { scoreCard } from "./score";
 export function recommend(
   spending: SpendingProfile,
   persona: Persona,
-  catalogue: Card[] = CARDS,
+  catalogue: Card[] = ACTIVE_CARDS,
 ): RecommendationResult {
   const scores = catalogue.map((c) => scoreCard(c, spending, persona));
 

@@ -24,18 +24,26 @@ different reward types are judged on the same scale.
 ## Project layout
 
 ```
+data/
+  cards.json               Card catalogue — the source of truth (edited via /admin)
 app/
   page.tsx                 Landing
   recommend/page.tsx       3-step wizard (client)
+  admin/                   Card-data editor (password-gated) + login
+  api/admin/               Auth + CRUD route handlers (login/logout/cards)
 lib/
-  domain/                  types, categories, seed card catalogue
+  domain/                  types, categories, card loader (reads data/cards.json)
   engine/                  normalize · score · combo · recommend
   persona/                 persona quiz definition
+  data/cardStore.ts        Server-side read/write + validation for cards.json
+  auth.ts                  Minimal admin password gate
 components/
   wizard/                  ProgressBar, StepPersona, StepSpending, StepResults
-  results/                 CardResultCard
+  results/                 CardResultCard, FreshnessBadge + ConfidenceChip
+  admin/AdminEditor.tsx    The card editor UI
 tests/
-  engine.test.ts           19 unit tests for the engine
+  engine.test.ts           engine unit tests
+  cardStore.test.ts        validation + seed-data integrity tests
 ```
 
 ## How the engine works
@@ -52,21 +60,45 @@ tests/
 4. **recommend** — filters by income eligibility, returns the ranked single list,
    the combo, and the list of cards hidden for income reasons.
 
-## Data freshness
+## Data freshness & confidence
 
-Card reward rates change often. Every card in `lib/domain/cards.ts` carries a
-`lastVerified` date and a `sourceUrl`, surfaced in the UI as a freshness badge. The
-seed figures are **representative** — confirm with the issuing bank before applying.
-This is for comparison only, not financial advice.
+Card reward rates change often, so trust signals are first-class. Every card in
+`data/cards.json` carries:
 
-A future phase replaces the seed file with a database + admin editor.
+- `lastVerified` (ISO date) + `sourceUrl` → a colour-coded **freshness badge**
+  (fresh / aging / stale).
+- `confidence` (`high` / `medium` / `low`) + optional `dataNote` → a **confidence
+  chip** and inline caveat on each result.
+- optional `status` (`active` / `discontinued`) → discontinued cards are kept for
+  the record but excluded from recommendations.
+
+The catalogue was re-verified against mid-2026 bank terms; most figures are **medium
+confidence** (sourced from credible public pages, not primary T&C). Confirm with the
+issuing bank before applying. For comparison only, not financial advice.
+
+## Managing card data (`/admin`)
+
+`/admin` is a password-gated editor for the catalogue: list, add, edit (fees, income,
+earn rules, confidence, freshness, status) and delete cards. It writes to
+`data/cards.json` via `lib/data/cardStore.ts`, which validates every card before
+saving.
+
+- **Password:** set `ADMIN_PASSWORD` (defaults to `admin123` for local dev only).
+- **Persistence caveat:** writes use the filesystem, so they persist in local dev and
+  on any Node host. On a **read-only serverless platform (e.g. Vercel) edits will not
+  persist** across requests — the public site reflects `data/cards.json` as built. The
+  intended workflow for now is: edit locally → commit the updated `data/cards.json` →
+  redeploy. A future phase swaps `cardStore.ts` for a real database (Postgres/D1).
 
 ## Develop
 
 ```bash
 npm install
 npm run dev        # http://localhost:3000
-npm run test       # engine unit tests
+npm run test       # engine + data-store unit tests
 npm run typecheck  # tsc --noEmit
 npm run build      # production build
+
+# Admin editor: set a password (defaults to admin123 locally)
+ADMIN_PASSWORD=your-secret npm run dev   # then visit /admin
 ```

@@ -75,6 +75,8 @@ export interface Card {
   confidence: DataConfidence;
   /** Optional: shown when a card was discontinued/renamed or otherwise needs a caveat. */
   dataNote?: string;
+  /** Lifecycle status. Discontinued cards are kept out of recommendations but stay editable. */
+  status?: "active" | "discontinued";
 }
 
 /** Monthly spend (RM) per category. Missing keys fall back to persona defaults. */
