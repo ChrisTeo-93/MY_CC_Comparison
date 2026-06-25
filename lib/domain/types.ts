@@ -107,6 +107,45 @@ export interface CategoryBreakdown {
   rateLabel: string;
 }
 
+/**
+ * Plain-language "what you must spend to actually earn this" for one earn rule.
+ * This is the USP: surface the bank's hidden conditions, not just the reward.
+ */
+export interface EarnCondition {
+  category: CategoryKey;
+  label: string;
+  rateLabel: string;
+  /** Max RM reward per month from this rule, when capped. */
+  maxMonthlyRewardRM?: number;
+  /** Category spend per month needed to reach that cap. */
+  spendToMaxRM?: number;
+  /** Minimum total monthly spend required to unlock this rate. */
+  minTotalSpendRM?: number;
+  /** The monthly spend this rule sees for the current user. */
+  yourMonthlySpendRM: number;
+  /** Whether the user's spend currently unlocks this rate. */
+  unlocked: boolean;
+  /** Whether the user's spend already maxes the cap. */
+  hitsCap: boolean;
+  note?: string;
+}
+
+export interface FeeCondition {
+  kind: "free" | "waivable" | "fixed";
+  annualFee: number;
+  text: string;
+  /** Whether the user's spend already meets the waiver (or there is no fee). */
+  met: boolean;
+}
+
+/** Everything needed to explain, in plain language, how a card actually pays out. */
+export interface CardConditions {
+  earn: EarnCondition[];
+  fee: FeeCondition;
+  baseRateLabel: string;
+  yourMonthlyTotalRM: number;
+}
+
 export interface CardScore {
   card: Card;
   /** Annual reward value in RM before subtracting the fee. */
@@ -122,6 +161,8 @@ export interface CardScore {
   eligible: boolean;
   /** Plain-language reasons the card was recommended. */
   reasons: string[];
+  /** The spend conditions required to actually earn the rewards. */
+  conditions: CardConditions;
 }
 
 export interface ComboMember {

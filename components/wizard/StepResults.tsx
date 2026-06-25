@@ -4,8 +4,11 @@ import { useState } from "react";
 import { CATEGORY_BY_KEY } from "@/lib/domain/categories";
 import type { Persona, RecommendationResult, SpendingProfile } from "@/lib/domain/types";
 import { rm } from "@/lib/format";
+import { resolveSpending } from "@/lib/engine/score";
+import { buildConditions } from "@/lib/engine/conditions";
 import { CardResultCard } from "@/components/results/CardResultCard";
 import { FreshnessBadge } from "@/components/results/FreshnessBadge";
+import { CardConditionsPanel } from "@/components/results/CardConditionsPanel";
 
 interface StepResultsProps {
   result: RecommendationResult;
@@ -16,9 +19,14 @@ interface StepResultsProps {
 
 type View = "single" | "combo";
 
-export function StepResults({ result, persona, onRestart }: StepResultsProps) {
+export function StepResults({ result, persona, spending, onRestart }: StepResultsProps) {
   const defaultView: View = persona.effortTolerance === "multi" ? "combo" : "single";
   const [view, setView] = useState<View>(defaultView);
+
+  // For the combo view, derive each card's earning conditions from the same
+  // resolved spending the engine used.
+  const resolved = resolveSpending(spending);
+  const totalMonthly = Object.values(resolved).reduce((a, b) => a + b, 0);
 
   const { single, combo, ineligible } = result;
   const comboAvailable = combo.members.length > 1;
@@ -139,6 +147,7 @@ export function StepResults({ result, persona, onRestart }: StepResultsProps) {
                       ))}
                     </div>
                   </div>
+                  <CardConditionsPanel conditions={buildConditions(m.card, resolved, totalMonthly)} />
                   <div className="mt-4 border-t border-slate-100 pt-3 text-xs">
                     <FreshnessBadge date={m.card.lastVerified} href={m.card.sourceUrl} />
                   </div>

@@ -2,6 +2,7 @@ import { CATEGORY_BY_KEY } from "@/lib/domain/categories";
 import type { CardScore } from "@/lib/domain/types";
 import { rm } from "@/lib/format";
 import { FreshnessBadge, ConfidenceChip } from "@/components/results/FreshnessBadge";
+import { CardConditionsPanel } from "@/components/results/CardConditionsPanel";
 
 interface CardResultCardProps {
   score: CardScore;
@@ -82,6 +83,8 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
               ))}
             </div>
           )}
+
+          <CardConditionsPanel conditions={score.conditions} />
 
           {card.dataNote && card.confidence !== "high" && (
             <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">

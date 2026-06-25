@@ -10,6 +10,7 @@ import type {
   SpendingProfile,
 } from "../domain/types";
 import { monthlyCapRM, rateLabel, rmValuePerRM } from "./normalize";
+import { buildConditions } from "./conditions";
 
 /** Representative qualifying income (RM/year) for each bracket. */
 const BRACKET_INCOME: Record<IncomeBracket, number> = {
@@ -171,5 +172,6 @@ export function scoreCard(
     breakdown,
     eligible,
     reasons: buildReasons(card, breakdown, effFee, persona),
+    conditions: buildConditions(card, resolved, totalMonthly),
   };
 }
