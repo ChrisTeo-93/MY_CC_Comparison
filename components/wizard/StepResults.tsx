@@ -6,9 +6,11 @@ import type { Persona, RecommendationResult, SpendingProfile } from "@/lib/domai
 import { rm } from "@/lib/format";
 import { resolveSpending } from "@/lib/engine/score";
 import { buildConditions } from "@/lib/engine/conditions";
+import { buildTips } from "@/lib/engine/tips";
 import { CardResultCard } from "@/components/results/CardResultCard";
 import { FreshnessBadge } from "@/components/results/FreshnessBadge";
 import { CardConditionsPanel } from "@/components/results/CardConditionsPanel";
+import { TipsPanel } from "@/components/results/TipsPanel";
 
 interface StepResultsProps {
   result: RecommendationResult;
@@ -27,6 +29,7 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
   // resolved spending the engine used.
   const resolved = resolveSpending(spending);
   const totalMonthly = Object.values(resolved).reduce((a, b) => a + b, 0);
+  const tips = buildTips(result, spending);
 
   const { single, combo, ineligible } = result;
   const comboAvailable = combo.members.length > 1;
@@ -70,6 +73,8 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
           </button>
         </div>
       </div>
+
+      {single.length > 0 && <TipsPanel tips={tips} />}
 
       {view === "single" && (
         <div className="space-y-4">

@@ -31,7 +31,7 @@ export function resolveSpending(spending: SpendingProfile): Record<CategoryKey, 
 }
 
 /** Pick the earn rule that applies to a category given total monthly spend. */
-function ruleForCategory(
+export function ruleForCategory(
   card: Card,
   category: CategoryKey,
   totalMonthly: number,
