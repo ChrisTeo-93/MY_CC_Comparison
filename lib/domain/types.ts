@@ -25,6 +25,14 @@ export interface EarnRule {
   notes?: string;
 }
 
+/**
+ * How much to trust a card's figures, based on how they were sourced.
+ *  - high:   corroborated across the bank's own terms + multiple credible sources
+ *  - medium: cross-checked across credible secondary sources, not primary T&C
+ *  - low:    single/uncertain source or not yet re-verified — treat with caution
+ */
+export type DataConfidence = "high" | "medium" | "low";
+
 export type FeeWaiverType = "spend" | "swipes" | "always" | "none";
 
 export interface FeeWaiver {
@@ -63,6 +71,10 @@ export interface Card {
   /** Freshness metadata — directly addresses the "outdated info" problem. */
   lastVerified: string; // ISO date
   sourceUrl: string;
+  /** How much to trust the figures above, given how they were sourced. */
+  confidence: DataConfidence;
+  /** Optional: shown when a card was discontinued/renamed or otherwise needs a caveat. */
+  dataNote?: string;
 }
 
 /** Monthly spend (RM) per category. Missing keys fall back to persona defaults. */

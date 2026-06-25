@@ -1,6 +1,7 @@
 import { CATEGORY_BY_KEY } from "@/lib/domain/categories";
 import type { CardScore } from "@/lib/domain/types";
-import { freshness, rm } from "@/lib/format";
+import { rm } from "@/lib/format";
+import { FreshnessBadge, ConfidenceChip } from "@/components/results/FreshnessBadge";
 
 interface CardResultCardProps {
   score: CardScore;
@@ -42,7 +43,10 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
                 )}
                 <span className="text-xs font-medium text-slate-400">#{rank}</span>
               </div>
-              <h3 className="mt-1 text-lg font-bold text-slate-900">{card.name}</h3>
+              <div className="mt-1 flex flex-wrap items-center gap-2">
+                <h3 className="text-lg font-bold text-slate-900">{card.name}</h3>
+                <ConfidenceChip level={card.confidence} note={card.dataNote} />
+              </div>
               <p className="text-sm text-slate-500">
                 {card.bank} · {card.network} · {REWARD_LABEL[card.rewardType]}
               </p>
@@ -79,6 +83,12 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
             </div>
           )}
 
+          {card.dataNote && card.confidence !== "high" && (
+            <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+              ⓘ {card.dataNote}
+            </p>
+          )}
+
           <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
             <span className="text-slate-500">
               {card.annualFee === 0
@@ -87,15 +97,7 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
                   ? `Annual fee RM${card.annualFee} (waived)`
                   : `Annual fee RM${card.annualFee}`}
             </span>
-            <a
-              href={card.sourceUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-400 hover:text-brand-dark"
-              title={`Source: ${card.sourceUrl}`}
-            >
-              🕒 {freshness(card.lastVerified)}
-            </a>
+            <FreshnessBadge date={card.lastVerified} href={card.sourceUrl} />
           </div>
         </div>
       </div>

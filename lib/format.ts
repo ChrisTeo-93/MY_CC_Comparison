@@ -20,3 +20,22 @@ export function freshness(isoDate: string, today = new Date()): string {
   const months = Math.floor(days / 30);
   return `Verified ${months} month${months === 1 ? "" : "s"} ago`;
 }
+
+/** How stale a card's data is — drives the colour of the freshness badge. */
+export type FreshnessLevel = "fresh" | "aging" | "stale";
+
+export interface FreshnessInfo {
+  label: string;
+  level: FreshnessLevel;
+  days: number;
+}
+
+/** Bank policies drift, so flag how old the verification is. */
+export function freshnessStatus(isoDate: string, today = new Date()): FreshnessInfo {
+  const then = new Date(isoDate).getTime();
+  const days = Math.max(0, Math.floor((today.getTime() - then) / (1000 * 60 * 60 * 24)));
+  let level: FreshnessLevel = "fresh";
+  if (days > 180) level = "stale";
+  else if (days > 90) level = "aging";
+  return { label: freshness(isoDate, today), level, days };
+}

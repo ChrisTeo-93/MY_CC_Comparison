@@ -28,6 +28,7 @@ function makeCard(overrides: Partial<Card>): Card {
     perks: [],
     lastVerified: "2026-01-01",
     sourceUrl: "https://example.com",
+    confidence: "high",
     ...overrides,
   };
 }

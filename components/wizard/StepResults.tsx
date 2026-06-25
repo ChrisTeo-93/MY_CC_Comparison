@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { CATEGORY_BY_KEY } from "@/lib/domain/categories";
 import type { Persona, RecommendationResult, SpendingProfile } from "@/lib/domain/types";
-import { freshness, rm } from "@/lib/format";
+import { rm } from "@/lib/format";
 import { CardResultCard } from "@/components/results/CardResultCard";
+import { FreshnessBadge } from "@/components/results/FreshnessBadge";
 
 interface StepResultsProps {
   result: RecommendationResult;
@@ -29,6 +30,12 @@ export function StepResults({ result, persona, onRestart }: StepResultsProps) {
         <p className="mt-2 text-slate-600">
           Ranked by the real ringgit value they earn on your spending, net of fees.
         </p>
+        <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-1 text-xs text-slate-400">
+          <span>Data freshness:</span>
+          <span className="font-medium text-emerald-600">🕒 recently verified</span>
+          <span className="font-medium text-amber-600">🕒 getting old</span>
+          <span className="font-medium text-red-500">⚠ stale — re-check the bank</span>
+        </div>
       </header>
 
       <div className="flex justify-center">
@@ -132,8 +139,8 @@ export function StepResults({ result, persona, onRestart }: StepResultsProps) {
                       ))}
                     </div>
                   </div>
-                  <div className="mt-4 border-t border-slate-100 pt-3 text-xs text-slate-400">
-                    🕒 {freshness(m.card.lastVerified)}
+                  <div className="mt-4 border-t border-slate-100 pt-3 text-xs">
+                    <FreshnessBadge date={m.card.lastVerified} href={m.card.sourceUrl} />
                   </div>
                 </div>
               </div>
@@ -158,9 +165,11 @@ export function StepResults({ result, persona, onRestart }: StepResultsProps) {
         </details>
       )}
 
-      <p className="text-center text-xs text-slate-400">
-        Figures are estimates based on representative card data and your inputs. Confirm
-        current terms with the bank before applying. Not financial advice.
+      <p className="mx-auto max-w-xl text-center text-xs text-slate-400">
+        Card terms were last verified mid-2026 from credible public sources and carry a
+        confidence rating — most are <span className="text-amber-600">medium confidence</span>,
+        so always confirm current terms with the bank before applying. Estimates only, not
+        financial advice.
       </p>
 
       <div className="flex justify-center">
