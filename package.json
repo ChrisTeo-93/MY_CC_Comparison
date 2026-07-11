@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "mobile"
   ],
   "scripts": {
     "dev": "next dev",
@@ -13,7 +14,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "typecheck:all": "npm run typecheck && npm run typecheck --workspace=@kadcompare/core"
+    "typecheck:all": "npm run typecheck && npm run typecheck --workspace=@kadcompare/core && npm run typecheck --workspace=@kadcompare/mobile",
+    "mobile": "npm run start --workspace=@kadcompare/mobile"
   },
   "dependencies": {
     "@kadcompare/core": "*",
