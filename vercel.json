@@ -1,0 +1,3 @@
+{
+  "installCommand": "npm install --workspace=my_cc_comparison --workspace=@kadcompare/core --include-workspace-root"
+}

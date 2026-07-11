@@ -2,8 +2,9 @@
 
 Pick the Malaysian credit card (or 2–3 card combo) that earns you the most for how
 *you* spend. Built because comparison sites are hard to use and forum advice goes
-stale as banks change card policies. Ships as a **web app** and (in progress) native
-**iOS/Android apps**, sharing one recommendation engine.
+stale as banks change card policies. Ships as a **web app** (live) and a **native
+iOS/Android app** (built, not yet store-published — see `mobile/README.md`), sharing
+one recommendation engine.
 
 The user goes through three steps:
 
@@ -30,8 +31,15 @@ packages/core/     @kadcompare/core — pure TypeScript, zero framework dependen
                     Consumed identically by the web app and the Expo app.
 (repo root)         The Next.js 14 web app — unchanged location/config so the
                     existing Vercel deployment needs no changes.
-mobile/             Expo (React Native) app for iOS + Android — in progress.
+mobile/             Expo (React Native) app for iOS + Android. Both main journeys
+                    (find my card / evaluate my cards) are built; not yet
+                    verified on a real device or published to the app stores.
 ```
+
+Vercel deploys only the web app, so `vercel.json` scopes its install to skip the
+`mobile` workspace (`npm install --workspace=my_cc_comparison
+--workspace=@kadcompare/core --include-workspace-root`) — otherwise every web
+deploy would needlessly install the entire React Native/Expo toolchain.
 
 - **Web:** Next.js 14 (App Router) + TypeScript + Tailwind CSS
 - **Mobile:** Expo + React Native + TypeScript (Expo Router)
