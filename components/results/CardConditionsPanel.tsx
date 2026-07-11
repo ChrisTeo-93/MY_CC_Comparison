@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import type { CardConditions, EarnCondition } from "@/lib/domain/types";
-import { rm } from "@/lib/format";
+import type { CardConditions, EarnCondition } from "@kadcompare/core";
+import { rm } from "@kadcompare/core";
 
 /**
  * Expandable "How you earn this" panel — spells out the spend thresholds and caps

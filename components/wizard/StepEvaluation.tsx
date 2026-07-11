@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import type { Evaluation } from "@/lib/engine/evaluate";
-import { rm } from "@/lib/format";
+import type { Evaluation } from "@kadcompare/core";
+import { rm } from "@kadcompare/core";
 import { CardResultCard } from "@/components/results/CardResultCard";
 import { TipsPanel } from "@/components/results/TipsPanel";
 

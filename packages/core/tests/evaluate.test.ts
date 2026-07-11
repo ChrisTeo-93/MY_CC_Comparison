@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { ACTIVE_CARDS } from "@/lib/domain/cards";
-import type { Persona } from "@/lib/domain/types";
-import { evaluateOwned } from "@/lib/engine/evaluate";
+import { ACTIVE_CARDS } from "../src/domain/cards";
+import type { Persona } from "../src/domain/types";
+import { evaluateOwned } from "../src/engine/evaluate";
 
 const PERSONA: Persona = {
   rewardPreference: "flexible",

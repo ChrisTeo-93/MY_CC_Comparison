@@ -1,12 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CATEGORY_BY_KEY } from "@/lib/domain/categories";
-import type { Persona, RecommendationResult, SpendingProfile } from "@/lib/domain/types";
-import { rm } from "@/lib/format";
-import { resolveSpending } from "@/lib/engine/score";
-import { buildConditions } from "@/lib/engine/conditions";
-import { buildTips } from "@/lib/engine/tips";
+import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips } from "@kadcompare/core";
+import type { Persona, RecommendationResult, SpendingProfile } from "@kadcompare/core";
 import { CardResultCard } from "@/components/results/CardResultCard";
 import { FreshnessBadge } from "@/components/results/FreshnessBadge";
 import { CardConditionsPanel } from "@/components/results/CardConditionsPanel";

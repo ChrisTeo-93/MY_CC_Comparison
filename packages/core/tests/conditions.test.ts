@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import { CATEGORY_KEYS, type CategoryKey } from "@/lib/domain/categories";
-import type { Card } from "@/lib/domain/types";
-import { buildConditions } from "@/lib/engine/conditions";
+import { CATEGORY_KEYS, type CategoryKey } from "../src/domain/categories";
+import type { Card } from "../src/domain/types";
+import { buildConditions } from "../src/engine/conditions";
 
 function makeCard(overrides: Partial<Card>): Card {
   return {

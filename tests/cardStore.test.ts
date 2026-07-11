@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { validateCard, getAllCards } from "@/lib/data/cardStore";
-import type { Card } from "@/lib/domain/types";
+import type { Card } from "@kadcompare/core";
 
 function validCard(overrides: Partial<Card> = {}): Card {
   return {

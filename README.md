@@ -2,7 +2,8 @@
 
 Pick the Malaysian credit card (or 2–3 card combo) that earns you the most for how
 *you* spend. Built because comparison sites are hard to use and forum advice goes
-stale as banks change card policies.
+stale as banks change card policies. Ships as a **web app** and (in progress) native
+**iOS/Android apps**, sharing one recommendation engine.
 
 The user goes through three steps:
 
@@ -12,38 +13,62 @@ The user goes through three steps:
 3. **Results** — the best single card *and* the best combo, toggleable, ranked by
    real ringgit value net of annual fees.
 
+There's also an **"I already have cards"** flow: pick the cards you own and see what
+you currently earn, whether you're leaving value on the table, and which card would
+add the most.
+
 The key idea: **cashback, points and miles are all normalised to ringgit value**, so
 different reward types are judged on the same scale.
 
 ## Stack
 
-- **Next.js 14** (App Router) + **TypeScript** + **Tailwind CSS**
-- Pure-TypeScript recommendation engine (no DB, no network) — fully unit-tested
-- **Vitest** for engine tests
+This is an **npm-workspaces monorepo** so the web and mobile apps share one engine:
+
+```
+packages/core/     @kadcompare/core — pure TypeScript, zero framework dependencies.
+                    Domain model, recommendation engine, persona logic, card data.
+                    Consumed identically by the web app and the Expo app.
+(repo root)         The Next.js 14 web app — unchanged location/config so the
+                    existing Vercel deployment needs no changes.
+mobile/             Expo (React Native) app for iOS + Android — in progress.
+```
+
+- **Web:** Next.js 14 (App Router) + TypeScript + Tailwind CSS
+- **Mobile:** Expo + React Native + TypeScript (Expo Router)
+- **Core:** pure-TypeScript recommendation engine (no DB, no network) — fully
+  unit-tested, importable from both apps as `@kadcompare/core`
+- **Vitest** for engine + web tests, run from the repo root (`npm test` picks up
+  both `tests/` and `packages/*/tests/`)
 
 ## Project layout
 
 ```
-data/
-  cards.json               Card catalogue — the source of truth (edited via /admin)
-app/
-  page.tsx                 Landing
-  recommend/page.tsx       3-step wizard (client)
-  admin/                   Card-data editor (password-gated) + login
-  api/admin/               Auth + CRUD route handlers (login/logout/cards)
-lib/
-  domain/                  types, categories, card loader (reads data/cards.json)
-  engine/                  normalize · score · combo · recommend
-  persona/                 persona quiz definition
-  data/cardStore.ts        Server-side read/write + validation for cards.json
-  auth.ts                  Minimal admin password gate
-components/
-  wizard/                  ProgressBar, StepPersona, StepSpending, StepResults
-  results/                 CardResultCard, FreshnessBadge + ConfidenceChip
-  admin/AdminEditor.tsx    The card editor UI
+packages/core/
+  package.json              "@kadcompare/core" — main/types point at src/index.ts
+  src/
+    domain/                 types, categories, card loader (reads data/cards.json)
+    engine/                 normalize · score · combo · conditions · tips ·
+                             evaluate · recommend
+    persona/                persona quiz definition
+    format.ts               RM/date formatting shared by both apps
+    data/cards.json         Card catalogue — the source of truth (edited via /admin)
+    index.ts                barrel export — the package's public surface
+  tests/                    engine/conditions/tips/evaluate unit tests
+
+app/                        Next.js routes (web)
+  page.tsx                  Landing
+  recommend/page.tsx        Persona → spending → results wizard
+  evaluate/page.tsx         Persona → spending → owned cards → evaluation
+  admin/                    Card-data editor (password-gated) + login
+  api/admin/                Auth + CRUD route handlers (login/logout/cards)
+lib/                        Web-only (Next.js/Node-coupled) code
+  data/cardStore.ts         Server-side read/write + validation for cards.json
+  auth.ts                   Minimal admin password gate
+components/                 Web UI (wizard steps, result cards, admin editor)
 tests/
-  engine.test.ts           engine unit tests
-  cardStore.test.ts        validation + seed-data integrity tests
+  cardStore.test.ts         validation + seed-data integrity tests (web-only)
+
+mobile/                     Expo app (iOS + Android) — see mobile/README.md
 ```
 
 ## How the engine works
@@ -63,7 +88,7 @@ tests/
 ## Data freshness & confidence
 
 Card reward rates change often, so trust signals are first-class. Every card in
-`data/cards.json` carries:
+`packages/core/src/data/cards.json` carries:
 
 - `lastVerified` (ISO date) + `sourceUrl` → a colour-coded **freshness badge**
   (fresh / aging / stale).
@@ -80,25 +105,30 @@ issuing bank before applying. For comparison only, not financial advice.
 
 `/admin` is a password-gated editor for the catalogue: list, add, edit (fees, income,
 earn rules, confidence, freshness, status) and delete cards. It writes to
-`data/cards.json` via `lib/data/cardStore.ts`, which validates every card before
-saving.
+`packages/core/src/data/cards.json` via `lib/data/cardStore.ts`, which validates
+every card before saving — since that file lives inside `@kadcompare/core`, edits
+are immediately available to the mobile app on its next build too.
 
 - **Password:** set `ADMIN_PASSWORD` (defaults to `admin123` for local dev only).
 - **Persistence caveat:** writes use the filesystem, so they persist in local dev and
   on any Node host. On a **read-only serverless platform (e.g. Vercel) edits will not
-  persist** across requests — the public site reflects `data/cards.json` as built. The
-  intended workflow for now is: edit locally → commit the updated `data/cards.json` →
+  persist** across requests — the public site reflects `cards.json` as built. The
+  intended workflow for now is: edit locally → commit the updated `cards.json` →
   redeploy. A future phase swaps `cardStore.ts` for a real database (Postgres/D1).
 
 ## Develop
 
 ```bash
-npm install
-npm run dev        # http://localhost:3000
-npm run test       # engine + data-store unit tests
-npm run typecheck  # tsc --noEmit
-npm run build      # production build
+npm install             # links @kadcompare/core via npm workspaces
+npm run dev              # http://localhost:3000
+npm run test              # all tests: web + packages/core
+npm run typecheck          # web app only
+npm run typecheck:all       # web app + @kadcompare/core
+npm run build                # production build (web)
 
 # Admin editor: set a password (defaults to admin123 locally)
 ADMIN_PASSWORD=your-secret npm run dev   # then visit /admin
+
+# Mobile app (once scaffolded — see mobile/README.md)
+cd mobile && npm start
 ```

@@ -1,8 +1,7 @@
 "use client";
 
-import { CATEGORIES } from "@/lib/domain/categories";
-import type { SpendingProfile } from "@/lib/domain/types";
-import { rm } from "@/lib/format";
+import { CATEGORIES, rm } from "@kadcompare/core";
+import type { SpendingProfile } from "@kadcompare/core";
 
 interface StepSpendingProps {
   spending: SpendingProfile;

@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
-import type { Card, Persona } from "@/lib/domain/types";
-import { recommend } from "@/lib/engine/recommend";
-import { buildTips } from "@/lib/engine/tips";
+import type { Card, Persona } from "../src/domain/types";
+import { recommend } from "../src/engine/recommend";
+import { buildTips } from "../src/engine/tips";
 
 function makeCard(overrides: Partial<Card>): Card {
   return {

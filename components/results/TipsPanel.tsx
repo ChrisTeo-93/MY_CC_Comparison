@@ -1,5 +1,5 @@
-import type { MaxTip } from "@/lib/engine/tips";
-import { rm } from "@/lib/format";
+import type { MaxTip } from "@kadcompare/core";
+import { rm } from "@kadcompare/core";
 
 /**
  * "Maximize your gains" callout — actionable moves to capture more from the

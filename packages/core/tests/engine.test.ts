@@ -1,14 +1,14 @@
 import { describe, it, expect } from "vitest";
-import type { Card, Persona } from "@/lib/domain/types";
-import { rmValuePerRM } from "@/lib/engine/normalize";
+import type { Card, Persona } from "../src/domain/types";
+import { rmValuePerRM } from "../src/engine/normalize";
 import {
   categoryValue,
   effectiveAnnualFee,
   personaMultiplier,
   scoreCard,
-} from "@/lib/engine/score";
-import { bestCombo } from "@/lib/engine/combo";
-import { recommend } from "@/lib/engine/recommend";
+} from "../src/engine/score";
+import { bestCombo } from "../src/engine/combo";
+import { recommend } from "../src/engine/recommend";
 
 // --- helpers ---------------------------------------------------------------
 

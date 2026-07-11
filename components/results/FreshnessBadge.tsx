@@ -1,5 +1,5 @@
-import { freshnessStatus } from "@/lib/format";
-import type { DataConfidence } from "@/lib/domain/types";
+import { freshnessStatus } from "@kadcompare/core";
+import type { DataConfidence } from "@kadcompare/core";
 
 const LEVEL_CLASS: Record<string, string> = {
   fresh: "text-emerald-600 hover:text-emerald-700",

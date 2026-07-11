@@ -1,6 +1,5 @@
-import { CATEGORY_BY_KEY } from "@/lib/domain/categories";
-import type { CardScore } from "@/lib/domain/types";
-import { rm } from "@/lib/format";
+import { CATEGORY_BY_KEY, rm } from "@kadcompare/core";
+import type { CardScore } from "@kadcompare/core";
 import { FreshnessBadge, ConfidenceChip } from "@/components/results/FreshnessBadge";
 import { CardConditionsPanel } from "@/components/results/CardConditionsPanel";
 

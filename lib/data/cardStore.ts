@@ -1,10 +1,11 @@
 import { promises as fs } from "fs";
 import path from "path";
-import { CATEGORY_KEYS } from "@/lib/domain/categories";
-import type { Card, EarnRule } from "@/lib/domain/types";
+import { CATEGORY_KEYS } from "@kadcompare/core";
+import type { Card, EarnRule } from "@kadcompare/core";
 
 /**
- * Server-side read/write access to the card catalogue (`data/cards.json`).
+ * Server-side read/write access to the card catalogue
+ * (`packages/core/src/data/cards.json` — shared with the mobile app).
  *
  * This is the "admin later" persistence layer for the seed-JSON phase: the repo
  * file IS the database. Reads/writes use the filesystem, which works in local
@@ -15,7 +16,7 @@ import type { Card, EarnRule } from "@/lib/domain/types";
  * All exports are server-only; never import this from a client component.
  */
 
-const DATA_PATH = path.join(process.cwd(), "data", "cards.json");
+const DATA_PATH = path.join(process.cwd(), "packages", "core", "src", "data", "cards.json");
 
 const NETWORKS = new Set(["Visa", "Mastercard", "Amex", "UnionPay"]);
 const REWARD_TYPES = new Set(["cashback", "points", "miles", "hybrid"]);

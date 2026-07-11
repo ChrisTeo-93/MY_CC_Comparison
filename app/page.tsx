@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ACTIVE_CARDS } from "@/lib/domain/cards";
+import { ACTIVE_CARDS } from "@kadcompare/core";
 
 const STEPS = [
   {

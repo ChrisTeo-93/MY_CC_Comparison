@@ -2,9 +2,8 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import type { Persona, RecommendationResult, SpendingProfile } from "@/lib/domain/types";
-import { recommend } from "@/lib/engine/recommend";
-import { DEFAULT_PERSONA } from "@/lib/persona/questions";
+import type { Persona, RecommendationResult, SpendingProfile } from "@kadcompare/core";
+import { recommend, DEFAULT_PERSONA } from "@kadcompare/core";
 import { ProgressBar } from "@/components/wizard/ProgressBar";
 import { StepPersona } from "@/components/wizard/StepPersona";
 import { StepSpending } from "@/components/wizard/StepSpending";

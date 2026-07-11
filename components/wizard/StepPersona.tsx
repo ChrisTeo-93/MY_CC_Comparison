@@ -1,7 +1,7 @@
 "use client";
 
-import type { Persona } from "@/lib/domain/types";
-import { PERSONA_QUESTIONS } from "@/lib/persona/questions";
+import type { Persona } from "@kadcompare/core";
+import { PERSONA_QUESTIONS } from "@kadcompare/core";
 
 interface StepPersonaProps {
   persona: Partial<Persona>;

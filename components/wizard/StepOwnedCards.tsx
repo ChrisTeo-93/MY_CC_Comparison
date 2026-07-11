@@ -1,6 +1,6 @@
 "use client";
 
-import { ACTIVE_CARDS } from "@/lib/domain/cards";
+import { ACTIVE_CARDS } from "@kadcompare/core";
 
 const REWARD_LABEL: Record<string, string> = {
   cashback: "Cashback",

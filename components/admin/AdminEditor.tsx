@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { CATEGORIES } from "@/lib/domain/categories";
-import type { Card, EarnRule } from "@/lib/domain/types";
+import { CATEGORIES } from "@kadcompare/core";
+import type { Card, EarnRule } from "@kadcompare/core";
 import { ConfidenceChip, FreshnessBadge } from "@/components/results/FreshnessBadge";
 
 const NETWORKS = ["Visa", "Mastercard", "Amex", "UnionPay"] as const;
