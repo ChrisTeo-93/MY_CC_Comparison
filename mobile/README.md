@@ -54,6 +54,7 @@ This repo has everything needed except the accounts, which only you can create:
    cd mobile
    npx eas login
    npx eas init          # links this project to your Expo account, writes a projectId
+   npx eas update:configure   # finalizes the OTA config — see "Keeping it updated" below
    ```
 2. **Apple Developer Program** ($99/year) — needed for iOS builds/submission.
 3. **Google Play Console** ($25 one-time) — needed for Android builds/submission.
@@ -75,6 +76,37 @@ This repo has everything needed except the accounts, which only you can create:
 `eas.json` already has `development` / `preview` / `production` build profiles
 configured — `preview` builds are the fastest way to get a shareable install link
 without going through the app stores.
+
+## Keeping it updated — OTA vs. app-store releases
+
+The web app deploys instantly on every push; app stores gate mobile behind review
+(hours to days). Since data freshness is the whole point of this product, that gap
+matters — so this app is wired for **EAS Update (OTA)**: JS/data-only changes (a
+`cards.json` refresh, an engine fix, a copy tweak) can reach installed apps
+**without waiting for App Store / Play Store review**. Only genuinely native changes
+(new native module, permission, icon) need an actual store submission.
+
+Already configured:
+- `expo-updates` is installed and added to `app.json`'s `plugins`.
+- `app.json` sets `"runtimeVersion": { "policy": "appVersion" }` — OTA updates are
+  compatible with any install sharing the same `version` field, so bumping the
+  native version (e.g. for a store release) cleanly separates "needs a new build"
+  from "can ship over the air."
+- `eas.json`'s build profiles each declare a `channel` (`preview` / `production`),
+  which is what OTA updates target.
+
+**Still needed (requires your EAS login — not something I can do from here):**
+`updates.url` isn't set yet because it needs your project's real EAS project ID,
+which only exists after `eas init`. Run `npx eas update:configure` from `mobile/`
+once you've logged in — it writes that URL automatically. After that, publishing an
+update is:
+
+```bash
+npx eas update --branch production --message "Refresh card data for July"
+```
+
+Every install on the `production` channel picks it up on next launch — no store
+review, no user action beyond opening the app.
 
 ## Project layout
 
