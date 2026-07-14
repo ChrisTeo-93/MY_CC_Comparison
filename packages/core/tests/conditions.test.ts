@@ -119,3 +119,52 @@ describe("buildConditions — fee waiver", () => {
     expect(c.fee.text).toContain("RM0/year government service tax");
   });
 });
+
+describe("buildConditions — category exclusions", () => {
+  it("surfaces human-readable excluded category labels for a general rule", () => {
+    const card = makeCard({
+      earnRules: [
+        {
+          category: "general",
+          rate: 0.05,
+          unit: "percent",
+          excludedCategories: ["ewallet", "bills"],
+        },
+      ],
+    });
+    const c = buildConditions(card, resolved({}), 1000);
+    expect(c.earn[0].excludedLabels).toEqual(
+      expect.arrayContaining(["E-Wallet Reloads", "Bills & Utilities"]),
+    );
+  });
+
+  it("leaves excludedLabels empty for an unrestricted general rule", () => {
+    const card = makeCard({
+      earnRules: [{ category: "general", rate: 0.05, unit: "percent" }],
+    });
+    const c = buildConditions(card, resolved({}), 1000);
+    expect(c.earn[0].excludedLabels ?? []).toHaveLength(0);
+  });
+
+  it("excludes the excluded categories' spend from the general rule's own cap/reward math", () => {
+    const card = makeCard({
+      earnRules: [
+        {
+          category: "general",
+          rate: 0.05,
+          unit: "percent",
+          monthlyCap: 30,
+          excludedCategories: ["ewallet"],
+        },
+      ],
+    });
+    // Total 1000/mo, but 400 of it is on the excluded "ewallet" category —
+    // only the remaining 600 should count toward this rule's own spend figure.
+    const c = buildConditions(
+      card,
+      resolved({ ewallet: 400, dining: 600 }),
+      1000,
+    );
+    expect(c.earn[0].yourMonthlySpendRM).toBeCloseTo(600);
+  });
+});

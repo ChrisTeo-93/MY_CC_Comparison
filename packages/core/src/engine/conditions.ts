@@ -19,7 +19,12 @@ export function buildConditions(
     const rmPerRM = rmValuePerRM(card, rule);
     const capRM = monthlyCapRM(card, rule);
     const hasCap = Number.isFinite(capRM);
-    const yourSpend = rule.category === "general" ? totalMonthly : resolved[rule.category] ?? 0;
+    const excludedCategories = rule.excludedCategories ?? [];
+    // For a "general" rule, only spend OUTSIDE the excluded categories actually
+    // earns this rate — otherwise cap/reward math would overstate eligible spend.
+    const excludedSpend = excludedCategories.reduce((sum, cat) => sum + (resolved[cat] ?? 0), 0);
+    const yourSpend =
+      rule.category === "general" ? totalMonthly - excludedSpend : resolved[rule.category] ?? 0;
     const unlocked = rule.minMonthlySpend === undefined || totalMonthly >= rule.minMonthlySpend;
     const yourReward = yourSpend * rmPerRM;
 
@@ -33,6 +38,7 @@ export function buildConditions(
       yourMonthlySpendRM: yourSpend,
       unlocked,
       hitsCap: hasCap && yourReward >= capRM - 1e-9,
+      excludedLabels: excludedCategories.map((cat) => CATEGORY_BY_KEY[cat].label),
       note: rule.notes,
     };
   });

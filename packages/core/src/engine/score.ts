@@ -43,10 +43,14 @@ export function ruleForCategory(
   ) {
     return specific;
   }
-  // A "general" bonus rule applies to every category as an uplift over base.
+  // A "general" bonus rule applies to every category as an uplift over base —
+  // except any category the bank explicitly carves out (e-wallet reloads,
+  // bills/govt payments are common real-world exclusions from "earn on
+  // everything" promotions), which falls back to the base rate instead.
   const general = card.earnRules.find((r) => r.category === "general");
   if (
     general &&
+    !(general.excludedCategories ?? []).includes(category) &&
     (general.minMonthlySpend === undefined || totalMonthly >= general.minMonthlySpend)
   ) {
     return general;

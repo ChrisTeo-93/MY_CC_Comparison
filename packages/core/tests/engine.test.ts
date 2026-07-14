@@ -5,10 +5,12 @@ import {
   categoryValue,
   effectiveAnnualFee,
   personaMultiplier,
+  ruleForCategory,
   scoreCard,
 } from "../src/engine/score";
 import { bestCombo } from "../src/engine/combo";
 import { recommend } from "../src/engine/recommend";
+import { CARD_BY_ID } from "../src/domain/cards";
 
 // --- helpers ---------------------------------------------------------------
 
@@ -271,6 +273,57 @@ describe("bestCombo — govt service tax", () => {
     const member = combo.members.find((m) => m.card.id === "worthwhile");
     expect(member).toBeTruthy();
     expect(combo.totalGovtTaxRM).toBe(0 + 25); // seed's 0 override + worthwhile's default 25
+  });
+});
+
+// --- category exclusions ----------------------------------------------------
+
+describe("ruleForCategory — excludedCategories", () => {
+  const card = makeCard({
+    earnRules: [
+      {
+        category: "general",
+        rate: 0.05,
+        unit: "percent",
+        excludedCategories: ["ewallet", "bills"],
+      },
+    ],
+    baseRule: { category: "general", rate: 0.0025, unit: "percent" },
+  });
+
+  it("falls back to the base rate for an excluded category", () => {
+    expect(ruleForCategory(card, "ewallet", 1000)).toBe(card.baseRule);
+    expect(ruleForCategory(card, "bills", 1000)).toBe(card.baseRule);
+  });
+
+  it("still applies the general rule for a non-excluded category", () => {
+    expect(ruleForCategory(card, "dining", 1000)).toBe(card.earnRules[0]);
+    expect(ruleForCategory(card, "groceries", 1000)).toBe(card.earnRules[0]);
+  });
+
+  it("a general rule with no excludedCategories applies everywhere (unrestricted)", () => {
+    const unrestricted = makeCard({
+      earnRules: [{ category: "general", rate: 0.05, unit: "percent" }],
+    });
+    expect(ruleForCategory(unrestricted, "ewallet", 1000)).toBe(unrestricted.earnRules[0]);
+  });
+});
+
+describe("scoreCard — excludedCategories (regression against real card data)", () => {
+  it("Maybank 2 Gold: e-wallet/bills spend earns only the base rate, not the 5% weekend bonus", () => {
+    const card = CARD_BY_ID["maybank-2-gold"];
+    expect(card).toBeTruthy();
+    const s = scoreCard(card, { ewallet: 500, bills: 500, dining: 500 }, PERSONA);
+    const ewallet = s.breakdown.find((b) => b.category === "ewallet")!;
+    const bills = s.breakdown.find((b) => b.category === "bills")!;
+    const dining = s.breakdown.find((b) => b.category === "dining")!;
+    // base rate 0.25% * 500 * 12 = RM15/yr — NOT the 5% bonus rate.
+    expect(ewallet.annualValueRM).toBeCloseTo(15);
+    expect(bills.annualValueRM).toBeCloseTo(15);
+    expect(ewallet.rateLabel).not.toContain("5%");
+    expect(bills.rateLabel).not.toContain("5%");
+    // dining isn't excluded, so it gets the 5% bonus rate.
+    expect(dining.rateLabel).toContain("5%");
   });
 });
 

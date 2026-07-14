@@ -106,6 +106,19 @@ stays honest about who's charging what. It especially matters for combos: each
 extra card held adds another RM25/year its earnings must clear before it's worth
 adding.
 
+**Category exclusions:** banks often advertise a broad "earn on everything" rate
+(modelled as `category: "general"`, an omni-boost applied to every spending
+category) but carve out specific transaction types — e-wallet reloads, bills/
+utilities and government payments are the most common. An earn rule can declare
+`excludedCategories: CategoryKey[]`; those categories fall back to the card's base
+rate instead of the bonus, and the UI says so explicitly ("⊘ Excludes E-Wallet
+Reloads, Bills & Utilities…") rather than silently under-counting. A general rule
+with no exclusions is shown just as plainly ("✓ Applies to any transaction — no
+exclusions"), so the product surfaces both which cards restrict transactions *and*
+which are genuinely unrestricted. Government payments don't have their own
+spending category today, so they're modelled under Bills & Utilities (JomPAY-style
+routing) — documented per-card via `notes` where it applies.
+
 ## Data freshness & confidence
 
 Card reward rates change often, so trust signals are first-class. Every card in

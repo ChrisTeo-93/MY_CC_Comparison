@@ -89,6 +89,14 @@ function EarnRow({ c, totalMonthly }: { c: EarnCondition; totalMonthly: number }
         </Text>
       )}
 
+      {c.category === "general" && (
+        <Text style={[styles.rowNote, { color: c.excludedLabels?.length ? colors.amber700 : colors.emerald700 }]}>
+          {c.excludedLabels && c.excludedLabels.length > 0
+            ? `⊘ Excludes ${c.excludedLabels.join(", ")} — spend there earns only the base rate, not this bonus.`
+            : "✓ Applies to any transaction — no exclusions."}
+        </Text>
+      )}
+
       {c.note && <Text style={styles.note}>{c.note}</Text>}
     </View>
   );

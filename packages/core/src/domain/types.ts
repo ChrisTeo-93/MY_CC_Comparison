@@ -21,6 +21,15 @@ export interface EarnRule {
   monthlyCap?: number;
   /** Minimum total monthly spend (RM) required to unlock this rule. */
   minMonthlySpend?: number;
+  /**
+   * Categories this rule does NOT apply to — mainly relevant for a
+   * `category: "general"` rule (an omni-boost across every category by
+   * default), which banks commonly carve out: e-wallet reloads, bills/
+   * utilities and government payments are frequently excluded from "earn on
+   * everything" promotions even though the headline rate sounds unconditional.
+   * Excluded categories fall back to the card's baseRule instead.
+   */
+  excludedCategories?: CategoryKey[];
   /** Human-readable caveat shown in the UI. */
   notes?: string;
 }
@@ -135,6 +144,13 @@ export interface EarnCondition {
   unlocked: boolean;
   /** Whether the user's spend already maxes the cap. */
   hitsCap: boolean;
+  /**
+   * Human-readable labels of categories this rule does NOT cover (relevant
+   * for "general"/omni rules only) — e.g. ["E-Wallet Reloads", "Bills &
+   * Utilities"]. Empty/undefined means the rule is genuinely unrestricted:
+   * every transaction type counts, unlike cards that carve out exclusions.
+   */
+  excludedLabels?: string[];
   note?: string;
 }
 

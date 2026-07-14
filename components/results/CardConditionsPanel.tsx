@@ -110,6 +110,19 @@ function EarnRow({ c, totalMonthly }: { c: EarnCondition; totalMonthly: number }
         </p>
       )}
 
+      {c.category === "general" && (
+        <p className="mt-1 text-xs">
+          {c.excludedLabels && c.excludedLabels.length > 0 ? (
+            <span className="text-amber-700">
+              ⊘ Excludes {c.excludedLabels.join(", ")} — spend there earns only the base rate, not
+              this bonus.
+            </span>
+          ) : (
+            <span className="text-emerald-700">✓ Applies to any transaction — no exclusions.</span>
+          )}
+        </p>
+      )}
+
       {c.note && <p className="mt-1 text-xs text-slate-400">{c.note}</p>}
     </li>
   );

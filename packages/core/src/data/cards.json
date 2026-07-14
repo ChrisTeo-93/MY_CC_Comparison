@@ -22,7 +22,8 @@
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 50,
-        "notes": "5% weekend (Sat/Sun) cashback on the Amex, capped RM50/month. Excludes govt, utilities and e-wallet reloads."
+        "excludedCategories": ["ewallet", "bills"],
+        "notes": "5% weekend (Sat/Sun) cashback on the Amex, capped RM50/month. Excludes govt, utilities and e-wallet reloads (govt payments are typically routed through bill-payment/JomPAY channels, modelled here under Bills & Utilities)."
       }
     ],
     "perks": [

@@ -305,6 +305,20 @@ export function AdminEditor({ initialCards }: { initialCards: Card[] }) {
                         <button onClick={() => removeRule(i)} className="px-2 text-slate-400 hover:text-red-500" title="Remove">✕</button>
                       </div>
                       <input placeholder="notes (shown to users)" className={`${inputCls} mt-2`} value={r.notes ?? ""} onChange={(e) => patchRule(i, { notes: e.target.value || undefined })} />
+                      {r.category === "general" && (
+                        <input
+                          placeholder="excludes categories (comma-separated keys, e.g. ewallet,bills) — leave blank if unrestricted"
+                          className={`${inputCls} mt-2`}
+                          value={(r.excludedCategories ?? []).join(", ")}
+                          onChange={(e) => {
+                            const keys = e.target.value
+                              .split(",")
+                              .map((s) => s.trim())
+                              .filter(Boolean) as EarnRule["excludedCategories"];
+                            patchRule(i, { excludedCategories: keys && keys.length > 0 ? keys : undefined });
+                          }}
+                        />
+                      )}
                     </div>
                   ))}
                 </div>

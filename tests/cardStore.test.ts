@@ -46,6 +46,38 @@ describe("validateCard", () => {
     if (!r.ok) expect(r.errors.some((e) => e.includes("category"))).toBe(true);
   });
 
+  it("accepts a general rule with valid excludedCategories", () => {
+    const r = validateCard(
+      validCard({
+        earnRules: [
+          { category: "general", rate: 0.05, unit: "percent", excludedCategories: ["ewallet", "bills"] },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("rejects an unknown category inside excludedCategories", () => {
+    const r = validateCard(
+      validCard({
+        earnRules: [
+          { category: "general", rate: 0.05, unit: "percent", excludedCategories: ["crypto" as never] },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.some((e) => e.includes("excludedCategories"))).toBe(true);
+  });
+
+  it("rejects a non-array excludedCategories", () => {
+    const r = validateCard(
+      validCard({
+        earnRules: [{ category: "general", rate: 0.05, unit: "percent", excludedCategories: "ewallet" as never }],
+      }),
+    );
+    expect(r.ok).toBe(false);
+  });
+
   it("rejects an invalid unit", () => {
     const r = validateCard(validCard({ baseRule: { category: "general", rate: 1, unit: "bogus" as never } }));
     expect(r.ok).toBe(false);

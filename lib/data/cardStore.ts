@@ -55,6 +55,17 @@ function validateEarnRule(rule: unknown, label: string, errors: string[]): void 
   if (r.minMonthlySpend !== undefined && (!isFiniteNumber(r.minMonthlySpend) || (r.minMonthlySpend as number) < 0)) {
     errors.push(`${label}: minMonthlySpend must be a number ≥ 0`);
   }
+  if (r.excludedCategories !== undefined) {
+    if (!Array.isArray(r.excludedCategories)) {
+      errors.push(`${label}: excludedCategories must be an array of category keys`);
+    } else {
+      (r.excludedCategories as unknown[]).forEach((cat, i) => {
+        if (!CATEGORY_SET.has(cat as string)) {
+          errors.push(`${label}: excludedCategories[${i}] "${String(cat)}" is not a known category`);
+        }
+      });
+    }
+  }
 }
 
 /** Validate an untrusted object into a Card. Returns the card or a list of errors. */
