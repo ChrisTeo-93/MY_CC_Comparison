@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import type { Card, Persona } from "../src/domain/types";
-import { rmValuePerRM } from "../src/engine/normalize";
+import { govtServiceTax, rmValuePerRM, STANDARD_GOVT_SERVICE_TAX_RM } from "../src/engine/normalize";
 import {
   categoryValue,
   effectiveAnnualFee,
@@ -160,6 +160,7 @@ describe("scoreCard", () => {
     const card = makeCard({
       annualFee: 120,
       feeWaiver: { type: "none" },
+      govtTaxRM: 0, // isolate: this test is about the bank fee, not govt tax
       earnRules: [{ category: "general", rate: 0.01, unit: "percent" }],
     });
     const s = scoreCard(card, { general: 1000 }, PERSONA);
@@ -200,6 +201,76 @@ describe("bestCombo", () => {
     const scores = [groceriesCard, expensiveDud].map((c) => scoreCard(c, spending, PERSONA));
     const combo = bestCombo(scores, spending, PERSONA);
     expect(combo.members.some((m) => m.card.id === "dud")).toBe(false);
+  });
+});
+
+// --- government service tax (SST) -------------------------------------------
+
+describe("govtServiceTax", () => {
+  it("defaults to the standard RM25/year when unset", () => {
+    expect(govtServiceTax(makeCard({}))).toBe(STANDARD_GOVT_SERVICE_TAX_RM);
+    expect(STANDARD_GOVT_SERVICE_TAX_RM).toBe(25);
+  });
+
+  it("respects a card-level override", () => {
+    expect(govtServiceTax(makeCard({ govtTaxRM: 0 }))).toBe(0);
+    expect(govtServiceTax(makeCard({ govtTaxRM: 10 }))).toBe(10);
+  });
+});
+
+describe("scoreCard — govt service tax", () => {
+  it("subtracts the govt tax from net value even for a free card", () => {
+    const freeCard = makeCard({ annualFee: 0, feeWaiver: { type: "always" } });
+    const s = scoreCard(freeCard, { general: 1000 }, PERSONA);
+    expect(s.govtTaxRM).toBe(25);
+    expect(s.netAnnualRM).toBeCloseTo(s.grossAnnualRM - 25);
+  });
+
+  it("does not feed the govt tax into the persona no-fee tie-break", () => {
+    // A genuinely free card (bank fee RM0, only the unwaivable govt tax) should
+    // NOT be penalised by the "no fees, please" persona multiplier — that signal
+    // is about the bank's own fee-charging behaviour, not a uniform govt charge.
+    const freeCard = makeCard({ annualFee: 0, feeWaiver: { type: "always" } });
+    const noFeePersona: Persona = { ...PERSONA, feeTolerance: "noFee" };
+    const s = scoreCard(freeCard, { general: 1000 }, noFeePersona);
+    expect(s.adjustedNetRM).toBeCloseTo(s.netAnnualRM); // multiplier stayed 1
+  });
+});
+
+describe("bestCombo — govt service tax", () => {
+  // Scoped to "groceries" specifically (not "general", which is a blanket
+  // boost applied to every category by design) so it doesn't also dominate
+  // the dining category the candidate cards compete on below.
+  const seed = makeCard({
+    id: "seed",
+    govtTaxRM: 0,
+    earnRules: [{ category: "groceries", rate: 0.05, unit: "percent" }],
+  });
+  const spending = { general: 1000, dining: 100 };
+
+  it("excludes a candidate whose marginal earnings clear its bank fee but not the RM25 govt tax", () => {
+    // Marginal gross: 100/mo * 1.5% * 12 = RM18/yr — positive vs a RM0 bank fee,
+    // but RM18 - RM25 govt tax < 0, so this card should NOT be added.
+    const marginalDud = makeCard({
+      id: "marginal-dud",
+      earnRules: [{ category: "dining", rate: 0.015, unit: "percent" }],
+    });
+    const scores = [seed, marginalDud].map((c) => scoreCard(c, spending, PERSONA));
+    const combo = bestCombo(scores, spending, PERSONA);
+    expect(combo.members.some((m) => m.card.id === "marginal-dud")).toBe(false);
+  });
+
+  it("still adds a candidate whose marginal earnings clear both the fee and the govt tax", () => {
+    // Marginal gross: 100/mo * 3% * 12 = RM36/yr — clears the RM25 govt tax.
+    const worthwhile = makeCard({
+      id: "worthwhile",
+      earnRules: [{ category: "dining", rate: 0.03, unit: "percent" }],
+    });
+    const scores = [seed, worthwhile].map((c) => scoreCard(c, spending, PERSONA));
+    const combo = bestCombo(scores, spending, PERSONA);
+    const member = combo.members.find((m) => m.card.id === "worthwhile");
+    expect(member).toBeTruthy();
+    expect(combo.totalGovtTaxRM).toBe(0 + 25); // seed's 0 override + worthwhile's default 25
   });
 });
 

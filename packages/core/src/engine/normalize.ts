@@ -48,3 +48,18 @@ export function rateLabel(rule: EarnRule): string {
       return `${rule.rate} miles/RM`;
   }
 }
+
+/**
+ * Malaysia imposes a RM25/year Service Tax (SST) on principal credit/charge
+ * cards under the Service Tax Act — separate from and in addition to the
+ * bank's own annual fee, and NOT waivable by the bank's own fee-waiver
+ * programs (it's a government charge, not a bank one). Charged per card, so
+ * it matters most for combo recommendations: each extra card held adds
+ * another RM25/year that its earnings must clear.
+ */
+export const STANDARD_GOVT_SERVICE_TAX_RM = 25;
+
+/** Resolves a card's govt Service Tax, defaulting to the standard rate. */
+export function govtServiceTax(card: Card): number {
+  return card.govtTaxRM ?? STANDARD_GOVT_SERVICE_TAX_RM;
+}

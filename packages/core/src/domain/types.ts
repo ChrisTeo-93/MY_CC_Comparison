@@ -54,6 +54,14 @@ export interface Card {
   feeWaiver: FeeWaiver;
   /** Minimum gross annual income (RM) to be eligible. */
   minAnnualIncome: number;
+  /**
+   * Malaysia's RM25/year government Service Tax (SST) on credit/charge cards —
+   * separate from and in addition to the bank's own annual fee, and not
+   * waivable by the bank's own fee-waiver programs. Unset defaults to the
+   * standard RM25 (see STANDARD_GOVT_SERVICE_TAX_RM in engine/score.ts); only
+   * set this when a specific card is verified to have it absorbed/exempted.
+   */
+  govtTaxRM?: number;
 
   /** Category-specific accelerated earn rules. */
   earnRules: EarnRule[];
@@ -133,6 +141,8 @@ export interface EarnCondition {
 export interface FeeCondition {
   kind: "free" | "waivable" | "fixed";
   annualFee: number;
+  /** Malaysia's mandatory govt Service Tax for this card (see Card.govtTaxRM). */
+  govtTaxRM: number;
   text: string;
   /** Whether the user's spend already meets the waiver (or there is no fee). */
   met: boolean;
@@ -150,9 +160,11 @@ export interface CardScore {
   card: Card;
   /** Annual reward value in RM before subtracting the fee. */
   grossAnnualRM: number;
-  /** Effective annual fee in RM after waiver logic. */
+  /** Effective annual fee in RM after waiver logic (bank fee only, not govt tax). */
   effectiveAnnualFee: number;
-  /** grossAnnualRM - effectiveAnnualFee. */
+  /** Malaysia's mandatory govt Service Tax (RM25/yr default) — not bank-waivable. */
+  govtTaxRM: number;
+  /** grossAnnualRM - effectiveAnnualFee - govtTaxRM. */
   netAnnualRM: number;
   /** Net value after applying the persona preference multiplier (ranking key). */
   adjustedNetRM: number;
@@ -175,10 +187,12 @@ export interface ComboMember {
 
 export interface ComboRecommendation {
   members: ComboMember[];
-  /** Total annual reward value (RM) across the combo, net of all fees. */
+  /** Total annual reward value (RM) across the combo, net of all fees + govt tax. */
   netAnnualRM: number;
-  /** Combined annual fees (RM) after waiver logic. */
+  /** Combined bank annual fees (RM) after waiver logic (not govt tax). */
   totalAnnualFee: number;
+  /** Combined mandatory govt Service Tax (RM) across every card in the combo. */
+  totalGovtTaxRM: number;
 }
 
 export interface RecommendationResult {

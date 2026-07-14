@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips } from "@kadcompare/core";
+import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, govtServiceTax } from "@kadcompare/core";
 import type { Persona, RecommendationResult, SpendingProfile } from "@kadcompare/core";
 import { CardResultCard } from "@/components/results/CardResultCard";
 import { FreshnessBadge } from "@/components/results/FreshnessBadge";
@@ -102,7 +102,9 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
                 <span className="text-base font-medium text-slate-500"> / year</span>
               </div>
               <div className="text-xs text-slate-500">
-                net of {rm(combo.totalAnnualFee)} in annual fees
+                net of {rm(combo.totalAnnualFee)} in annual fees + {rm(combo.totalGovtTaxRM)}{" "}
+                government service tax across {combo.members.length} card
+                {combo.members.length === 1 ? "" : "s"}
               </div>
             </div>
           )}
@@ -149,7 +151,8 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
                     </div>
                   </div>
                   <CardConditionsPanel conditions={buildConditions(m.card, resolved, totalMonthly)} />
-                  <div className="mt-4 border-t border-slate-100 pt-3 text-xs">
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 text-xs">
+                    <span className="text-slate-500">+{rm(govtServiceTax(m.card))} govt tax/yr</span>
                     <FreshnessBadge date={m.card.lastVerified} href={m.card.sourceUrl} />
                   </div>
                 </div>

@@ -106,4 +106,16 @@ describe("buildConditions — fee waiver", () => {
     expect(c.fee.kind).toBe("fixed");
     expect(c.fee.met).toBe(false);
   });
+
+  it("mentions the mandatory govt service tax regardless of bank fee/waiver state", () => {
+    const c = buildConditions(makeCard({}), resolved({}), 1000);
+    expect(c.fee.govtTaxRM).toBe(25);
+    expect(c.fee.text).toContain("RM25/year government service tax");
+  });
+
+  it("respects a card-level govt tax override", () => {
+    const c = buildConditions(makeCard({ govtTaxRM: 0 }), resolved({}), 1000);
+    expect(c.fee.govtTaxRM).toBe(0);
+    expect(c.fee.text).toContain("RM0/year government service tax");
+  });
 });

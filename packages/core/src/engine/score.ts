@@ -9,7 +9,7 @@ import type {
   Persona,
   SpendingProfile,
 } from "../domain/types";
-import { monthlyCapRM, rateLabel, rmValuePerRM } from "./normalize";
+import { govtServiceTax, monthlyCapRM, rateLabel, rmValuePerRM } from "./normalize";
 import { buildConditions } from "./conditions";
 
 /** Representative qualifying income (RM/year) for each bracket. */
@@ -159,7 +159,11 @@ export function scoreCard(
 
   const grossAnnualRM = breakdown.reduce((a, b) => a + b.annualValueRM, 0);
   const effFee = effectiveAnnualFee(card, annualSpend);
-  const netAnnualRM = grossAnnualRM - effFee;
+  const govtTax = govtServiceTax(card);
+  const netAnnualRM = grossAnnualRM - effFee - govtTax;
+  // The persona fee-tolerance tie-break is about the BANK's own fee-charging
+  // behaviour, not the uniform unwaivable govt tax every card carries — so it
+  // intentionally still takes the bank-only effFee, not netAnnualRM.
   const adjustedNetRM = netAnnualRM * personaMultiplier(card, persona, effFee);
   const eligible = BRACKET_INCOME[persona.incomeBracket] >= card.minAnnualIncome;
 
@@ -167,6 +171,7 @@ export function scoreCard(
     card,
     grossAnnualRM,
     effectiveAnnualFee: effFee,
+    govtTaxRM: govtTax,
     netAnnualRM,
     adjustedNetRM,
     breakdown,

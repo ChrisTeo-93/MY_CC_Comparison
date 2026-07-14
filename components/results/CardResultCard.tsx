@@ -98,6 +98,10 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
                 : score.effectiveAnnualFee === 0
                   ? `Annual fee RM${card.annualFee} (waived)`
                   : `Annual fee RM${card.annualFee}`}
+              {" · "}
+              <span title="Malaysia's mandatory govt Service Tax on credit cards — not bank-waivable">
+                +RM{score.govtTaxRM} govt tax/yr
+              </span>
             </span>
             <FreshnessBadge date={card.lastVerified} href={card.sourceUrl} />
           </div>

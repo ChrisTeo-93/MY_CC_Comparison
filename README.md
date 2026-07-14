@@ -82,16 +82,29 @@ mobile/                     Expo app (iOS + Android) — see mobile/README.md
 ## How the engine works
 
 1. **normalize** — converts each earn rule into RM value per RM spent
-   (`percent` as-is; `points × pointValueRM`; `miles × mileValueRM`).
+   (`percent` as-is; `points × pointValueRM`; `miles × mileValueRM`). Also resolves
+   each card's mandatory govt Service Tax (see below).
 2. **score** — per category: apply the best applicable rule, honour monthly caps
    (overflow falls back to the base rate) and min-spend unlocks, sum × 12, subtract
-   the effective annual fee (after waiver logic). A small, transparent persona
-   multiplier breaks ties toward the user's stated preference.
+   the effective annual fee (after waiver logic) *and* the govt Service Tax. A
+   small, transparent persona multiplier breaks ties toward the user's stated
+   preference — it only sees the bank's own fee, not the govt tax, since that
+   tax is uniform and doesn't differentiate a "fee-averse" card from any other.
 3. **combo** — greedy portfolio builder: seed with the best single card, then add a
-   card only if its *marginal* value covers its own fee (max 3 cards); each category
-   is routed to its best earner in the set.
+   card only if its *marginal* value covers its own bank fee **and** its own govt
+   tax (max 3 cards); each category is routed to its best earner in the set.
 4. **recommend** — filters by income eligibility, returns the ranked single list,
    the combo, and the list of cards hidden for income reasons.
+
+**Holding cost — govt Service Tax (SST):** Malaysia charges a mandatory RM25/year
+Service Tax on credit/charge cards, separate from and in addition to the bank's own
+annual fee, and not waivable by the bank's own fee-waiver programs. Every card
+carries this by default (`Card.govtTaxRM`, unset = the standard RM25 —
+`STANDARD_GOVT_SERVICE_TAX_RM` in `engine/normalize.ts`); it's shown as its own
+line item everywhere a fee appears, distinct from the bank's fee, so the product
+stays honest about who's charging what. It especially matters for combos: each
+extra card held adds another RM25/year its earnings must clear before it's worth
+adding.
 
 ## Data freshness & confidence
 

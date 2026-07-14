@@ -87,6 +87,7 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
               : score.effectiveAnnualFee === 0
                 ? `Annual fee RM${card.annualFee} (waived)`
                 : `Annual fee RM${card.annualFee}`}
+            {" · "}+RM{score.govtTaxRM} govt tax/yr
           </Text>
           <FreshnessBadge date={card.lastVerified} href={card.sourceUrl} />
         </View>

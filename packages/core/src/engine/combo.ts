@@ -28,17 +28,19 @@ export function bestCombo(
 ): ComboRecommendation {
   const eligible = scores.filter((s) => s.eligible);
   if (eligible.length === 0) {
-    return { members: [], netAnnualRM: 0, totalAnnualFee: 0 };
+    return { members: [], netAnnualRM: 0, totalAnnualFee: 0, totalGovtTaxRM: 0 };
   }
 
-  // cardId -> (category -> annual value); cardId -> effective fee.
+  // cardId -> (category -> annual value); cardId -> effective fee / govt tax.
   const catVal = new Map<string, Map<CategoryKey, number>>();
   const feeOf = new Map<string, number>();
+  const govtTaxOf = new Map<string, number>();
   for (const s of eligible) {
     const m = new Map<CategoryKey, number>();
     for (const b of s.breakdown) m.set(b.category, b.annualValueRM);
     catVal.set(s.card.id, m);
     feeOf.set(s.card.id, s.effectiveAnnualFee);
+    govtTaxOf.set(s.card.id, s.govtTaxRM);
   }
 
   const valueFor = (cardId: string, cat: CategoryKey) =>
@@ -62,14 +64,17 @@ export function bestCombo(
         const gain = valueFor(s.card.id, cat.key) - bestInCombo(cat.key);
         if (gain > 0) marginalGross += gain;
       }
-      const marginalNet = marginalGross - (feeOf.get(s.card.id) ?? 0);
+      // A card must cover its own bank fee AND the mandatory govt tax —
+      // otherwise adding it to the combo is a net loss even before any bank fee.
+      const cardCost = (feeOf.get(s.card.id) ?? 0) + (govtTaxOf.get(s.card.id) ?? 0);
+      const marginalNet = marginalGross - cardCost;
       if (marginalNet > bestMarginalNet) {
         bestMarginalNet = marginalNet;
         bestCandidate = s.card;
       }
     }
 
-    // Only add a card if it pays for itself (covers its own fee).
+    // Only add a card if it pays for itself (covers its own fee + govt tax).
     if (bestCandidate && bestMarginalNet > 0) combo.push(bestCandidate);
     else break;
   }
@@ -108,12 +113,14 @@ export function bestCombo(
     }));
 
   const totalAnnualFee = members.reduce((a, m) => a + (feeOf.get(m.card.id) ?? 0), 0);
+  const totalGovtTaxRM = members.reduce((a, m) => a + (govtTaxOf.get(m.card.id) ?? 0), 0);
   const grossRM = members.reduce((a, m) => a + m.contributionRM, 0);
 
   return {
     members,
-    netAnnualRM: grossRM - totalAnnualFee,
+    netAnnualRM: grossRM - totalAnnualFee - totalGovtTaxRM,
     totalAnnualFee,
+    totalGovtTaxRM,
   };
 }
 

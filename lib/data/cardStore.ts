@@ -103,6 +103,9 @@ export function validateCard(input: unknown): ValidationResult {
 
   if (c.pointValueRM !== undefined && !isFiniteNumber(c.pointValueRM)) errors.push("pointValueRM must be a number");
   if (c.mileValueRM !== undefined && !isFiniteNumber(c.mileValueRM)) errors.push("mileValueRM must be a number");
+  if (c.govtTaxRM !== undefined && (!isFiniteNumber(c.govtTaxRM) || (c.govtTaxRM as number) < 0)) {
+    errors.push("govtTaxRM must be a number ≥ 0 (omit to use the standard RM25/year)");
+  }
   if (c.status !== undefined && !STATUSES.has(c.status as string)) errors.push("status must be active | discontinued");
 
   if (errors.length) return { ok: false, errors };

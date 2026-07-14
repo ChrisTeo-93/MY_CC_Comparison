@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips } from "@kadcompare/core";
+import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, govtServiceTax } from "@kadcompare/core";
 import type { Persona, RecommendationResult, SpendingProfile } from "@kadcompare/core";
 import { colors, radii, spacing } from "@/constants/theme";
 import { CardResultCard } from "@/components/results/card-result-card";
@@ -91,7 +91,10 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
               <Text style={styles.comboTotalValue}>
                 {rm(combo.netAnnualRM)} <Text style={styles.comboTotalUnit}>/ year</Text>
               </Text>
-              <Text style={styles.comboTotalFee}>net of {rm(combo.totalAnnualFee)} in annual fees</Text>
+              <Text style={styles.comboTotalFee}>
+                net of {rm(combo.totalAnnualFee)} in annual fees + {rm(combo.totalGovtTaxRM)} govt tax
+                across {combo.members.length} card{combo.members.length === 1 ? "" : "s"}
+              </Text>
             </View>
           )}
 
@@ -125,7 +128,8 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
 
                 <CardConditionsPanel conditions={buildConditions(m.card, resolved, totalMonthly)} />
 
-                <View style={styles.memberFooter}>
+                <View style={[styles.memberFooter, { flexDirection: "row", justifyContent: "space-between", alignItems: "center" }]}>
+                  <Text style={{ fontSize: 11, color: colors.slate500 }}>+{rm(govtServiceTax(m.card))} govt tax/yr</Text>
                   <FreshnessBadge date={m.card.lastVerified} href={m.card.sourceUrl} />
                 </View>
               </View>

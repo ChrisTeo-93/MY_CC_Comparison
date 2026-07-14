@@ -1,7 +1,7 @@
 import type { CategoryKey } from "../domain/categories";
 import { CATEGORY_BY_KEY } from "../domain/categories";
 import type { Card, CardConditions, EarnCondition, FeeCondition } from "../domain/types";
-import { monthlyCapRM, rateLabel, rmValuePerRM } from "./normalize";
+import { govtServiceTax, monthlyCapRM, rateLabel, rmValuePerRM } from "./normalize";
 
 /**
  * Translate a card's earn rules + fee waiver into the plain-language conditions a
@@ -53,8 +53,17 @@ export function buildConditions(
 }
 
 function buildFeeCondition(card: Card, annualSpend: number): FeeCondition {
+  const govtTaxRM = govtServiceTax(card);
+  const govtNote = ` Plus a mandatory RM${govtTaxRM}/year government service tax (SST) — not bank-waivable.`;
+
   if (card.annualFee === 0 || card.feeWaiver.type === "always") {
-    return { kind: "free", annualFee: card.annualFee, text: "No annual fee.", met: true };
+    return {
+      kind: "free",
+      annualFee: card.annualFee,
+      govtTaxRM,
+      text: `No annual fee.${govtNote}`,
+      met: true,
+    };
   }
   const w = card.feeWaiver;
   if (w.type === "spend") {
@@ -63,7 +72,8 @@ function buildFeeCondition(card: Card, annualSpend: number): FeeCondition {
     return {
       kind: "waivable",
       annualFee: card.annualFee,
-      text: `Waive the RM${card.annualFee} annual fee by spending RM${threshold.toLocaleString("en-MY")}/year (~RM${perMonth.toLocaleString("en-MY")}/mo).`,
+      govtTaxRM,
+      text: `Waive the RM${card.annualFee} annual fee by spending RM${threshold.toLocaleString("en-MY")}/year (~RM${perMonth.toLocaleString("en-MY")}/mo).${govtNote}`,
       met: annualSpend >= threshold,
     };
   }
@@ -71,14 +81,16 @@ function buildFeeCondition(card: Card, annualSpend: number): FeeCondition {
     return {
       kind: "waivable",
       annualFee: card.annualFee,
-      text: `Waive the RM${card.annualFee} annual fee with ${w.threshold ?? 12} transactions/year.`,
+      govtTaxRM,
+      text: `Waive the RM${card.annualFee} annual fee with ${w.threshold ?? 12} transactions/year.${govtNote}`,
       met: annualSpend > 0,
     };
   }
   return {
     kind: "fixed",
     annualFee: card.annualFee,
-    text: `RM${card.annualFee} annual fee — not waivable.`,
+    govtTaxRM,
+    text: `RM${card.annualFee} annual fee — not waivable.${govtNote}`,
     met: false,
   };
 }
