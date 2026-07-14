@@ -1,22 +1,20 @@
-import { promises as fs } from "fs";
-import path from "path";
 import { CATEGORY_KEYS } from "@kadcompare/core";
 import type { Card, EarnRule } from "@kadcompare/core";
+import { getCardsRepository } from "./cardsRepository";
 
 /**
- * Server-side read/write access to the card catalogue
- * (`packages/core/src/data/cards.json` — shared with the mobile app).
+ * Server-side read/write access to the card catalogue. Validation lives here;
+ * actual storage is delegated to `cardsRepository.ts`, which picks a real
+ * database (Redis, when REDIS_URL is set) or falls back to the repo's own
+ * JSON file (`packages/core/src/data/cards.json` — shared with the mobile
+ * app) for local dev / any Node host with a writable filesystem.
  *
- * This is the "admin later" persistence layer for the seed-JSON phase: the repo
- * file IS the database. Reads/writes use the filesystem, which works in local
- * dev and on any Node host. NOTE: on a read-only serverless platform (e.g.
- * Vercel) writes won't persist across requests — see README for the production
- * path (commit the edited JSON, or swap this module for a real DB/Prisma).
+ * On a read-only serverless platform (e.g. Vercel) without REDIS_URL set,
+ * writes won't persist across invocations — see README for provisioning a
+ * persistent store.
  *
  * All exports are server-only; never import this from a client component.
  */
-
-const DATA_PATH = path.join(process.cwd(), "packages", "core", "src", "data", "cards.json");
 
 const NETWORKS = new Set(["Visa", "Mastercard", "Amex", "UnionPay"]);
 const REWARD_TYPES = new Set(["cashback", "points", "miles", "hybrid"]);
@@ -111,19 +109,15 @@ export function validateCard(input: unknown): ValidationResult {
   return { ok: true, card: input as Card };
 }
 
-/** Read the full catalogue from disk. */
+/** Read the full catalogue from the active storage backend. */
 export async function getAllCards(): Promise<Card[]> {
-  const raw = await fs.readFile(DATA_PATH, "utf8");
-  return JSON.parse(raw) as Card[];
+  const repo = await getCardsRepository();
+  return repo.getAll();
 }
 
 export async function getCard(id: string): Promise<Card | undefined> {
   const cards = await getAllCards();
   return cards.find((c) => c.id === id);
-}
-
-async function writeAll(cards: Card[]): Promise<void> {
-  await fs.writeFile(DATA_PATH, JSON.stringify(cards, null, 2) + "\n", "utf8");
 }
 
 /**
@@ -133,19 +127,21 @@ async function writeAll(cards: Card[]): Promise<void> {
 export async function upsertCard(input: unknown): Promise<Card> {
   const result = validateCard(input);
   if (!result.ok) throw new Error(result.errors.join("; "));
-  const cards = await getAllCards();
+  const repo = await getCardsRepository();
+  const cards = await repo.getAll();
   const idx = cards.findIndex((c) => c.id === result.card.id);
   if (idx >= 0) cards[idx] = result.card;
   else cards.push(result.card);
-  await writeAll(cards);
+  await repo.writeAll(cards);
   return result.card;
 }
 
 /** Delete a card by id. Returns true if a card was removed. */
 export async function deleteCard(id: string): Promise<boolean> {
-  const cards = await getAllCards();
+  const repo = await getCardsRepository();
+  const cards = await repo.getAll();
   const next = cards.filter((c) => c.id !== id);
   if (next.length === cards.length) return false;
-  await writeAll(next);
+  await repo.writeAll(next);
   return true;
 }

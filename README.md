@@ -112,17 +112,32 @@ issuing bank before applying. For comparison only, not financial advice.
 ## Managing card data (`/admin`)
 
 `/admin` is a password-gated editor for the catalogue: list, add, edit (fees, income,
-earn rules, confidence, freshness, status) and delete cards. It writes to
-`packages/core/src/data/cards.json` via `lib/data/cardStore.ts`, which validates
-every card before saving — since that file lives inside `@kadcompare/core`, edits
-are immediately available to the mobile app on its next build too.
+earn rules, confidence, freshness, status) and delete cards. Validation
+(`lib/data/cardStore.ts`) is storage-agnostic — actual reads/writes go through
+`lib/data/cardsRepository.ts`, which picks a backend automatically:
+
+- **`REDIS_URL` set → `RedisCardsRepository`.** The whole catalogue is stored as one
+  JSON blob under a single key, so edits **persist across serverless invocations** —
+  this is the production-ready path. Works with any Redis-compatible connection
+  string, including **Vercel's own KV/Upstash integration** (add it from your Vercel
+  project's Storage tab — no separate account needed — then copy the connection
+  string it gives you into `REDIS_URL`).
+- **`REDIS_URL` unset → `FilesystemCardsRepository`** (the original behaviour): writes
+  go straight to `packages/core/src/data/cards.json`, which is fine for local dev and
+  any Node host with a writable filesystem, but **won't persist across requests on
+  Vercel** without `REDIS_URL` configured — the public site would just reflect
+  whatever `cards.json` was at build time.
+
+Either way, the file lives inside `@kadcompare/core`, so edits (once persisted) are
+available to the mobile app on its next build/OTA update too.
 
 - **Password:** set `ADMIN_PASSWORD` (defaults to `admin123` for local dev only).
-- **Persistence caveat:** writes use the filesystem, so they persist in local dev and
-  on any Node host. On a **read-only serverless platform (e.g. Vercel) edits will not
-  persist** across requests — the public site reflects `cards.json` as built. The
-  intended workflow for now is: edit locally → commit the updated `cards.json` →
-  redeploy. A future phase swaps `cardStore.ts` for a real database (Postgres/D1).
+- **Not yet verified against a live Redis instance** — this environment has no
+  network access to provision or connect to one. `RedisCardsRepository`'s logic is
+  fully unit-tested against an injected in-memory fake client
+  (`tests/cardsRepository.test.ts`), and its client is a direct (uncast) assignment
+  from the real `redis` package, proving structural compatibility — but the actual
+  network round-trip should be sanity-checked once `REDIS_URL` is set.
 
 ## Develop
 
