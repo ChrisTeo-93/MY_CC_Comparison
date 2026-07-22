@@ -22,6 +22,7 @@ const UNITS = new Set(["percent", "pointsPerRM", "milesPerRM"]);
 const WAIVER_TYPES = new Set(["spend", "swipes", "always", "none"]);
 const CONFIDENCE = new Set(["high", "medium", "low"]);
 const STATUSES = new Set(["active", "discontinued"]);
+const WALLETS = new Set(["applePay", "googlePay", "samsungPay", "huaweiPay"]);
 const CATEGORY_SET = new Set<string>(CATEGORY_KEYS);
 
 export type ValidationResult = { ok: true; card: Card } | { ok: false; errors: string[] };
@@ -118,6 +119,15 @@ export function validateCard(input: unknown): ValidationResult {
     errors.push("govtTaxRM must be a number ≥ 0 (omit to use the standard RM25/year)");
   }
   if (c.status !== undefined && !STATUSES.has(c.status as string)) errors.push("status must be active | discontinued");
+  if (c.wallets !== undefined) {
+    if (!Array.isArray(c.wallets)) {
+      errors.push("wallets must be an array of wallet keys (applePay, googlePay, samsungPay, huaweiPay)");
+    } else {
+      (c.wallets as unknown[]).forEach((w, i) => {
+        if (!WALLETS.has(w as string)) errors.push(`wallets[${i}] "${String(w)}" is not a known wallet`);
+      });
+    }
+  }
 
   if (errors.length) return { ok: false, errors };
   return { ok: true, card: input as Card };

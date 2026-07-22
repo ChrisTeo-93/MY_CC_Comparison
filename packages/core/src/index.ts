@@ -2,6 +2,7 @@
 export * from "./domain/types";
 export * from "./domain/categories";
 export * from "./domain/cards";
+export * from "./domain/wallets";
 
 // Engine
 export * from "./engine/normalize";

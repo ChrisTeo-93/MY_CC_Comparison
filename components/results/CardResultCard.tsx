@@ -1,4 +1,4 @@
-import { CATEGORY_BY_KEY, rm } from "@kadcompare/core";
+import { CATEGORY_BY_KEY, rm, walletsForCard, WALLET_META } from "@kadcompare/core";
 import type { CardScore } from "@kadcompare/core";
 import { FreshnessBadge, ConfidenceChip } from "@/components/results/FreshnessBadge";
 import { CardConditionsPanel } from "@/components/results/CardConditionsPanel";
@@ -82,6 +82,22 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
               ))}
             </div>
           )}
+
+          <div className="mt-3 flex flex-wrap items-center gap-1.5">
+            <span className="text-xs text-slate-400">Mobile wallets:</span>
+            {walletsForCard(card).length === 0 ? (
+              <span className="text-xs text-slate-400">none</span>
+            ) : (
+              walletsForCard(card).map((w) => (
+                <span
+                  key={w}
+                  className="rounded-md bg-slate-900 px-2 py-0.5 text-[11px] font-medium text-white"
+                >
+                  {WALLET_META[w].label}
+                </span>
+              ))
+            )}
+          </div>
 
           <CardConditionsPanel conditions={score.conditions} />
 

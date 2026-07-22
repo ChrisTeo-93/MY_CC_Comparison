@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from "react-native";
-import { CATEGORY_BY_KEY, rm } from "@kadcompare/core";
+import { CATEGORY_BY_KEY, rm, walletsForCard, WALLET_META } from "@kadcompare/core";
 import type { CardScore } from "@kadcompare/core";
 import { colors, radii, spacing } from "@/constants/theme";
 import { FreshnessBadge, ConfidenceChip } from "@/components/results/freshness-badge";
@@ -74,6 +74,19 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
           </View>
         )}
 
+        <View style={styles.walletRow}>
+          <Text style={styles.walletLabel}>Mobile wallets:</Text>
+          {walletsForCard(card).length === 0 ? (
+            <Text style={styles.walletLabel}>none</Text>
+          ) : (
+            walletsForCard(card).map((w) => (
+              <Text key={w} style={styles.walletChip}>
+                {WALLET_META[w].label}
+              </Text>
+            ))
+          )}
+        </View>
+
         <CardConditionsPanel conditions={score.conditions} />
 
         {card.dataNote && card.confidence !== "high" && (
@@ -133,6 +146,18 @@ const styles = StyleSheet.create({
   catChipText: { fontSize: 11, color: colors.slate600 },
   catChipValue: { fontWeight: "700", color: colors.slate700 },
   catChipCapped: { color: colors.amber600 },
+  walletRow: { flexDirection: "row", flexWrap: "wrap", alignItems: "center", gap: 6, marginTop: spacing.md },
+  walletLabel: { fontSize: 11, color: colors.slate400 },
+  walletChip: {
+    fontSize: 11,
+    fontWeight: "600",
+    color: colors.white,
+    backgroundColor: colors.slate900,
+    paddingVertical: 2,
+    paddingHorizontal: 7,
+    borderRadius: radii.sm,
+    overflow: "hidden",
+  },
   dataNote: {
     marginTop: spacing.sm,
     fontSize: 12,

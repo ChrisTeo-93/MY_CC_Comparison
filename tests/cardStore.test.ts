@@ -83,6 +83,16 @@ describe("validateCard", () => {
     expect(r.ok).toBe(false);
   });
 
+  it("accepts a valid wallets override", () => {
+    expect(validateCard(validCard({ wallets: ["applePay", "googlePay"] })).ok).toBe(true);
+  });
+
+  it("rejects an unknown wallet key", () => {
+    const r = validateCard(validCard({ wallets: ["venmo" as never] }));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.some((e) => e.includes("wallet"))).toBe(true);
+  });
+
   it("requires a threshold for spend waivers", () => {
     const r = validateCard(validCard({ feeWaiver: { type: "spend" } }));
     expect(r.ok).toBe(false);

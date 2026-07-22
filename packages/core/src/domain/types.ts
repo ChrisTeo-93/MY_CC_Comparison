@@ -4,6 +4,9 @@ export type RewardType = "cashback" | "points" | "miles" | "hybrid";
 
 export type CardNetwork = "Visa" | "Mastercard" | "Amex" | "UnionPay";
 
+/** Mobile wallets a card can be added to (tokenised contactless payments). */
+export type MobileWallet = "applePay" | "googlePay" | "samsungPay" | "huaweiPay";
+
 /** How an earn rate is expressed before normalisation to RM value. */
 export type EarnUnit = "percent" | "pointsPerRM" | "milesPerRM";
 
@@ -84,6 +87,14 @@ export interface Card {
 
   /** Qualitative perks — surfaced but not scored in the MVP. */
   perks: string[];
+
+  /**
+   * Mobile wallets this card can be added to. When unset, support is derived
+   * from the card network (see walletsForCard / defaultWalletsForNetwork in
+   * domain/wallets.ts) — set an explicit list only to override that heuristic
+   * for a card whose real support is known to differ.
+   */
+  wallets?: MobileWallet[];
 
   /** Freshness metadata — directly addresses the "outdated info" problem. */
   lastVerified: string; // ISO date

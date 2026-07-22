@@ -360,6 +360,19 @@ export function AdminEditor({ initialCards }: { initialCards: Card[] }) {
               <Field label="Data note (caveat shown for non-high confidence)">
                 <textarea rows={2} className={inputCls} value={draft.dataNote ?? ""} onChange={(e) => patch({ dataNote: e.target.value || undefined })} />
               </Field>
+              <Field label="Mobile wallets override (comma-separated: applePay, googlePay, samsungPay, huaweiPay — blank = derive from network)">
+                <input
+                  className={inputCls}
+                  value={(draft.wallets ?? []).join(", ")}
+                  onChange={(e) => {
+                    const keys = e.target.value
+                      .split(",")
+                      .map((s) => s.trim())
+                      .filter(Boolean) as Card["wallets"];
+                    patch({ wallets: keys && keys.length > 0 ? keys : undefined });
+                  }}
+                />
+              </Field>
 
               {/* Actions */}
               <div className="flex items-center justify-between border-t border-slate-100 pt-4">

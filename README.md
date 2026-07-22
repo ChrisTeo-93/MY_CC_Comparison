@@ -119,6 +119,15 @@ which are genuinely unrestricted. Government payments don't have their own
 spending category today, so they're modelled under Bills & Utilities (JomPAY-style
 routing) — documented per-card via `notes` where it applies.
 
+**Mobile-wallet support:** each result card shows which wallets it works with —
+Apple Pay, Google Pay, Samsung Pay, Huawei Pay. In Malaysia this tracks the card
+*network* far more than the specific card, so support is derived by a transparent
+heuristic (`domain/wallets.ts`): Visa/Mastercard → Apple/Google/Samsung; Amex → a
+narrower set; Huawei Pay is effectively UnionPay-only locally. A card can override
+the heuristic with an explicit `wallets: MobileWallet[]` (editable in `/admin`)
+when its real support is known to differ. This is indicative, network-derived
+data — not per-card verified — and is documented as such.
+
 ## Data freshness & confidence
 
 Card reward rates change often, so trust signals are first-class. Every card in
