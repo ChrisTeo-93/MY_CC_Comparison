@@ -5,6 +5,7 @@ import type {
   Persona,
   RewardPreference,
   TravelFrequency,
+  WalletPreference,
 } from "../domain/types";
 
 export interface QuestionOption<T extends string> {
@@ -17,7 +18,10 @@ export interface PersonaQuestion<K extends keyof Persona = keyof Persona> {
   key: K;
   title: string;
   subtitle: string;
-  options: QuestionOption<Persona[K]>[];
+  // NonNullable because some persona keys (e.g. walletPreference) are optional,
+  // so Persona[K] would otherwise include `undefined`, which isn't a valid
+  // option value.
+  options: QuestionOption<NonNullable<Persona[K]>>[];
 }
 
 export const REWARD_QUESTION: PersonaQuestion<"rewardPreference"> = {
@@ -92,12 +96,46 @@ export const EFFORT_QUESTION: PersonaQuestion<"effortTolerance"> = {
   ],
 };
 
+export const WALLET_QUESTION: PersonaQuestion<"walletPreference"> = {
+  key: "walletPreference",
+  title: "How do you tap to pay?",
+  subtitle: "We'll hide cards that don't work with your phone's wallet.",
+  options: [
+    {
+      value: "any" as WalletPreference,
+      label: "📱 Doesn't matter",
+      description: "Show me every card — I'll sort out the wallet later.",
+    },
+    {
+      value: "applePay" as WalletPreference,
+      label: "🍏 Apple Pay",
+      description: "I pay with my iPhone or Apple Watch.",
+    },
+    {
+      value: "googlePay" as WalletPreference,
+      label: "🤖 Google Pay",
+      description: "I pay with an Android phone via Google Wallet.",
+    },
+    {
+      value: "samsungPay" as WalletPreference,
+      label: "📲 Samsung Pay",
+      description: "I pay with a Samsung Galaxy phone or watch.",
+    },
+    {
+      value: "huaweiPay" as WalletPreference,
+      label: "🌸 Huawei Pay",
+      description: "I pay with a Huawei phone (UnionPay cards only, locally).",
+    },
+  ],
+};
+
 /** Ordered list of persona questions for the wizard. */
 export const PERSONA_QUESTIONS: PersonaQuestion[] = [
   REWARD_QUESTION as PersonaQuestion,
   INCOME_QUESTION as PersonaQuestion,
   FEE_QUESTION as PersonaQuestion,
   TRAVEL_QUESTION as PersonaQuestion,
+  WALLET_QUESTION as PersonaQuestion,
   EFFORT_QUESTION as PersonaQuestion,
 ];
 
@@ -107,4 +145,5 @@ export const DEFAULT_PERSONA: Persona = {
   feeTolerance: "ifWorthIt",
   travelFrequency: "sometimes",
   effortTolerance: "multi",
+  walletPreference: "any",
 };

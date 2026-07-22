@@ -128,6 +128,20 @@ the heuristic with an explicit `wallets: MobileWallet[]` (editable in `/admin`)
 when its real support is known to differ. This is indicative, network-derived
 data — not per-card verified — and is documented as such.
 
+The persona quiz also asks **which wallet you pay with**. Pick a specific wallet
+(Apple / Google / Samsung / Huawei Pay) and cards that don't support it are pulled
+out of the ranking and combo into `RecommendationResult.walletFiltered`, surfaced
+as a collapsible "N cards hidden (no <wallet> support)" disclosure — separate from
+the income-eligibility hide. Choosing "Doesn't matter" (the default) applies no
+wallet filtering. Because Huawei Pay is effectively UnionPay-only locally, picking
+it can empty the ranking entirely; the results step then shows a wallet-aware empty
+state pointing back at the wallet question rather than a generic "no cards" message.
+
+**Picking cards you own:** the "I already have cards" step is searchable and
+grouped — a free-text search over card/bank names, a row of bank filter chips, and
+the results grouped under bank headings — so finding your cards among the full
+catalogue is quick on both web and mobile.
+
 ## Data freshness & confidence
 
 Card reward rates change often, so trust signals are first-class. Every card in

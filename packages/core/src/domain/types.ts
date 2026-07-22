@@ -115,6 +115,8 @@ export type IncomeBracket = "under36k" | "36to60k" | "60to100k" | "over100k";
 export type FeeTolerance = "noFee" | "ifWorthIt" | "premiumOk";
 export type TravelFrequency = "never" | "sometimes" | "often";
 export type EffortTolerance = "single" | "multi";
+/** Which mobile wallet the user pays with — or "any" if they don't mind. */
+export type WalletPreference = MobileWallet | "any";
 
 export interface Persona {
   rewardPreference: RewardPreference;
@@ -122,6 +124,13 @@ export interface Persona {
   feeTolerance: FeeTolerance;
   travelFrequency: TravelFrequency;
   effortTolerance: EffortTolerance;
+  /**
+   * The mobile wallet the user pays with. When set to a specific wallet, cards
+   * that don't support it are pulled out of the ranking/combo into
+   * `RecommendationResult.walletFiltered`. Optional; treated as "any" (no
+   * filtering) when unset.
+   */
+  walletPreference?: WalletPreference;
 }
 
 /** Per-category contribution to a card's annual value. */
@@ -229,4 +238,11 @@ export interface RecommendationResult {
   combo: ComboRecommendation;
   /** Cards excluded purely on income eligibility. */
   ineligible: Card[];
+  /**
+   * Cards excluded purely because they don't support the user's chosen mobile
+   * wallet (persona.walletPreference). Empty when the preference is "any" or
+   * unset. These are otherwise income-eligible — they're hidden from the
+   * ranking/combo only for wallet compatibility.
+   */
+  walletFiltered: Card[];
 }

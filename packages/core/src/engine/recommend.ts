@@ -5,6 +5,7 @@ import type {
   RecommendationResult,
   SpendingProfile,
 } from "../domain/types";
+import { walletsForCard } from "../domain/wallets";
 import { bestCombo } from "./combo";
 import { scoreCard } from "./score";
 
@@ -13,8 +14,11 @@ import { scoreCard } from "./score";
  *
  * 1. Score every card against the user's spending + persona.
  * 2. Split into eligible / ineligible by income.
- * 3. Rank eligible cards (persona-adjusted net value) for the single-card view.
- * 4. Build the best multi-card combo from the eligible set.
+ * 3. Among income-eligible cards, split off those that don't support the user's
+ *    chosen mobile wallet (persona.walletPreference) into `walletFiltered`.
+ * 4. Rank the remaining eligible cards (persona-adjusted net value) for the
+ *    single-card view.
+ * 5. Build the best multi-card combo from the same compatible set.
  */
 export function recommend(
   spending: SpendingProfile,
@@ -23,13 +27,21 @@ export function recommend(
 ): RecommendationResult {
   const scores = catalogue.map((c) => scoreCard(c, spending, persona));
 
-  const single = scores
-    .filter((s) => s.eligible)
-    .sort((a, b) => b.adjustedNetRM - a.adjustedNetRM);
-
   const ineligible = scores.filter((s) => !s.eligible).map((s) => s.card);
 
-  const combo = bestCombo(scores, spending, persona);
+  const walletPref = persona.walletPreference ?? "any";
+  const supportsWallet = (card: Card) =>
+    walletPref === "any" || walletsForCard(card).includes(walletPref);
 
-  return { single, combo, ineligible };
+  const eligible = scores.filter((s) => s.eligible);
+  const compatible = eligible.filter((s) => supportsWallet(s.card));
+  const walletFiltered = eligible
+    .filter((s) => !supportsWallet(s.card))
+    .map((s) => s.card);
+
+  const single = [...compatible].sort((a, b) => b.adjustedNetRM - a.adjustedNetRM);
+
+  const combo = bestCombo(compatible, spending, persona);
+
+  return { single, combo, ineligible, walletFiltered };
 }

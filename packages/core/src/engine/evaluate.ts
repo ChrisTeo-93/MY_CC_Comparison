@@ -80,7 +80,7 @@ export function evaluateOwned(
     .slice(0, 3);
 
   const tips = buildTips(
-    { single: ownedScores, combo: ownedCombo, ineligible: [] },
+    { single: ownedScores, combo: ownedCombo, ineligible: [], walletFiltered: [] },
     spending,
   );
 

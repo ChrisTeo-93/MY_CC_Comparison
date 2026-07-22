@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, govtServiceTax } from "@kadcompare/core";
+import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, govtServiceTax, walletsForCard, WALLET_META } from "@kadcompare/core";
 import type { Persona, RecommendationResult, SpendingProfile } from "@kadcompare/core";
 import { CardResultCard } from "@/components/results/CardResultCard";
 import { FreshnessBadge } from "@/components/results/FreshnessBadge";
@@ -27,8 +27,10 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
   const totalMonthly = Object.values(resolved).reduce((a, b) => a + b, 0);
   const tips = buildTips(result, spending);
 
-  const { single, combo, ineligible } = result;
+  const { single, combo, ineligible, walletFiltered } = result;
   const comboAvailable = combo.members.length > 1;
+  const walletPref = persona.walletPreference ?? "any";
+  const walletLabel = walletPref === "any" ? null : WALLET_META[walletPref].label;
 
   return (
     <div className="space-y-8">
@@ -76,7 +78,9 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
         <div className="space-y-4">
           {single.length === 0 && (
             <p className="text-center text-slate-500">
-              No eligible cards for your income bracket. Try adjusting your answers.
+              {walletLabel && walletFiltered.length > 0
+                ? `No cards support ${walletLabel} for your income bracket. Try “Doesn’t matter” for the wallet question, or adjust your answers.`
+                : "No eligible cards for your income bracket. Try adjusting your answers."}
             </p>
           )}
           {single.slice(0, 5).map((s, i) => (
@@ -160,6 +164,35 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
             </article>
           ))}
         </div>
+      )}
+
+      {walletLabel && walletFiltered.length > 0 && (
+        <details className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+          <summary className="cursor-pointer font-medium text-slate-700">
+            {walletFiltered.length} card{walletFiltered.length === 1 ? "" : "s"} hidden
+            (no {walletLabel} support)
+          </summary>
+          <p className="mt-2 text-xs text-slate-400">
+            You picked {walletLabel} as your wallet, so these otherwise-eligible cards
+            were left out of the ranking. Mobile-wallet support is derived from the card
+            network and is indicative — confirm with the bank.
+          </p>
+          <ul className="mt-2 space-y-1 text-slate-500">
+            {walletFiltered.map((c) => (
+              <li key={c.id}>
+                {c.name}{" "}
+                <span className="text-slate-400">
+                  — works with{" "}
+                  {walletsForCard(c).length === 0
+                    ? "no mobile wallet"
+                    : walletsForCard(c)
+                        .map((w) => WALLET_META[w].label)
+                        .join(", ")}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </details>
       )}
 
       {ineligible.length > 0 && (

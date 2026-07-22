@@ -345,5 +345,49 @@ describe("recommend", () => {
     expect(result.ineligible.length).toBeGreaterThan(0);
     // every eligible card is genuinely eligible
     expect(result.single.every((s) => s.eligible)).toBe(true);
+    // no wallet preference set → nothing filtered on wallet grounds
+    expect(result.walletFiltered).toEqual([]);
+  });
+
+  it("does not filter on wallet when the preference is 'any'", () => {
+    const visa = makeCard({ id: "visa", network: "Visa" });
+    const amex = makeCard({ id: "amex", network: "Amex" });
+    const result = recommend({ dining: 500 }, { ...PERSONA, walletPreference: "any" }, [visa, amex]);
+    expect(result.single).toHaveLength(2);
+    expect(result.walletFiltered).toEqual([]);
+  });
+
+  it("pulls wallet-incompatible cards out of the ranking into walletFiltered", () => {
+    // Amex defaults to Apple + Samsung only — no Google Pay locally.
+    const visa = makeCard({ id: "visa", network: "Visa" });
+    const amex = makeCard({ id: "amex", network: "Amex" });
+    const result = recommend({ dining: 500 }, { ...PERSONA, walletPreference: "googlePay" }, [visa, amex]);
+    expect(result.single.map((s) => s.card.id)).toEqual(["visa"]);
+    expect(result.walletFiltered.map((c) => c.id)).toEqual(["amex"]);
+    // combo is built only from compatible cards
+    expect(result.combo.members.every((m) => m.card.id !== "amex")).toBe(true);
+  });
+
+  it("can empty the ranking when no compatible card supports the wallet", () => {
+    // Huawei Pay is effectively UnionPay-only locally; a Visa card won't match.
+    const visa = makeCard({ id: "visa", network: "Visa" });
+    const result = recommend({ dining: 500 }, { ...PERSONA, walletPreference: "huaweiPay" }, [visa]);
+    expect(result.single).toHaveLength(0);
+    expect(result.walletFiltered.map((c) => c.id)).toEqual(["visa"]);
+    expect(result.combo.members).toHaveLength(0);
+  });
+
+  it("keeps wallet filtering separate from income ineligibility", () => {
+    const cheap = makeCard({ id: "cheap", network: "Amex", minAnnualIncome: 0 });
+    const premium = makeCard({ id: "premium", network: "Visa", minAnnualIncome: 1_000_000 });
+    const result = recommend(
+      { dining: 500 },
+      { ...PERSONA, walletPreference: "googlePay" },
+      [cheap, premium],
+    );
+    // premium is out on income, cheap (Amex) is out on wallet — neither ranked
+    expect(result.single).toHaveLength(0);
+    expect(result.ineligible.map((c) => c.id)).toEqual(["premium"]);
+    expect(result.walletFiltered.map((c) => c.id)).toEqual(["cheap"]);
   });
 });

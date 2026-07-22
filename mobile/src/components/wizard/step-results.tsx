@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, govtServiceTax } from "@kadcompare/core";
+import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, govtServiceTax, walletsForCard, WALLET_META } from "@kadcompare/core";
 import type { Persona, RecommendationResult, SpendingProfile } from "@kadcompare/core";
 import { colors, radii, spacing } from "@/constants/theme";
 import { CardResultCard } from "@/components/results/card-result-card";
@@ -26,8 +26,10 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
   const totalMonthly = Object.values(resolved).reduce((a, b) => a + b, 0);
   const tips = buildTips(result, spending);
 
-  const { single, combo, ineligible } = result;
+  const { single, combo, ineligible, walletFiltered } = result;
   const comboAvailable = combo.members.length > 1;
+  const walletPref = persona.walletPreference ?? "any";
+  const walletLabel = walletPref === "any" ? null : WALLET_META[walletPref].label;
 
   const comboMembers = comboAvailable
     ? combo.members
@@ -68,7 +70,11 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
       {view === "single" && (
         <View style={{ gap: spacing.md }}>
           {single.length === 0 && (
-            <Text style={styles.empty}>No eligible cards for your income bracket. Try adjusting your answers.</Text>
+            <Text style={styles.empty}>
+              {walletLabel && walletFiltered.length > 0
+                ? `No cards support ${walletLabel} for your income bracket. Try “Doesn’t matter” for the wallet question, or adjust your answers.`
+                : "No eligible cards for your income bracket. Try adjusting your answers."}
+            </Text>
           )}
           {single.slice(0, 5).map((s, i) => (
             <CardResultCard key={s.card.id} score={s} rank={i + 1} highlight={i === 0} />
@@ -138,6 +144,10 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
         </View>
       )}
 
+      {walletLabel && walletFiltered.length > 0 && (
+        <WalletFilteredDisclosure cards={walletFiltered} walletLabel={walletLabel} />
+      )}
+
       {ineligible.length > 0 && (
         <IneligibleDisclosure cards={ineligible} />
       )}
@@ -169,6 +179,45 @@ function IneligibleDisclosure({ cards }: { cards: RecommendationResult["ineligib
           {cards.map((c) => (
             <Text key={c.id} style={styles.ineligibleItem}>
               {c.name} — needs {rm(c.minAnnualIncome)}/year
+            </Text>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
+function WalletFilteredDisclosure({
+  cards,
+  walletLabel,
+}: {
+  cards: RecommendationResult["walletFiltered"];
+  walletLabel: string;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={styles.ineligibleBox}>
+      <Pressable onPress={() => setOpen((o) => !o)}>
+        <Text style={styles.ineligibleSummary}>
+          {cards.length} card{cards.length === 1 ? "" : "s"} hidden (no {walletLabel} support){" "}
+          {open ? "▲" : "▼"}
+        </Text>
+      </Pressable>
+      {open && (
+        <View style={{ marginTop: spacing.sm, gap: spacing.xs }}>
+          <Text style={styles.walletHint}>
+            You picked {walletLabel} as your wallet, so these otherwise-eligible cards were
+            left out. Wallet support is derived from the card network and is indicative —
+            confirm with the bank.
+          </Text>
+          {cards.map((c) => (
+            <Text key={c.id} style={styles.ineligibleItem}>
+              {c.name} — works with{" "}
+              {walletsForCard(c).length === 0
+                ? "no mobile wallet"
+                : walletsForCard(c)
+                    .map((w) => WALLET_META[w].label)
+                    .join(", ")}
             </Text>
           ))}
         </View>
@@ -213,5 +262,6 @@ const styles = StyleSheet.create({
   ineligibleBox: { borderRadius: radii.md, borderWidth: 1, borderColor: colors.slate200, backgroundColor: colors.white, padding: spacing.md },
   ineligibleSummary: { fontSize: 13, fontWeight: "600", color: colors.slate700 },
   ineligibleItem: { fontSize: 12, color: colors.slate500 },
+  walletHint: { fontSize: 11, color: colors.slate400 },
   disclaimer: { fontSize: 11, color: colors.slate400, textAlign: "center", paddingHorizontal: spacing.md },
 });
