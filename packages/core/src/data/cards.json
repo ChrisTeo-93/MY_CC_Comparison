@@ -22,7 +22,10 @@
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 50,
-        "excludedCategories": ["ewallet", "bills"],
+        "excludedCategories": [
+          "ewallet",
+          "bills"
+        ],
         "notes": "5% weekend (Sat/Sun) cashback on the Amex, capped RM50/month. Excludes govt, utilities and e-wallet reloads (govt payments are typically routed through bill-payment/JomPAY channels, modelled here under Bills & Utilities)."
       }
     ],
@@ -720,5 +723,332 @@
     "sourceUrl": "https://www.ambank.com.my/cards/credit-cards/ambank-enrich-visa-infinite-credit-cards",
     "confidence": "high",
     "dataNote": "Corrected: fee RM500 with 100% waiver only at RM100k spend (not RM488/RM48k). Significantly devalued Aug 2025 — base now 1 mile per RM6."
+  },
+  {
+    "id": "rhb-shell-visa",
+    "name": "RHB Shell Visa Credit Card",
+    "bank": "RHB",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#eab308",
+    "annualFee": 195,
+    "feeWaiver": {
+      "type": "swipes",
+      "threshold": 24
+    },
+    "minAnnualIncome": 24000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "petrol",
+        "rate": 0.12,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 3000,
+        "notes": "Up to 12% at Shell requires ≥RM3,000 total spend that month; RM30/month petrol cap. Lower spend earns a reduced petrol rate."
+      },
+      {
+        "category": "groceries",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 3000
+      },
+      {
+        "category": "online",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 3000
+      },
+      {
+        "category": "ewallet",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 3000
+      }
+    ],
+    "perks": [
+      "Class-leading Shell petrol cashback",
+      "5% on everyday essentials"
+    ],
+    "lastVerified": "2026-08-10",
+    "sourceUrl": "https://www.rhbgroup.com/personal/cards/credit-cards/index.html",
+    "confidence": "medium",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. The 5%-essentials caps are approximated per-category; confirm the shared cap with RHB."
+  },
+  {
+    "id": "uob-evol",
+    "name": "UOB EVOL Card",
+    "bank": "UOB",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#7c3aed",
+    "annualFee": 90,
+    "feeWaiver": {
+      "type": "swipes",
+      "threshold": 12
+    },
+    "minAnnualIncome": 36000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "online",
+        "rate": 0.1,
+        "unit": "percent",
+        "monthlyCap": 15,
+        "minMonthlySpend": 1000,
+        "notes": "10% online needs ≥RM1,000 total monthly spend; RM15/month online cap."
+      },
+      {
+        "category": "ewallet",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 15,
+        "minMonthlySpend": 1000,
+        "notes": "5% e-wallet top-up, RM15/month cap, ≥RM1,000 monthly spend."
+      }
+    ],
+    "perks": [
+      "Online + e-wallet cashback for young spenders"
+    ],
+    "lastVerified": "2026-08-10",
+    "sourceUrl": "https://www.uob.com.my/personal/cards/credit-cards/index.page",
+    "confidence": "medium",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. From Jan 2026 also earns UNIRinggit points on dining/entertainment (not modelled here)."
+  },
+  {
+    "id": "hsbc-live-plus",
+    "name": "HSBC Live+ Credit Card",
+    "bank": "HSBC",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#db2777",
+    "annualFee": 300,
+    "feeWaiver": {
+      "type": "spend",
+      "threshold": 24000
+    },
+    "minAnnualIncome": 60000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "dining",
+        "rate": 0.08,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 5000,
+        "notes": "Up to 8% on dining/shopping/entertainment; top tier needs ≥RM5,000/month, each category capped RM30/month. Lower spend earns a reduced tier."
+      },
+      {
+        "category": "online",
+        "rate": 0.08,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 5000
+      }
+    ],
+    "perks": [
+      "HSBC's flagship lifestyle cashback card"
+    ],
+    "lastVerified": "2026-08-10",
+    "sourceUrl": "https://www.hsbc.com.my/credit-cards/",
+    "confidence": "medium",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Income requirement conflicts across sources (RM60k vs RM102k) — RM60k used; confirm with HSBC."
+  },
+  {
+    "id": "publicbank-visa-signature",
+    "name": "Public Bank Visa Signature",
+    "bank": "Public Bank",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#b91c1c",
+    "annualFee": 388,
+    "feeWaiver": {
+      "type": "swipes",
+      "threshold": 12
+    },
+    "minAnnualIncome": 80000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "dining",
+        "rate": 0.02,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "notes": "2% on dining + online, minimum RM100 per transaction; RM30/month combined cap."
+      },
+      {
+        "category": "online",
+        "rate": 0.02,
+        "unit": "percent",
+        "monthlyCap": 30
+      }
+    ],
+    "perks": [
+      "Premium Public Bank tier",
+      "Plaza Premium lounge access"
+    ],
+    "lastVerified": "2026-08-10",
+    "sourceUrl": "https://www.pbebank.com/Personal-Banking/Cards/Credit-Cards.aspx",
+    "confidence": "medium",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Income requirement conflicts across sources (RM80k vs RM100k) — RM80k used; also earns VIP/Green points (not modelled)."
+  },
+  {
+    "id": "sc-simply-cash",
+    "name": "Standard Chartered Simply Cash",
+    "bank": "Standard Chartered",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#0f766e",
+    "annualFee": 250,
+    "feeWaiver": {
+      "type": "none"
+    },
+    "minAnnualIncome": 96000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "petrol",
+        "rate": 0.15,
+        "unit": "percent",
+        "monthlyCap": 20,
+        "notes": "Up to 15% on Petrol and on Grocery+Dining; each category (or group) capped RM20/month. First year fee waived."
+      },
+      {
+        "category": "dining",
+        "rate": 0.15,
+        "unit": "percent",
+        "monthlyCap": 20
+      },
+      {
+        "category": "groceries",
+        "rate": 0.15,
+        "unit": "percent",
+        "monthlyCap": 20
+      }
+    ],
+    "perks": [
+      "High headline category cashback"
+    ],
+    "lastVerified": "2026-08-10",
+    "sourceUrl": "https://www.sc.com/my/credit-cards/",
+    "confidence": "medium",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Grocery+Dining likely share one RM20 cap; modelled per-category here, so combined dining+grocery cashback may be overstated."
+  },
+  {
+    "id": "maybank-islamic-ikhwan-amex",
+    "name": "Maybank Islamic Ikhwan Amex Platinum Card-i",
+    "bank": "Maybank",
+    "network": "Amex",
+    "rewardType": "cashback",
+    "color": "#065f46",
+    "annualFee": 0,
+    "feeWaiver": {
+      "type": "always"
+    },
+    "minAnnualIncome": 40000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.0025,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "online",
+        "rate": 0.08,
+        "unit": "percent",
+        "monthlyCap": 50,
+        "notes": "8% cashback on online spend, RM50/month cap (raised to RM100 during Ramadhan/Syawal), minimum RM100 monthly online spend."
+      }
+    ],
+    "perks": [
+      "No annual fee for life",
+      "Rare no-fee Amex",
+      "Shariah-compliant"
+    ],
+    "lastVerified": "2026-08-10",
+    "sourceUrl": "https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/cards/credit/main.page",
+    "confidence": "medium",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Also earns TreatsPoints on other spend (not modelled). Amex acceptance is narrower than Visa/Mastercard locally."
+  },
+  {
+    "id": "bank-islam-platinum-i",
+    "name": "Bank Islam Platinum Credit Card-i",
+    "bank": "Bank Islam",
+    "network": "Visa",
+    "rewardType": "cashback",
+    "color": "#0d9488",
+    "annualFee": 388,
+    "feeWaiver": {
+      "type": "swipes",
+      "threshold": 12
+    },
+    "minAnnualIncome": 36000,
+    "baseRule": {
+      "category": "general",
+      "rate": 0.002,
+      "unit": "percent"
+    },
+    "earnRules": [
+      {
+        "category": "online",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 1500,
+        "notes": "5% at ≥RM1,500/month (3% at RM500–1,499) on online/auto-billing/grocery/dining; RM30/card/month cap."
+      },
+      {
+        "category": "groceries",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 1500
+      },
+      {
+        "category": "dining",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 1500
+      },
+      {
+        "category": "bills",
+        "rate": 0.05,
+        "unit": "percent",
+        "monthlyCap": 30,
+        "minMonthlySpend": 1500
+      }
+    ],
+    "perks": [
+      "Shariah-compliant cashback",
+      "Broad 5% categories"
+    ],
+    "lastVerified": "2026-08-10",
+    "sourceUrl": "https://www.bankislam.com/personal-banking/cards/credit-card-i/",
+    "confidence": "medium",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. RM30 cap is shared across the bonus categories; modelled per-category here, which can overstate combined cashback."
   }
 ]
