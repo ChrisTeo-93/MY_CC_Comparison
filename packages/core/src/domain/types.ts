@@ -105,6 +105,13 @@ export interface Card {
   dataNote?: string;
   /** Lifecycle status. Discontinued cards are kept out of recommendations but stay editable. */
   status?: "active" | "discontinued";
+  /**
+   * Admin-only curation flag: set true to mark a card as needing human review
+   * (e.g. figures sourced from secondary snippets, not yet confirmed against
+   * primary bank T&C). Purely a workflow marker surfaced in /admin — it does
+   * NOT affect scoring, recommendations, or the public UI.
+   */
+  needsReview?: boolean;
 }
 
 /** Monthly spend (RM) per category. Missing keys fall back to persona defaults. */

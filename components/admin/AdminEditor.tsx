@@ -49,10 +49,16 @@ export function AdminEditor({ initialCards }: { initialCards: Card[] }) {
   const [isNew, setIsNew] = useState(false);
   const [msg, setMsg] = useState<{ kind: "ok" | "err"; text: string } | null>(null);
   const [busy, setBusy] = useState(false);
+  const [reviewOnly, setReviewOnly] = useState(false);
 
   const sorted = useMemo(
     () => [...cards].sort((a, b) => a.bank.localeCompare(b.bank) || a.name.localeCompare(b.name)),
     [cards],
+  );
+  const needsReviewCount = useMemo(() => cards.filter((c) => c.needsReview).length, [cards]);
+  const visible = useMemo(
+    () => (reviewOnly ? sorted.filter((c) => c.needsReview) : sorted),
+    [sorted, reviewOnly],
   );
 
   function edit(card: Card) {
@@ -126,6 +132,46 @@ export function AdminEditor({ initialCards }: { initialCards: Card[] }) {
     router.refresh();
   }
 
+  async function flagMediumLow() {
+    const targets = cards.filter(
+      (c) => (c.confidence === "medium" || c.confidence === "low") && !c.needsReview,
+    );
+    if (targets.length === 0) {
+      setMsg({ kind: "ok", text: "No unflagged medium/low-confidence cards." });
+      return;
+    }
+    if (!confirm(`Flag ${targets.length} medium/low-confidence card(s) as needing review?`)) return;
+    setBusy(true);
+    setMsg(null);
+    const saved: Card[] = [];
+    for (const c of targets) {
+      const res = await fetch("/api/admin/cards", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ ...c, needsReview: true }),
+      });
+      if (!res.ok) {
+        setBusy(false);
+        setMsg({ kind: "err", text: `Flagged ${saved.length}/${targets.length}; “${c.name}” failed.` });
+        if (saved.length) applySaved(saved);
+        return;
+      }
+      const data = await res.json().catch(() => ({}));
+      if (data.card) saved.push(data.card as Card);
+    }
+    setBusy(false);
+    applySaved(saved);
+    setMsg({ kind: "ok", text: `Flagged ${saved.length} card(s) for review.` });
+    router.refresh();
+  }
+
+  function applySaved(saved: Card[]) {
+    setCards((cs) => {
+      const byId = new Map(saved.map((c) => [c.id, c]));
+      return cs.map((c) => byId.get(c.id) ?? c);
+    });
+  }
+
   async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
     router.push("/admin/login");
@@ -142,9 +188,25 @@ export function AdminEditor({ initialCards }: { initialCards: Card[] }) {
           <h1 className="mt-1 text-2xl font-bold text-slate-900">Card catalogue admin</h1>
           <p className="text-sm text-slate-500">
             {cards.length} cards · edits save to data/cards.json
+            {needsReviewCount > 0 && (
+              <>
+                {" · "}
+                <span className="font-medium text-amber-600">
+                  ⚠ {needsReviewCount} need{needsReviewCount === 1 ? "s" : ""} review
+                </span>
+              </>
+            )}
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={flagMediumLow}
+            disabled={busy}
+            title="Set the needs-review flag on every medium- and low-confidence card"
+            className="rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-semibold text-amber-700 hover:border-amber-400 disabled:opacity-40"
+          >
+            Flag medium/low for review
+          </button>
           <button
             onClick={addNew}
             className="rounded-lg bg-brand-dark px-4 py-2 text-sm font-semibold text-white hover:bg-brand"
@@ -163,7 +225,23 @@ export function AdminEditor({ initialCards }: { initialCards: Card[] }) {
       <div className="mt-6 grid gap-6 lg:grid-cols-[340px_1fr]">
         {/* List */}
         <div className="space-y-2">
-          {sorted.map((c) => (
+          {needsReviewCount > 0 && (
+            <label className="flex cursor-pointer items-center gap-2 rounded-lg px-1 py-1 text-xs text-slate-600">
+              <input
+                type="checkbox"
+                checked={reviewOnly}
+                onChange={(e) => setReviewOnly(e.target.checked)}
+                className="h-3.5 w-3.5 accent-amber-600"
+              />
+              Show only cards needing review ({needsReviewCount})
+            </label>
+          )}
+          {visible.length === 0 && (
+            <p className="rounded-lg bg-slate-100 p-4 text-center text-sm text-slate-500">
+              No cards match this filter.
+            </p>
+          )}
+          {visible.map((c) => (
             <button
               key={c.id}
               onClick={() => edit(c)}
@@ -173,7 +251,17 @@ export function AdminEditor({ initialCards }: { initialCards: Card[] }) {
               ].join(" ")}
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="font-medium text-slate-900">{c.name}</span>
+                <span className="flex items-center gap-1.5 font-medium text-slate-900">
+                  {c.needsReview && (
+                    <span
+                      title="Flagged as needing review"
+                      className="rounded bg-amber-100 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700"
+                    >
+                      ⚠ Review
+                    </span>
+                  )}
+                  {c.name}
+                </span>
                 <ConfidenceChip level={c.confidence} note={c.dataNote} />
               </div>
               <div className="mt-1 flex items-center justify-between text-xs text-slate-500">
@@ -354,6 +442,29 @@ export function AdminEditor({ initialCards }: { initialCards: Card[] }) {
                   <button onClick={() => patch({ lastVerified: todayISO() })} className="w-full rounded-lg border border-slate-300 px-2 py-1.5 text-sm hover:border-brand-dark">Mark verified today</button>
                 </Field>
               </div>
+              <label
+                className={[
+                  "flex items-start gap-3 rounded-lg border p-3",
+                  draft.needsReview ? "border-amber-300 bg-amber-50" : "border-slate-200",
+                ].join(" ")}
+              >
+                <input
+                  type="checkbox"
+                  checked={draft.needsReview ?? false}
+                  onChange={(e) => patch({ needsReview: e.target.checked || undefined })}
+                  className="mt-0.5 h-4 w-4 accent-amber-600"
+                />
+                <span>
+                  <span className="block text-sm font-medium text-slate-800">
+                    ⚠ Needs review
+                  </span>
+                  <span className="block text-xs text-slate-500">
+                    Mark when figures aren&apos;t yet confirmed against primary bank T&amp;C.
+                    Admin-only — does not affect scoring or the public site.
+                  </span>
+                </span>
+              </label>
+
               <Field label="Source URL">
                 <input className={inputCls} value={draft.sourceUrl} onChange={(e) => patch({ sourceUrl: e.target.value })} />
               </Field>

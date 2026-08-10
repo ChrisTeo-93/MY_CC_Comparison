@@ -165,6 +165,15 @@ earn rules, confidence, freshness, status) and delete cards. Validation
 (`lib/data/cardStore.ts`) is storage-agnostic — actual reads/writes go through
 `lib/data/cardsRepository.ts`, which picks a backend automatically:
 
+**Needs-review flag:** cards carry an admin-only `needsReview` boolean — a curation
+marker for figures not yet confirmed against primary bank T&C (e.g. rows sourced
+from secondary snippets during a data refresh). It's surfaced only in `/admin` (a
+per-card toggle, an "⚠ Review" badge in the list, a header count, and a "show only
+needs-review" filter, plus a one-click "flag all medium/low confidence" helper) and
+deliberately does **not** affect scoring, recommendations, or the public site — the
+public trust signals stay the confidence chip + freshness badge. It gives a curator
+a worklist to burn down as each card is verified.
+
 - **`REDIS_URL` set → `RedisCardsRepository`.** The whole catalogue is stored as one
   JSON blob under a single key, so edits **persist across serverless invocations** —
   this is the production-ready path. Works with any Redis-compatible connection

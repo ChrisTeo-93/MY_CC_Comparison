@@ -111,6 +111,17 @@ describe("validateCard", () => {
     expect(validateCard(validCard({ confidence: "totally" as never })).ok).toBe(false);
   });
 
+  it("accepts an optional needsReview boolean", () => {
+    expect(validateCard(validCard({ needsReview: true })).ok).toBe(true);
+    expect(validateCard(validCard({ needsReview: false })).ok).toBe(true);
+  });
+
+  it("rejects a non-boolean needsReview", () => {
+    const r = validateCard(validCard({ needsReview: "yes" as never }));
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.errors.some((e) => e.includes("needsReview"))).toBe(true);
+  });
+
   it("rejects a negative annual fee", () => {
     expect(validateCard(validCard({ annualFee: -10 })).ok).toBe(false);
   });

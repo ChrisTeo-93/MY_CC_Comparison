@@ -85,7 +85,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://ringgitplus.com/en/credit-card/CIMB-Cash-Rebate-Platinum-Credit-Card.html",
     "confidence": "medium",
-    "dataNote": "Corrected: the previously-modelled 8% petrol does not exist (that's a different CIMB card). Shared RM30 cap is approximated per-category here."
+    "dataNote": "Corrected: the previously-modelled 8% petrol does not exist (that's a different CIMB card). Shared RM30 cap is approximated per-category here.",
+    "needsReview": true
   },
   {
     "id": "hlb-wse-cashback",
@@ -247,7 +248,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://ringgitplus.com/en/credit-card/Alliance-Bank-Visa-Signature.html",
     "confidence": "low",
-    "dataNote": "Replaces the old 'Alliance Visa Cashback', which no longer exists. Exact per-tier percentages and category eligibility are unconfirmed."
+    "dataNote": "Replaces the old 'Alliance Visa Cashback', which no longer exists. Exact per-tier percentages and category eligibility are unconfirmed.",
+    "needsReview": true
   },
   {
     "id": "publicbank-quantum",
@@ -288,7 +290,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://ringgitplus.com/en/blog/credit-cards/public-bank-revises-cashback-features-for-quantum-visa-mastercard.html",
     "confidence": "medium",
-    "dataNote": "Revised 1 Feb 2025: dining cashback removed, contactless cut to 1%. The old 5% online/dining structure no longer applies."
+    "dataNote": "Revised 1 Feb 2025: dining cashback removed, contactless cut to 1%. The old 5% online/dining structure no longer applies.",
+    "needsReview": true
   },
   {
     "id": "rhb-cashback",
@@ -352,7 +355,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://www.rhbgroup.com/personal/cards/credit-cards/rhb-cash-back-credit-card/index.html",
     "confidence": "medium",
-    "dataNote": "Renamed from 'RHB Smart Value'. RM10/category cap and RM2,500 spend tier confirmed across secondary sources."
+    "dataNote": "Renamed from 'RHB Smart Value'. RM10/category cap and RM2,500 spend tier confirmed across secondary sources.",
+    "needsReview": true
   },
   {
     "id": "maybank-2-platinum",
@@ -387,7 +391,8 @@
     "lastVerified": "2026-02-01",
     "sourceUrl": "https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/cards/credit/maybank_2_platinum.page",
     "confidence": "low",
-    "dataNote": "NOT re-verified this pass (research pending). TreatsPoints value reduced to a conservative ~RM0.003/point; treat figures with caution."
+    "dataNote": "NOT re-verified this pass (research pending). TreatsPoints value reduced to a conservative ~RM0.003/point; treat figures with caution.",
+    "needsReview": true
   },
   {
     "id": "cimb-visa-signature",
@@ -422,7 +427,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://www.cimb.com.my/en/personal/day-to-day-banking/cards/credit-card/cimb-visa-signature-credit-card.html",
     "confidence": "medium",
-    "dataNote": "Corrected: no 10x online/travel/groceries (that's the CIMB e Card). Point value cut to ~RM0.002 (500 pts = RM1); cashback redemption ended Sep 2023."
+    "dataNote": "Corrected: no 10x online/travel/groceries (that's the CIMB e Card). Point value cut to ~RM0.002 (500 pts = RM1); cashback redemption ended Sep 2023.",
+    "needsReview": true
   },
   {
     "id": "hlb-sutera-points",
@@ -477,7 +483,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://www.hlb.com.my/en/personal-banking/credit-cards/rewards-points/sutera-platinum-card.html",
     "confidence": "medium",
-    "dataNote": "Replaces the discontinued HLB-Emirates co-brand card (ended Jun 2024). Exact annual fee (RM250?) and waiver threshold (RM15k vs RM25k) vary by source."
+    "dataNote": "Replaces the discontinued HLB-Emirates co-brand card (ended Jun 2024). Exact annual fee (RM250?) and waiver threshold (RM15k vs RM25k) vary by source.",
+    "needsReview": true
   },
   {
     "id": "ambank-bonuslink-signature",
@@ -529,7 +536,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://www.ambank.com.my/cards/credit-cards/ambank-bonuslink-visa-card",
     "confidence": "medium",
-    "dataNote": "Corrected: 5x is on Shell petrol + Parkson (NOT groceries — those are 2x). Annual fee figure from secondary sources."
+    "dataNote": "Corrected: 5x is on Shell petrol + Parkson (NOT groceries — those are 2x). Annual fee figure from secondary sources.",
+    "needsReview": true
   },
   {
     "id": "uob-ppv",
@@ -565,7 +573,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://www.uob.com.my/personal/cards/credit-cards/uob-prvi-miles-card.page",
     "confidence": "medium",
-    "dataNote": "Corrected to the Malaysian card (previously modelled on Singapore terms). Standard tier may be closed to new applicants; UNIRM cash floor used for scoring."
+    "dataNote": "Corrected to the Malaysian card (previously modelled on Singapore terms). Standard tier may be closed to new applicants; UNIRM cash floor used for scoring.",
+    "needsReview": true
   },
   {
     "id": "maybank-visa-infinite",
@@ -642,7 +651,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://www.sc.com/my/credit-cards/journey/",
     "confidence": "medium",
-    "dataNote": "Corrected: 'miles' are in-house points at 2:1 to airline miles, so effective rates are half the headline. The previously-modelled 1.5x online category was not confirmed."
+    "dataNote": "Corrected: 'miles' are in-house points at 2:1 to airline miles, so effective rates are half the headline. The previously-modelled 1.5x online category was not confirmed.",
+    "needsReview": true
   },
   {
     "id": "hsbc-travelone",
@@ -686,7 +696,8 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://www.hsbc.com.my/credit-cards/products/travelone/",
     "confidence": "medium",
-    "dataNote": "Corrected: has a RM300 fee (waived at RM20k spend) and RM60k income (not free / RM100k). Dining & travel are both 5x; overseas 8x. Beware SG figures online."
+    "dataNote": "Corrected: has a RM300 fee (waived at RM20k spend) and RM60k income (not free / RM100k). Dining & travel are both 5x; overseas 8x. Beware SG figures online.",
+    "needsReview": true
   },
   {
     "id": "ambank-enrich",
@@ -780,7 +791,8 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.rhbgroup.com/personal/cards/credit-cards/index.html",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. The 5%-essentials caps are approximated per-category; confirm the shared cap with RHB."
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. The 5%-essentials caps are approximated per-category; confirm the shared cap with RHB.",
+    "needsReview": true
   },
   {
     "id": "uob-evol",
@@ -824,7 +836,8 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.uob.com.my/personal/cards/credit-cards/index.page",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. From Jan 2026 also earns UNIRinggit points on dining/entertainment (not modelled here)."
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. From Jan 2026 also earns UNIRinggit points on dining/entertainment (not modelled here).",
+    "needsReview": true
   },
   {
     "id": "hsbc-live-plus",
@@ -867,7 +880,8 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.hsbc.com.my/credit-cards/",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Income requirement conflicts across sources (RM60k vs RM102k) — RM60k used; confirm with HSBC."
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Income requirement conflicts across sources (RM60k vs RM102k) — RM60k used; confirm with HSBC.",
+    "needsReview": true
   },
   {
     "id": "publicbank-visa-signature",
@@ -909,7 +923,8 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.pbebank.com/Personal-Banking/Cards/Credit-Cards.aspx",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Income requirement conflicts across sources (RM80k vs RM100k) — RM80k used; also earns VIP/Green points (not modelled)."
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Income requirement conflicts across sources (RM80k vs RM100k) — RM80k used; also earns VIP/Green points (not modelled).",
+    "needsReview": true
   },
   {
     "id": "sc-simply-cash",
@@ -955,7 +970,8 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.sc.com/my/credit-cards/",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Grocery+Dining likely share one RM20 cap; modelled per-category here, so combined dining+grocery cashback may be overstated."
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Grocery+Dining likely share one RM20 cap; modelled per-category here, so combined dining+grocery cashback may be overstated.",
+    "needsReview": true
   },
   {
     "id": "maybank-islamic-ikhwan-amex",
@@ -991,7 +1007,8 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.maybank2u.com.my/maybank2u/malaysia/en/personal/cards/credit/main.page",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Also earns TreatsPoints on other spend (not modelled). Amex acceptance is narrower than Visa/Mastercard locally."
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Also earns TreatsPoints on other spend (not modelled). Amex acceptance is narrower than Visa/Mastercard locally.",
+    "needsReview": true
   },
   {
     "id": "bank-islam-platinum-i",
@@ -1049,6 +1066,7 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.bankislam.com/personal-banking/cards/credit-card-i/",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. RM30 cap is shared across the bonus categories; modelled per-category here, which can overstate combined cashback."
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. RM30 cap is shared across the bonus categories; modelled per-category here, which can overstate combined cashback.",
+    "needsReview": true
   }
 ]

@@ -119,6 +119,7 @@ export function validateCard(input: unknown): ValidationResult {
     errors.push("govtTaxRM must be a number ≥ 0 (omit to use the standard RM25/year)");
   }
   if (c.status !== undefined && !STATUSES.has(c.status as string)) errors.push("status must be active | discontinued");
+  if (c.needsReview !== undefined && typeof c.needsReview !== "boolean") errors.push("needsReview must be a boolean");
   if (c.wallets !== undefined) {
     if (!Array.isArray(c.wallets)) {
       errors.push("wallets must be an array of wallet keys (applePay, googlePay, samsungPay, huaweiPay)");
