@@ -24,7 +24,10 @@ export default function AdminLoginPage() {
       router.push("/admin");
       router.refresh();
     } else {
-      setError("Incorrect password.");
+      // Surface the server's reason — a misconfigured deployment (no
+      // ADMIN_PASSWORD set) reads very differently from a wrong password.
+      const data = (await res.json().catch(() => ({}))) as { error?: unknown };
+      setError(typeof data.error === "string" ? data.error : "Incorrect password.");
     }
   }
 

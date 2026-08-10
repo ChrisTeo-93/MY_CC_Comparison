@@ -1,10 +1,13 @@
 import { describe, it, expect } from "vitest";
-import type { Card, Persona } from "../src/domain/types";
+import type { Card, Persona, SpendingProfile } from "../src/domain/types";
+import type { CategoryKey } from "../src/domain/categories";
+import { CATEGORY_KEYS } from "../src/domain/categories";
 import { govtServiceTax, rmValuePerRM, STANDARD_GOVT_SERVICE_TAX_RM } from "../src/engine/normalize";
 import {
   categoryValue,
   effectiveAnnualFee,
   personaMultiplier,
+  resolveSpending,
   ruleForCategory,
   scoreCard,
 } from "../src/engine/score";
@@ -42,6 +45,18 @@ const PERSONA: Persona = {
   travelFrequency: "sometimes",
   effortTolerance: "multi",
 };
+
+/**
+ * A spending profile with an explicit 0 for every category not named, so no
+ * category silently falls back to its persona default (resolveSpending only
+ * substitutes defaults for keys that are absent). Essential when a test needs
+ * a card's routed total to be an exact figure.
+ */
+function exactly(profile: Partial<Record<CategoryKey, number>>): SpendingProfile {
+  const out: SpendingProfile = {};
+  for (const k of CATEGORY_KEYS) out[k] = profile[k] ?? 0;
+  return out;
+}
 
 // --- normalize -------------------------------------------------------------
 
@@ -273,6 +288,69 @@ describe("bestCombo — govt service tax", () => {
     const member = combo.members.find((m) => m.card.id === "worthwhile");
     expect(member).toBeTruthy();
     expect(combo.totalGovtTaxRM).toBe(0 + 25); // seed's 0 override + worthwhile's default 25
+  });
+});
+
+// --- combo min-spend gates (routed-spend scoring) ---------------------------
+
+/**
+ * Regression cover for the combo over-crediting bug: card values used to be
+ * computed as if the user's FULL spend sat on every card, so a bonus rate gated
+ * behind a min-spend threshold got credited even when the combo only routed a
+ * fraction of that spend to the card. The engine now scores each card on its
+ * own routed spend.
+ */
+describe("bestCombo — min-spend gates are judged on routed spend", () => {
+  const lead = makeCard({
+    id: "lead",
+    earnRules: [{ category: "groceries", rate: 0.05, unit: "percent" }],
+  });
+  /** 10% on bills, but only once RM3,000/month sits on THIS card. */
+  const gated = makeCard({
+    id: "gated",
+    earnRules: [{ category: "bills", rate: 0.1, unit: "percent", minMonthlySpend: 3000 }],
+  });
+
+  it("rejects a gated card when its routed spend cannot reach the threshold", () => {
+    // Total spend clears RM3,000 — but only RM200/mo of it is bills, so routing
+    // bills to `gated` leaves it far short of its own gate. It would earn just
+    // the base rate (RM12/yr) against RM25/yr of govt tax: a net loss.
+    const spending = exactly({ groceries: 3000, bills: 200 });
+    const scores = [lead, gated].map((c) => scoreCard(c, spending, PERSONA));
+    const combo = bestCombo(scores, spending, PERSONA);
+
+    expect(combo.members.map((m) => m.card.id)).not.toContain("gated");
+    expect(combo.members).toHaveLength(1);
+  });
+
+  it("accepts a gated card when its routed spend does reach the threshold", () => {
+    const spending = exactly({ groceries: 3000, bills: 3500 });
+    const scores = [lead, gated].map((c) => scoreCard(c, spending, PERSONA));
+    const combo = bestCombo(scores, spending, PERSONA);
+
+    expect(combo.members.map((m) => m.card.id)).toContain("gated");
+  });
+
+  it("reports a net value each member genuinely earns on the spend routed to it", () => {
+    // The user-facing guarantee: re-scoring every member against exactly the
+    // categories the UI tells the user to put on it must reproduce the combo's
+    // headline number. Any phantom (ungated-but-credited) value breaks this.
+    const spending = { dining: 800, groceries: 900, petrol: 600, online: 700, bills: 500 };
+    const result = recommend(spending, PERSONA);
+    const resolved = resolveSpending(spending);
+
+    expect(result.combo.members.length).toBeGreaterThan(0);
+
+    let recomputedNet = 0;
+    for (const m of result.combo.members) {
+      const routed = exactly(
+        Object.fromEntries(m.assignedCategories.map((c) => [c, resolved[c]])),
+      );
+      const rescored = scoreCard(m.card, routed, PERSONA);
+      expect(m.contributionRM).toBeCloseTo(rescored.grossAnnualRM, 6);
+      recomputedNet += rescored.netAnnualRM;
+    }
+    expect(result.combo.netAnnualRM).toBeCloseTo(recomputedNet, 6);
   });
 });
 

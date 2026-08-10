@@ -91,8 +91,17 @@ mobile/                     Expo app (iOS + Android) — see mobile/README.md
    preference — it only sees the bank's own fee, not the govt tax, since that
    tax is uniform and doesn't differentiate a "fee-averse" card from any other.
 3. **combo** — greedy portfolio builder: seed with the best single card, then add a
-   card only if its *marginal* value covers its own bank fee **and** its own govt
-   tax (max 3 cards); each category is routed to its best earner in the set.
+   card only when doing so lifts the *whole portfolio's* net value (max 3 cards),
+   which implicitly requires it to cover its own bank fee **and** its own govt tax.
+   Crucially, each card is scored on **only the spend routed to it** — min-spend
+   unlocks, monthly caps and spend-based fee waivers are evaluated against that
+   card's own routed total, never the user's whole profile. Scoring every card as
+   if all spend sat on it (the original approach) credited bonus rates the user
+   could never trigger once spend was split, and could recommend a card that
+   actually loses money after its RM25 govt tax. Routing is found by hill-climbing
+   from two starting points (all-on-lead, and an optimistic per-category best),
+   because single-category moves alone can't discover a card that needs two or
+   three categories together to cover its fee.
 4. **recommend** — filters by income eligibility, returns the ranked single list,
    the combo, and the list of cards hidden for income reasons.
 
@@ -189,7 +198,11 @@ a worklist to burn down as each card is verified.
 Either way, the file lives inside `@kadcompare/core`, so edits (once persisted) are
 available to the mobile app on its next build/OTA update too.
 
-- **Password:** set `ADMIN_PASSWORD` (defaults to `admin123` for local dev only).
+- **Password:** set `ADMIN_PASSWORD`. Outside production this falls back to
+  `admin123` so local dev needs no configuration. **In production the variable is
+  mandatory and the gate fails closed** — if it isn't set, every login is refused
+  with a 503 explaining why, rather than falling back to a default that is
+  documented right here in this README and would leave the editor wide open.
 - **Not yet verified against a live Redis instance** — this environment has no
   network access to provision or connect to one. `RedisCardsRepository`'s logic is
   fully unit-tested against an injected in-memory fake client
