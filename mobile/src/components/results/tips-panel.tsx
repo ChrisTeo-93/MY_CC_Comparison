@@ -12,8 +12,8 @@ export function TipsPanel({ tips }: { tips: MaxTip[] }) {
     return (
       <View style={styles.emptyBox}>
         <Text style={styles.emptyText}>
-          ✓ Your recommended cards already capture your spend efficiently — no category
-          is overflowing its cap, so nothing is going to waste.
+          ✓ Your recommended cards already handle this spending well — there&apos;s no
+          worthwhile way to shift spend between them.
         </Text>
       </View>
     );

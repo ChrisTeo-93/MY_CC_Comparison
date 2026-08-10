@@ -9,8 +9,8 @@ export function TipsPanel({ tips }: { tips: MaxTip[] }) {
   if (tips.length === 0) {
     return (
       <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-center text-sm text-emerald-800">
-        ✓ Your recommended cards already capture your spend efficiently — no category is
-        overflowing its cap, so nothing is going to waste.
+        ✓ Your recommended cards already handle this spending well — there&apos;s no
+        worthwhile way to shift spend between them.
       </div>
     );
   }

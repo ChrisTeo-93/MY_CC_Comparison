@@ -146,6 +146,17 @@ wallet filtering. Because Huawei Pay is effectively UnionPay-only locally, picki
 it can empty the ranking entirely; the results step then shows a wallet-aware empty
 state pointing back at the wallet question rather than a generic "no cards" message.
 
+**Maximization tips:** a "Maximize your gains" panel surfaces value the combo's
+per-category assignment can't capture on its own, since that assignment moves whole
+categories at a time — chiefly cap overflow (spend beyond a card's monthly cap
+silently drops to its base rate, so it's worth putting the excess on another card)
+and fee-waiver near-misses. Tips are scoped **strictly to the cards in the
+recommended combo**: the panel exists to explain how to work the portfolio we just
+recommended, so advice built around a card the user was never told to get is advice
+they can't act on. Rates and waiver shortfalls are measured against the spend the
+combo actually routes to each card, matching how the optimiser scores — a tip must
+never promise a bonus rate or a waiver the card can't reach on what it receives.
+
 **Picking cards you own:** the "I already have cards" step is searchable and
 grouped — a free-text search over card/bank names, a row of bank filter chips, and
 the results grouped under bank headings — so finding your cards among the full

@@ -14,24 +14,6 @@ export interface MaxTip {
 
 const MIN_ANNUAL_GAIN = 12; // ignore tips worth less than ~RM1/month
 
-/** Distinct cards from the recommended combo, then the top single cards. */
-function tipPool(result: RecommendationResult): Card[] {
-  const ordered = [
-    ...result.combo.members.map((m) => m.card),
-    ...result.single.slice(0, 3).map((s) => s.card),
-  ];
-  const seen = new Set<string>();
-  const pool: Card[] = [];
-  for (const c of ordered) {
-    if (!seen.has(c.id)) {
-      seen.add(c.id);
-      pool.push(c);
-    }
-    if (pool.length >= 5) break;
-  }
-  return pool;
-}
-
 interface CardRateForCat {
   card: Card;
   /** RM reward per RM spent in this category. */
@@ -44,67 +26,100 @@ interface CardRateForCat {
 
 /**
  * Build actionable "how to use these cards together" tips. The headline move:
- * when your spend in a category exceeds the best card's monthly cap, the overflow
- * silently drops to that card's base rate — so route it to a second card instead.
- * This is value the per-category combo assignment alone doesn't capture.
+ * when your spend in a category exceeds the assigned card's monthly cap, the
+ * overflow silently drops to that card's base rate — so route it to another card
+ * in the set instead. This is value the per-category combo assignment alone
+ * doesn't capture, since that assignment moves whole categories at a time.
+ *
+ * Scoped strictly to the cards in the recommended combo. The panel's job is to
+ * explain how to work the portfolio we just recommended, so naming a card that
+ * isn't in it reads as a contradiction — and worse, advice built around a card
+ * the user was never told to get is advice they cannot act on.
  */
 export function buildTips(result: RecommendationResult, spending: SpendingProfile): MaxTip[] {
-  const pool = tipPool(result);
-  if (pool.length === 0) return [];
+  const members = result.combo.members;
+  if (members.length === 0) return [];
 
   const resolved = resolveSpending(spending);
-  const totalMonthly = Object.values(resolved).reduce((a, b) => a + b, 0);
   const tips: MaxTip[] = [];
+
+  // Monthly spend the combo actually routes to each card. Rates and waivers are
+  // judged against this, not the user's whole profile, matching how the combo
+  // optimiser scores — otherwise a tip could promise a bonus rate or a fee
+  // waiver the card can't reach on the spend it actually receives.
+  const routedMonthly = new Map<string, number>();
+  const ownerOf = new Map<CategoryKey, Card>();
+  for (const m of members) {
+    routedMonthly.set(
+      m.card.id,
+      m.assignedCategories.reduce((a, c) => a + resolved[c], 0),
+    );
+    for (const c of m.assignedCategories) ownerOf.set(c, m.card);
+  }
+  const monthlyFor = (card: Card) => routedMonthly.get(card.id) ?? 0;
+
+  const rateFor = (card: Card, cat: CategoryKey): CardRateForCat => {
+    const rule = ruleForCategory(card, cat, monthlyFor(card));
+    const rate = rmValuePerRM(card, rule);
+    const capRM = monthlyCapRM(card, rule);
+    return {
+      card,
+      rate,
+      capSpend: Number.isFinite(capRM) && rate > 0 ? capRM / rate : Infinity,
+      base: rmValuePerRM(card, card.baseRule),
+    };
+  };
 
   // --- Overflow routing -----------------------------------------------------
   for (const cat of Object.keys(resolved) as CategoryKey[]) {
     const spend = resolved[cat];
     if (spend <= 0) continue;
 
-    const ranked: CardRateForCat[] = pool
-      .map((card) => {
-        const rule = ruleForCategory(card, cat, totalMonthly);
-        const rate = rmValuePerRM(card, rule);
-        const capRM = monthlyCapRM(card, rule);
-        const capSpend = Number.isFinite(capRM) && rate > 0 ? capRM / rate : Infinity;
-        return { card, rate, capSpend, base: rmValuePerRM(card, card.baseRule) };
-      })
-      .sort((a, b) => b.rate - a.rate);
+    // The card the combo actually put this category on — so the tip explains
+    // the recommendation the user is looking at, rather than second-guessing it.
+    const owner = ownerOf.get(cat);
+    if (!owner) continue;
 
-    const best = ranked[0];
-    if (best.rate <= 0 || spend <= best.capSpend) continue; // no cap overflow
+    const current = rateFor(owner, cat);
+    if (current.rate <= 0 || spend <= current.capSpend) continue; // no cap overflow
 
-    const overflow = spend - best.capSpend;
-    // Best home for the overflow: another card whose rate beats best's base fallback.
-    const alt = ranked.slice(1).find((r) => r.card.id !== best.card.id && r.rate > best.base);
+    const overflow = spend - current.capSpend;
+    // Best home for the overflow: another combo card whose rate beats the
+    // owner's base fallback.
+    const alt = members
+      .map((m) => m.card)
+      .filter((c) => c.id !== owner.id)
+      .map((c) => rateFor(c, cat))
+      .sort((a, b) => b.rate - a.rate)
+      .find((r) => r.rate > current.base);
     if (!alt) continue;
 
     const routed = Math.min(overflow, alt.capSpend);
-    const gainPerMonth = routed * (alt.rate - best.base);
-    const annualGainRM = gainPerMonth * 12;
+    const annualGainRM = routed * (alt.rate - current.base) * 12;
     if (annualGainRM < MIN_ANNUAL_GAIN) continue;
 
     const label = CATEGORY_BY_KEY[cat].label.toLowerCase();
-    const bestRule = ruleForCategory(best.card, cat, totalMonthly);
-    const altRule = ruleForCategory(alt.card, cat, totalMonthly);
     tips.push({
       kind: "overflow",
       title: `Split your ${label} across two cards`,
       detail:
-        `You spend about RM${Math.round(spend)}/mo on ${label}. ${best.card.name} (${rateLabel(bestRule)}) ` +
-        `maxes out around RM${Math.round(best.capSpend)}/mo here — beyond that it drops to its base rate. ` +
-        `Put the extra ~RM${Math.round(routed)}/mo on ${alt.card.name} (${rateLabel(altRule)}) instead.`,
+        `You spend about RM${Math.round(spend)}/mo on ${label}. ${owner.name} ` +
+        `(${rateLabel(ruleForCategory(owner, cat, monthlyFor(owner)))}) maxes out around ` +
+        `RM${Math.round(current.capSpend)}/mo here — beyond that it drops to its base rate. ` +
+        `Put the extra ~RM${Math.round(routed)}/mo on ${alt.card.name} ` +
+        `(${rateLabel(ruleForCategory(alt.card, cat, monthlyFor(alt.card)))}) instead.`,
       annualGainRM,
     });
   }
 
   // --- Fee-waiver near-misses ----------------------------------------------
-  const annualSpend = totalMonthly * 12;
-  for (const card of pool) {
+  for (const m of members) {
+    const card = m.card;
     if (card.feeWaiver.type !== "spend" || card.annualFee <= 0) continue;
     const threshold = card.feeWaiver.threshold ?? 0;
-    if (effectiveAnnualFee(card, annualSpend) === 0) continue; // already waived
-    const shortfall = threshold - annualSpend;
+    const cardAnnualSpend = monthlyFor(card) * 12;
+    if (effectiveAnnualFee(card, cardAnnualSpend) === 0) continue; // already waived
+    const shortfall = threshold - cardAnnualSpend;
     if (shortfall <= 0 || shortfall > threshold * 0.25) continue; // only flag near-misses
     tips.push({
       kind: "waiver",
