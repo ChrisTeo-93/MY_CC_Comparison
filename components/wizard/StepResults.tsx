@@ -27,7 +27,7 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
   const totalMonthly = Object.values(resolved).reduce((a, b) => a + b, 0);
   const tips = buildTips(result, spending);
 
-  const { single, combo, ineligible, walletFiltered } = result;
+  const { single, combo, ineligible, walletFiltered, additions } = result;
   const comboAvailable = combo.members.length > 1;
   const walletPref = persona.walletPreference ?? "any";
   const walletLabel = walletPref === "any" ? null : WALLET_META[walletPref].label;
@@ -163,6 +163,50 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
               </div>
             </article>
           ))}
+
+          {additions.length > 0 && (
+            <section className="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-5">
+              <h3 className="text-base font-bold text-slate-900">Consider adding a card</h3>
+              <p className="mt-1 text-sm text-slate-600">
+                Not part of the {combo.members.length}-card set above. If you&apos;re willing to
+                carry another card, these would earn you more on top of it.
+              </p>
+              <ul className="mt-4 space-y-2">
+                {additions.map((a) => (
+                  <li
+                    key={a.card.id}
+                    className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3"
+                  >
+                    <span className="flex min-w-0 items-center gap-3">
+                      <span
+                        className="h-9 w-1.5 shrink-0 rounded-full"
+                        style={{ backgroundColor: a.card.color }}
+                        aria-hidden
+                      />
+                      <span className="min-w-0">
+                        <span className="block truncate font-medium text-slate-900">
+                          {a.card.name}
+                        </span>
+                        <span className="block text-xs text-slate-500">
+                          {a.card.bank} · {a.card.network}
+                        </span>
+                      </span>
+                    </span>
+                    <span className="shrink-0 text-right">
+                      <span className="block font-bold text-emerald-700">
+                        +{rm(a.addedAnnualRM)}
+                      </span>
+                      <span className="block text-[11px] text-slate-500">/ year</span>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-3 text-xs text-slate-400">
+                Already net of each card&apos;s own annual fee and its RM25 government service
+                tax — so this is what you&apos;d actually gain.
+              </p>
+            </section>
+          )}
         </div>
       )}
 

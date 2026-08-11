@@ -238,6 +238,13 @@ export interface ComboRecommendation {
   totalGovtTaxRM: number;
 }
 
+/** A card outside the current set that would earn more if it were added to it. */
+export interface AddSuggestion {
+  card: Card;
+  /** Extra net RM/year from adding this card alongside what's already held. */
+  addedAnnualRM: number;
+}
+
 export interface RecommendationResult {
   /** Single-card ranking, best first (eligible cards only). */
   single: CardScore[];
@@ -252,4 +259,12 @@ export interface RecommendationResult {
    * ranking/combo only for wallet compatibility.
    */
   walletFiltered: Card[];
+  /**
+   * Cards deliberately left OUT of the combo that would still add value if the
+   * user were willing to carry one more. The combo is capped at 3 cards and
+   * routes whole categories at a time, so it can't express "hold a 4th card" or
+   * "put just the cap overflow here" — this surfaces that value explicitly,
+   * rather than smuggling a non-recommended card into the tips.
+   */
+  additions: AddSuggestion[];
 }

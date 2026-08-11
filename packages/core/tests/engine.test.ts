@@ -11,7 +11,7 @@ import {
   ruleForCategory,
   scoreCard,
 } from "../src/engine/score";
-import { bestCombo } from "../src/engine/combo";
+import { additionsTo, bestCombo } from "../src/engine/combo";
 import { recommend } from "../src/engine/recommend";
 import { CARD_BY_ID } from "../src/domain/cards";
 
@@ -402,6 +402,74 @@ describe("scoreCard — excludedCategories (regression against real card data)",
     expect(bills.rateLabel).not.toContain("5%");
     // dining isn't excluded, so it gets the 5% bonus rate.
     expect(dining.rateLabel).toContain("5%");
+  });
+});
+
+// --- additions ("consider adding this card") --------------------------------
+
+describe("additionsTo", () => {
+  /** Four cards, each dominant in one category — the combo can only hold three. */
+  const quartet = (dOverrides: Partial<Card> = {}) => [
+    makeCard({ id: "a", name: "A", earnRules: [{ category: "dining", rate: 0.2, unit: "percent" }] }),
+    makeCard({ id: "b", name: "B", earnRules: [{ category: "groceries", rate: 0.2, unit: "percent" }] }),
+    makeCard({ id: "c", name: "C", earnRules: [{ category: "petrol", rate: 0.2, unit: "percent" }] }),
+    makeCard({
+      id: "d",
+      name: "D",
+      earnRules: [{ category: "online", rate: 0.2, unit: "percent" }],
+      ...dOverrides,
+    }),
+  ];
+  const spending = exactly({ dining: 500, groceries: 500, petrol: 500, online: 500 });
+
+  it("surfaces a worthwhile card the 3-card cap left out", () => {
+    const result = recommend(spending, PERSONA, quartet());
+    expect(result.combo.members).toHaveLength(3);
+    expect(result.additions.map((a) => a.card.id)).toEqual(["d"]);
+  });
+
+  it("reports the gain net of the added card's own fee and govt tax", () => {
+    // D earns 500 * 20% * 12 = RM1,200/yr on online. Without it, online sits on a
+    // combo card at the 0.5% base rate: 500 * 0.5% * 12 = RM30/yr. D also brings
+    // RM25/yr of govt service tax. Net gain = 1200 - 30 - 25 = RM1,145.
+    const free = recommend(spending, PERSONA, quartet());
+    expect(free.additions[0].addedAnnualRM).toBeCloseTo(1145, 6);
+
+    // The same card carrying an unwaivable RM100 fee must show RM100 less.
+    const withFee = recommend(
+      spending,
+      PERSONA,
+      quartet({ annualFee: 100, feeWaiver: { type: "none" } }),
+    );
+    expect(withFee.additions[0].addedAnnualRM).toBeCloseTo(1045, 6);
+  });
+
+  it("suggests nothing when the combo already captures the spend", () => {
+    // Two cards covering the only two categories with spend: the builder already
+    // stopped because nothing else improved, so there is no addition to make.
+    const cards = [
+      makeCard({ id: "a", name: "A", earnRules: [{ category: "dining", rate: 0.2, unit: "percent" }] }),
+      makeCard({ id: "b", name: "B", earnRules: [{ category: "groceries", rate: 0.2, unit: "percent" }] }),
+    ];
+    const result = recommend(exactly({ dining: 500, groceries: 500 }), PERSONA, cards);
+    expect(result.additions).toEqual([]);
+  });
+
+  it("never suggests a card already in the combo", () => {
+    const result = recommend(spending, PERSONA, quartet());
+    const inCombo = new Set(result.combo.members.map((m) => m.card.id));
+    for (const a of result.additions) expect(inCombo.has(a.card.id)).toBe(false);
+  });
+
+  it("ignores a card whose gain cannot cover its own govt tax", () => {
+    // D earns 20 * 20% * 12 = RM48/yr on RM20/mo of online, but displaces
+    // RM1.20/yr of base-rate earnings and costs RM25 of govt tax — leaving about
+    // RM22, under the RM12 floor only if... it clears it, so use a smaller spend.
+    const cards = quartet();
+    const tiny = exactly({ dining: 500, groceries: 500, petrol: 500, online: 12 });
+    const result = recommend(tiny, PERSONA, cards);
+    // 12 * 20% * 12mo = RM28.80 gross, minus ~RM0.72 base, minus RM25 tax ≈ RM3
+    expect(result.additions).toEqual([]);
   });
 });
 

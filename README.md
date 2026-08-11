@@ -102,8 +102,10 @@ mobile/                     Expo app (iOS + Android) — see mobile/README.md
    from two starting points (all-on-lead, and an optimistic per-category best),
    because single-category moves alone can't discover a card that needs two or
    three categories together to cover its fee.
-4. **recommend** — filters by income eligibility, returns the ranked single list,
-   the combo, and the list of cards hidden for income reasons.
+4. **recommend** — filters by income eligibility and (when the persona names a
+   wallet) mobile-wallet support, then returns the ranked single list, the combo,
+   the cards hidden for each of those two reasons, and any worthwhile *additions*
+   beyond the combo (below).
 
 **Holding cost — govt Service Tax (SST):** Malaysia charges a mandatory RM25/year
 Service Tax on credit/charge cards, separate from and in addition to the bank's own
@@ -156,6 +158,19 @@ recommended, so advice built around a card the user was never told to get is adv
 they can't act on. Rates and waiver shortfalls are measured against the spend the
 combo actually routes to each card, matching how the optimiser scores — a tip must
 never promise a bonus rate or a waiver the card can't reach on what it receives.
+
+**"Consider adding a card":** the combo is capped at 3 cards, so value beyond that
+cap would otherwise be invisible. `additionsTo` measures it directly — best routing
+over `combo + candidate` versus the combo alone, scored on routed spend throughout,
+so the figure shown is already net of that card's own annual fee and its RM25 govt
+tax. A candidate is only reported when it earns a place in the routing *and* every
+existing member keeps one: if adding a card would strand an incumbent that's a
+swap, not an addition, and labelling it "add this too" would misstate the action.
+The section is rendered visibly apart from the combo (dashed border, muted ground)
+precisely because these cards are **not** part of the recommendation — this is the
+honest home for cross-card value, as opposed to smuggling a non-recommended card
+into the tips. It fires rarely by design: with the RM25 tax on every extra card, a
+4th only pays for unusually heavy spenders.
 
 **Picking cards you own:** the "I already have cards" step is searchable and
 grouped — a free-text search over card/bank names, a row of bank filter chips, and

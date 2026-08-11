@@ -1,5 +1,6 @@
 import { ACTIVE_CARDS, CARD_BY_ID } from "../domain/cards";
 import type {
+  AddSuggestion,
   Card,
   CardScore,
   ComboRecommendation,
@@ -10,12 +11,6 @@ import { bestCombo } from "./combo";
 import { recommend } from "./recommend";
 import { scoreCard } from "./score";
 import { buildTips, type MaxTip } from "./tips";
-
-export interface AddSuggestion {
-  card: Card;
-  /** Extra net RM/year from adding this card to what the user already holds. */
-  addedAnnualRM: number;
-}
 
 export interface Evaluation {
   /** The user's owned cards, scored and sorted by net annual value. */
@@ -80,7 +75,7 @@ export function evaluateOwned(
     .slice(0, 3);
 
   const tips = buildTips(
-    { single: ownedScores, combo: ownedCombo, ineligible: [], walletFiltered: [] },
+    { single: ownedScores, combo: ownedCombo, ineligible: [], walletFiltered: [], additions: [] },
     spending,
   );
 

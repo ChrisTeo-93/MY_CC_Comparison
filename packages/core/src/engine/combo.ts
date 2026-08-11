@@ -1,6 +1,7 @@
 import type { CategoryKey } from "../domain/categories";
 import { CATEGORIES } from "../domain/categories";
 import type {
+  AddSuggestion,
   Card,
   CardScore,
   ComboMember,
@@ -242,6 +243,67 @@ export function bestCombo(
     totalAnnualFee: best.totalAnnualFee,
     totalGovtTaxRM: best.totalGovtTaxRM,
   };
+}
+
+/** RM/year below which an extra card isn't worth mentioning (~RM1/month). */
+const NEGLIGIBLE_ADDITION_RM = 12;
+
+/**
+ * Cards outside the combo that would still add value if held alongside it.
+ *
+ * The combo is capped at MAX_COMBO and assigns whole categories at a time, so
+ * two kinds of value are invisible to it: a worthwhile 4th card, and a card
+ * that would only ever absorb part of a category (cap overflow). This measures
+ * both honestly — best routing over `comboCards + candidate` versus best
+ * routing over `comboCards` alone, scored on routed spend throughout.
+ *
+ * A candidate is only reported when it earns a place in the routing AND every
+ * existing member keeps one. If adding a card would strand an incumbent, that
+ * is a swap rather than an addition, and calling it "add this too" would
+ * misstate what the user should actually do.
+ */
+export function additionsTo(
+  comboCards: Card[],
+  eligible: CardScore[],
+  spending: SpendingProfile,
+  limit = 3,
+): AddSuggestion[] {
+  if (comboCards.length === 0) return [];
+
+  const inCombo = new Set(comboCards.map((c) => c.id));
+  const resolved = resolveSpending(spending);
+  const scoreRouted = makeScorer(resolved);
+
+  const fullSpendValue = new Map<string, Map<CategoryKey, number>>();
+  for (const s of eligible) {
+    const m = new Map<CategoryKey, number>();
+    for (const b of s.breakdown) m.set(b.category, b.annualValueRM);
+    fullSpendValue.set(s.card.id, m);
+  }
+
+  const baseline = bestAssignment(comboCards, resolved, scoreRouted, fullSpendValue).netAnnualRM;
+
+  const out: AddSuggestion[] = [];
+  for (const s of eligible) {
+    if (inCombo.has(s.card.id)) continue;
+
+    const withCard = bestAssignment(
+      [...comboCards, s.card],
+      resolved,
+      scoreRouted,
+      fullSpendValue,
+    );
+    const held = new Set(withCard.members.map((m) => m.card.id));
+    if (!held.has(s.card.id)) continue; // earns no place in the routing
+    if (!comboCards.every((c) => held.has(c.id))) continue; // a swap, not an addition
+
+    const addedAnnualRM = withCard.netAnnualRM - baseline;
+    if (addedAnnualRM >= NEGLIGIBLE_ADDITION_RM) {
+      out.push({ card: s.card, addedAnnualRM });
+    }
+  }
+
+  return out.sort((a, b) => b.addedAnnualRM - a.addedAnnualRM).slice(0, limit);
 }
 
 /** Convenience wrapper that scores then builds the combo. */

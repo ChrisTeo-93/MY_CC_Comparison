@@ -26,7 +26,7 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
   const totalMonthly = Object.values(resolved).reduce((a, b) => a + b, 0);
   const tips = buildTips(result, spending);
 
-  const { single, combo, ineligible, walletFiltered } = result;
+  const { single, combo, ineligible, walletFiltered, additions } = result;
   const comboAvailable = combo.members.length > 1;
   const walletPref = persona.walletPreference ?? "any";
   const walletLabel = walletPref === "any" ? null : WALLET_META[walletPref].label;
@@ -141,6 +141,37 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
               </View>
             </View>
           ))}
+
+          {additions.length > 0 && (
+            <View style={styles.addBox}>
+              <Text style={styles.addTitle}>Consider adding a card</Text>
+              <Text style={styles.addSubtitle}>
+                Not part of the {combo.members.length}-card set above. If you&apos;re willing
+                to carry another card, these would earn you more on top of it.
+              </Text>
+              <View style={{ gap: spacing.sm, marginTop: spacing.md }}>
+                {additions.map((a) => (
+                  <View key={a.card.id} style={styles.addRow}>
+                    <View style={[styles.addAccent, { backgroundColor: a.card.color }]} />
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.addName}>{a.card.name}</Text>
+                      <Text style={styles.addMeta}>
+                        {a.card.bank} · {a.card.network}
+                      </Text>
+                    </View>
+                    <View style={{ alignItems: "flex-end" }}>
+                      <Text style={styles.addGain}>+{rm(a.addedAnnualRM)}</Text>
+                      <Text style={styles.addGainUnit}>/ year</Text>
+                    </View>
+                  </View>
+                ))}
+              </View>
+              <Text style={styles.addFootnote}>
+                Already net of each card&apos;s own annual fee and its RM25 government
+                service tax — so this is what you&apos;d actually gain.
+              </Text>
+            </View>
+          )}
         </View>
       )}
 
@@ -259,6 +290,32 @@ const styles = StyleSheet.create({
   memberCatChip: { backgroundColor: colors.slate100, borderRadius: radii.full, paddingVertical: 4, paddingHorizontal: spacing.sm },
   memberCatChipText: { fontSize: 11, color: colors.slate700 },
   memberFooter: { marginTop: spacing.md, paddingTop: spacing.sm, borderTopWidth: 1, borderTopColor: colors.slate100 },
+  addBox: {
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    borderStyle: "dashed",
+    borderColor: colors.slate300,
+    backgroundColor: colors.slate100,
+    padding: spacing.lg,
+  },
+  addTitle: { fontSize: 15, fontWeight: "800", color: colors.slate900 },
+  addSubtitle: { fontSize: 13, color: colors.slate600, marginTop: spacing.xs },
+  addRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    borderColor: colors.slate200,
+    backgroundColor: colors.white,
+    padding: spacing.md,
+  },
+  addAccent: { width: 5, height: 32, borderRadius: radii.full },
+  addName: { fontSize: 14, fontWeight: "600", color: colors.slate900 },
+  addMeta: { fontSize: 12, color: colors.slate500, marginTop: 2 },
+  addGain: { fontSize: 15, fontWeight: "800", color: colors.emerald600 },
+  addGainUnit: { fontSize: 11, color: colors.slate500 },
+  addFootnote: { fontSize: 11, color: colors.slate400, marginTop: spacing.md },
   ineligibleBox: { borderRadius: radii.md, borderWidth: 1, borderColor: colors.slate200, backgroundColor: colors.white, padding: spacing.md },
   ineligibleSummary: { fontSize: 13, fontWeight: "600", color: colors.slate700 },
   ineligibleItem: { fontSize: 12, color: colors.slate500 },

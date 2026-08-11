@@ -6,7 +6,7 @@ import type {
   SpendingProfile,
 } from "../domain/types";
 import { walletsForCard } from "../domain/wallets";
-import { bestCombo } from "./combo";
+import { additionsTo, bestCombo } from "./combo";
 import { scoreCard } from "./score";
 
 /**
@@ -43,5 +43,13 @@ export function recommend(
 
   const combo = bestCombo(compatible, spending, persona);
 
-  return { single, combo, ineligible, walletFiltered };
+  // Value the combo can't express: a worthwhile extra card beyond its 3-card
+  // cap, or one that would only absorb part of a category.
+  const additions = additionsTo(
+    combo.members.map((m) => m.card),
+    compatible,
+    spending,
+  );
+
+  return { single, combo, ineligible, walletFiltered, additions };
 }
