@@ -69,11 +69,20 @@ export function evaluateOwned(
   const candidates = ACTIVE_CARDS.filter(
     (c) => !ownedSet.has(c.id) && global.single.some((s) => s.card.id === c.id),
   );
+  // Which owned cards are actually earning today — anything that loses its job
+  // when a candidate joins is being replaced, not supplemented.
+  const usedToday = new Set(ownedCombo.members.map((m) => m.card.id));
   const suggestions: AddSuggestion[] = candidates
     .map((card) => {
       const [adjusted] = applyPersonaShares([card], persona);
       const combo = bestCombo([...ownedScores, scoreOwned(adjusted, spending, persona)], spending, persona);
-      return { card, addedAnnualRM: combo.netAnnualRM - currentNetAnnualRM };
+      const stillUsed = new Set(combo.members.map((m) => m.card.id));
+      const replaces = ownedCards.filter((c) => usedToday.has(c.id) && !stillUsed.has(c.id));
+      return {
+        card,
+        addedAnnualRM: combo.netAnnualRM - currentNetAnnualRM,
+        replaces: replaces.length ? replaces : undefined,
+      };
     })
     .filter((s) => s.addedAnnualRM >= NEGLIGIBLE)
     .sort((a, b) => b.addedAnnualRM - a.addedAnnualRM)

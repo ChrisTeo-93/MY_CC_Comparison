@@ -293,11 +293,19 @@ export interface ComboRecommendation {
   totalGovtTaxRM: number;
 }
 
-/** A card outside the current set that would earn more if it were added to it. */
+/** A card outside the current set that would earn more if it were taken on. */
 export interface AddSuggestion {
   card: Card;
-  /** Extra net RM/year from adding this card alongside what's already held. */
+  /** Extra net RM/year in the best achievable setup once this card is available. */
   addedAnnualRM: number;
+  /**
+   * Cards the user already holds that would stop earning anything once this one
+   * is in the mix — i.e. this is a swap, not a pure addition. Empty/undefined
+   * means everything they hold keeps a job. Worth stating, because a displaced
+   * card can be cancelled and its RM25/year govt tax stopped, and because
+   * "add this" reads as "keep all of yours and add one more".
+   */
+  replaces?: Card[];
 }
 
 export interface RecommendationResult {

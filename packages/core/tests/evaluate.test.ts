@@ -49,3 +49,34 @@ describe("evaluateOwned", () => {
     expect(e.upsideAnnualRM).toBeGreaterThanOrEqual(0);
   });
 });
+
+describe("evaluateOwned — additions vs swaps", () => {
+  it("names the owned card a suggestion would take over from", () => {
+    // Owns a weak card whose only job is travel; a strong travel card displaces it.
+    const ev = evaluateOwned(
+      { dining: 900, groceries: 1200, petrol: 700, online: 900, travel: 1500 },
+      PERSONA,
+      ["maybank-2-gold", "cimb-cashback", "publicbank-quantum"],
+    );
+    const usedToday = new Set(ev.ownedCombo.members.map((m) => m.card.id));
+    expect(ev.suggestions.length).toBeGreaterThan(0);
+
+    for (const s of ev.suggestions) {
+      for (const r of s.replaces ?? []) {
+        // Anything named as replaced must actually be earning today — otherwise
+        // we would be telling the user to drop a card they never use.
+        expect(usedToday.has(r.id), `${r.id} is named as replaced but isn't in use`).toBe(true);
+      }
+    }
+    // The scenario exists to cover displacement, so at least one must be a swap.
+    expect(ev.suggestions.some((s) => (s.replaces?.length ?? 0) > 0)).toBe(true);
+  });
+
+  it("leaves replaces unset when a card genuinely adds to the set", () => {
+    // A single owned card covering one category; a card for a different category
+    // supplements rather than displaces it.
+    const ev = evaluateOwned({ dining: 1500, travel: 2000 }, PERSONA, ["maybank-2-gold"]);
+    const pureAdds = ev.suggestions.filter((s) => !s.replaces?.length);
+    expect(pureAdds.length).toBeGreaterThan(0);
+  });
+});

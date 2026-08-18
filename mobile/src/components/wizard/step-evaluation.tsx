@@ -75,7 +75,11 @@ export function StepEvaluation({ evaluation, onRestart }: StepEvaluationProps) {
 
       {suggestions.length > 0 && (
         <View style={{ gap: spacing.sm }}>
-          <Text style={styles.sectionTitle}>Adding one of these would earn you more</Text>
+          <Text style={styles.sectionTitle}>These would earn you more</Text>
+          <Text style={styles.sectionSub}>
+            Where a card would take over from one you already hold, we say so — that one
+            could be cancelled, saving its RM25/year government service tax too.
+          </Text>
           <View style={{ gap: spacing.sm }}>
             {suggestions.map((s) => (
               <Pressable
@@ -88,6 +92,11 @@ export function StepEvaluation({ evaluation, onRestart }: StepEvaluationProps) {
                   <View>
                     <Text style={styles.suggestionName}>{s.card.name}</Text>
                     <Text style={styles.suggestionBank}>{s.card.bank}</Text>
+                    <Text style={styles.suggestionSwap}>
+                      {s.replaces?.length
+                        ? `Takes over from your ${s.replaces.map((c) => c.name).join(" and ")}`
+                        : "Adds to the cards you already use"}
+                    </Text>
                   </View>
                 </View>
                 <Text style={styles.suggestionGain}>+{rm(s.addedAnnualRM)}/yr</Text>
@@ -147,6 +156,8 @@ const styles = StyleSheet.create({
   },
   suggestionAccent: { width: 6, height: 32, borderRadius: 3 },
   suggestionName: { fontSize: 14, fontWeight: "600", color: colors.slate900 },
+  sectionSub: { fontSize: 13, color: colors.slate500 },
+  suggestionSwap: { fontSize: 11, color: colors.amber700, marginTop: 2 },
   suggestionBank: { fontSize: 12, color: colors.slate500 },
   suggestionGain: {
     fontSize: 13,

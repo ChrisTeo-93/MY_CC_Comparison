@@ -76,7 +76,11 @@ export function StepEvaluation({ evaluation, onRestart }: StepEvaluationProps) {
       {/* Add-a-card suggestions */}
       {suggestions.length > 0 && (
         <section className="space-y-3">
-          <h3 className="text-lg font-bold text-slate-900">Adding one of these would earn you more</h3>
+          <h3 className="text-lg font-bold text-slate-900">These would earn you more</h3>
+          <p className="text-sm text-slate-500">
+            Where a card would take over from one you already hold, we say so — that one
+            could be cancelled, saving its RM25/year government service tax too.
+          </p>
           <div className="space-y-2">
             {suggestions.map((s) => (
               <a
@@ -91,6 +95,11 @@ export function StepEvaluation({ evaluation, onRestart }: StepEvaluationProps) {
                   <span>
                     <span className="block font-medium text-slate-900">{s.card.name}</span>
                     <span className="block text-xs text-slate-500">{s.card.bank}</span>
+                    <span className="mt-0.5 block text-xs text-amber-700">
+                      {s.replaces?.length
+                        ? `Takes over from your ${s.replaces.map((c) => c.name).join(" and ")}`
+                        : "Adds to the cards you already use"}
+                    </span>
                   </span>
                 </span>
                 <span className="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-sm font-semibold text-emerald-700">
