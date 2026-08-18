@@ -10,7 +10,7 @@ import type {
   SpendingProfile,
 } from "../domain/types";
 import { govtServiceTax } from "./normalize";
-import { categoryValue, effectiveAnnualFee, resolveSpending, scoreCard } from "./score";
+import { cardBreakdown, effectiveAnnualFee, resolveSpending, scoreCard } from "./score";
 
 const MAX_COMBO = 3;
 /** RM tolerance so floating-point noise never registers as an improvement. */
@@ -56,13 +56,22 @@ function makeScorer(resolved: Record<CategoryKey, number>): ScoreRouted {
     const hit = memo.get(key);
     if (hit) return hit;
 
+    // Route spend to this card only: every other category is an explicit 0, so
+    // caps and min-spend gates see exactly what this card receives.
+    const routed = {} as Record<CategoryKey, number>;
     let totalMonthly = 0;
-    for (const c of cats) totalMonthly += resolved[c];
-
-    let gross = 0;
+    for (const k of CATEGORY_ORDER) routed[k] = 0;
     for (const c of cats) {
-      gross += categoryValue(card, c, resolved[c], totalMonthly).annualValueRM;
+      routed[c] = resolved[c];
+      totalMonthly += resolved[c];
     }
+
+    // Whole-card breakdown, so a cap shared across categories is pooled once
+    // rather than granted afresh to each.
+    const gross = cardBreakdown(card, routed, totalMonthly).reduce(
+      (a, b) => a + b.annualValueRM,
+      0,
+    );
 
     const out: RoutedScore = {
       gross,

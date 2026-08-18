@@ -25,6 +25,19 @@ export interface EarnRule {
   /** Minimum total monthly spend (RM) required to unlock this rule. */
   minMonthlySpend?: number;
   /**
+   * Opt into sharing one monthly cap pool with every other rule on this card
+   * carrying the same id — for banks that cap a GROUP of categories jointly
+   * ("5% on groceries and dining, capped RM30/month between them") rather than
+   * each separately. Rules in a group should carry the same `monthlyCap`; if
+   * they differ, the smallest is treated as the shared ceiling.
+   *
+   * Note this is only needed for caps shared ACROSS rules. A single rule's cap
+   * is always one pool across every category that rule serves, which matters
+   * most for a `general` omni-rule: its cap is a monthly ceiling for the card,
+   * not a fresh allowance per spending category.
+   */
+  capGroup?: string;
+  /**
    * Categories this rule does NOT apply to — mainly relevant for a
    * `category: "general"` rule (an omni-boost across every category by
    * default), which banks commonly carve out: e-wallet reloads, bills/

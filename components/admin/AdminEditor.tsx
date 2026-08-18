@@ -392,12 +392,19 @@ export function AdminEditor({ initialCards }: { initialCards: Card[] }) {
                         <input type="number" placeholder="min/mo" className={inputCls} value={r.minMonthlySpend ?? ""} onChange={(e) => patchRule(i, { minMonthlySpend: e.target.value === "" ? undefined : Number(e.target.value) })} />
                         <button onClick={() => removeRule(i)} className="px-2 text-slate-400 hover:text-red-500" title="Remove">✕</button>
                       </div>
-                      <div className="mt-2 grid gap-2 sm:grid-cols-[1.6fr_1fr]">
+                      <div className="mt-2 grid gap-2 sm:grid-cols-[1.4fr_1fr_.8fr]">
                         <input
                           placeholder="restriction, e.g. weekends only (Sat/Sun) — blank if unrestricted"
                           className={inputCls}
                           value={r.conditionLabel ?? ""}
                           onChange={(e) => patchRule(i, { conditionLabel: e.target.value || undefined })}
+                        />
+                        <input
+                          placeholder="cap group id — same id = one shared cap"
+                          title="Rules sharing this id pool ONE monthly cap between them. Leave blank unless the bank caps a group of categories jointly."
+                          className={inputCls}
+                          value={r.capGroup ?? ""}
+                          onChange={(e) => patchRule(i, { capGroup: e.target.value || undefined })}
                         />
                         <input
                           type="number"

@@ -151,6 +151,25 @@ describe("validateCard", () => {
     expect(r.ok).toBe(false);
   });
 
+  it("accepts rules pooling one cap via capGroup", () => {
+    const r = validateCard(
+      validCard({
+        earnRules: [
+          { category: "dining", rate: 0.05, unit: "percent", monthlyCap: 30, capGroup: "everyday" },
+          { category: "groceries", rate: 0.05, unit: "percent", monthlyCap: 30, capGroup: "everyday" },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("rejects an empty capGroup", () => {
+    const r = validateCard(
+      validCard({ earnRules: [{ category: "dining", rate: 0.05, unit: "percent", capGroup: "" }] }),
+    );
+    expect(r.ok).toBe(false);
+  });
+
   it("accepts an optional needsReview boolean", () => {
     expect(validateCard(validCard({ needsReview: true })).ok).toBe(true);
     expect(validateCard(validCard({ needsReview: false })).ok).toBe(true);

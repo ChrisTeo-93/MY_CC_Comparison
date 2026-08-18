@@ -1,8 +1,8 @@
 import type { CategoryKey } from "../domain/categories";
-import { CATEGORY_BY_KEY } from "../domain/categories";
+import { CATEGORIES, CATEGORY_BY_KEY } from "../domain/categories";
 import type { Card, RecommendationResult, SpendingProfile } from "../domain/types";
 import { monthlyCapRM, rateLabel, rmValuePerRM } from "./normalize";
-import { effectiveAnnualFee, resolveSpending, ruleForCategory } from "./score";
+import { cardBreakdown, effectiveAnnualFee, resolveSpending, ruleForCategory } from "./score";
 
 export interface MaxTip {
   kind: "overflow" | "waiver";
@@ -58,6 +58,25 @@ export function buildTips(result: RecommendationResult, spending: SpendingProfil
   }
   const monthlyFor = (card: Card) => routedMonthly.get(card.id) ?? 0;
 
+  // Which categories the ENGINE considers capped for each member, on its routed
+  // spend. Deriving this from the rule's own cap would disagree wherever a cap is
+  // pooled across categories (see EarnRule.capGroup): the rule's headline cap can
+  // look untouched while a sibling category has already drained the shared pool.
+  const cappedFor = new Map<string, Set<CategoryKey>>();
+  for (const m of members) {
+    const routed = {} as Record<CategoryKey, number>;
+    for (const cat of CATEGORIES) routed[cat.key] = 0;
+    for (const c of m.assignedCategories) routed[c] = resolved[c];
+    cappedFor.set(
+      m.card.id,
+      new Set(
+        cardBreakdown(m.card, routed, monthlyFor(m.card))
+          .filter((b) => b.capped)
+          .map((b) => b.category),
+      ),
+    );
+  }
+
   const rateFor = (card: Card, cat: CategoryKey): CardRateForCat => {
     const rule = ruleForCategory(card, cat, monthlyFor(card));
     const rate = rmValuePerRM(card, rule);
@@ -79,6 +98,9 @@ export function buildTips(result: RecommendationResult, spending: SpendingProfil
     // the recommendation the user is looking at, rather than second-guessing it.
     const owner = ownerOf.get(cat);
     if (!owner) continue;
+
+    // Only offer to move spend the engine actually treats as overflowing.
+    if (!cappedFor.get(owner.id)?.has(cat)) continue;
 
     const current = rateFor(owner, cat);
     if (current.rate <= 0 || spend <= current.capSpend) continue; // no cap overflow

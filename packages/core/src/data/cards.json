@@ -63,21 +63,24 @@
         "unit": "percent",
         "monthlyCap": 30,
         "minMonthlySpend": 3000,
-        "notes": "5% on groceries/petrol/utilities only in months with ≥RM3,000 total spend (else 2%). RM30/month cap is SHARED across these categories."
+        "notes": "5% on groceries/petrol/utilities only in months with ≥RM3,000 total spend (else 2%). RM30/month cap is SHARED across these categories.",
+        "capGroup": "bonus"
       },
       {
         "category": "petrol",
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 30,
-        "minMonthlySpend": 3000
+        "minMonthlySpend": 3000,
+        "capGroup": "bonus"
       },
       {
         "category": "bills",
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 30,
-        "minMonthlySpend": 3000
+        "minMonthlySpend": 3000,
+        "capGroup": "bonus"
       }
     ],
     "perks": [
@@ -87,7 +90,7 @@
     "lastVerified": "2026-06-25",
     "sourceUrl": "https://ringgitplus.com/en/credit-card/CIMB-Cash-Rebate-Platinum-Credit-Card.html",
     "confidence": "medium",
-    "dataNote": "Corrected: the previously-modelled 8% petrol does not exist (that's a different CIMB card). Shared RM30 cap is approximated per-category here.",
+    "dataNote": "Corrected: the previously-modelled 8% petrol does not exist (that's a different CIMB card). The RM30 cap is shared across the bonus categories (modelled as one pool).",
     "needsReview": true
   },
   {
@@ -779,21 +782,24 @@
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 30,
-        "minMonthlySpend": 3000
+        "minMonthlySpend": 3000,
+        "capGroup": "essentials"
       },
       {
         "category": "online",
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 30,
-        "minMonthlySpend": 3000
+        "minMonthlySpend": 3000,
+        "capGroup": "essentials"
       },
       {
         "category": "ewallet",
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 30,
-        "minMonthlySpend": 3000
+        "minMonthlySpend": 3000,
+        "capGroup": "essentials"
       }
     ],
     "perks": [
@@ -803,7 +809,7 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.rhbgroup.com/personal/cards/credit-cards/index.html",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. The 5%-essentials caps are approximated per-category; confirm the shared cap with RHB.",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. The 5%-essentials categories share one RM30 pool (modelled as such); confirm the exact grouping with RHB.",
     "needsReview": true
   },
   {
@@ -920,14 +926,16 @@
         "unit": "percent",
         "monthlyCap": 30,
         "notes": "2% on dining + online, minimum RM100 per transaction; RM30/month combined cap.",
-        "conditionLabel": "transactions of RM100 or more"
+        "conditionLabel": "transactions of RM100 or more",
+        "capGroup": "dining-online"
       },
       {
         "category": "online",
         "rate": 0.02,
         "unit": "percent",
         "monthlyCap": 30,
-        "conditionLabel": "transactions of RM100 or more"
+        "conditionLabel": "transactions of RM100 or more",
+        "capGroup": "dining-online"
       }
     ],
     "perks": [
@@ -969,13 +977,15 @@
         "category": "dining",
         "rate": 0.15,
         "unit": "percent",
-        "monthlyCap": 20
+        "monthlyCap": 20,
+        "capGroup": "grocery-dining"
       },
       {
         "category": "groceries",
         "rate": 0.15,
         "unit": "percent",
-        "monthlyCap": 20
+        "monthlyCap": 20,
+        "capGroup": "grocery-dining"
       }
     ],
     "perks": [
@@ -984,7 +994,7 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.sc.com/my/credit-cards/",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Grocery+Dining likely share one RM20 cap; modelled per-category here, so combined dining+grocery cashback may be overstated.",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. Grocery+Dining share one RM20 cap, modelled as a single pool.",
     "needsReview": true
   },
   {
@@ -1049,28 +1059,32 @@
         "unit": "percent",
         "monthlyCap": 30,
         "minMonthlySpend": 1500,
-        "notes": "5% at ≥RM1,500/month (3% at RM500–1,499) on online/auto-billing/grocery/dining; RM30/card/month cap."
+        "notes": "5% at ≥RM1,500/month (3% at RM500–1,499) on online/auto-billing/grocery/dining; RM30/card/month cap.",
+        "capGroup": "bonus"
       },
       {
         "category": "groceries",
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 30,
-        "minMonthlySpend": 1500
+        "minMonthlySpend": 1500,
+        "capGroup": "bonus"
       },
       {
         "category": "dining",
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 30,
-        "minMonthlySpend": 1500
+        "minMonthlySpend": 1500,
+        "capGroup": "bonus"
       },
       {
         "category": "bills",
         "rate": 0.05,
         "unit": "percent",
         "monthlyCap": 30,
-        "minMonthlySpend": 1500
+        "minMonthlySpend": 1500,
+        "capGroup": "bonus"
       }
     ],
     "perks": [
@@ -1080,7 +1094,7 @@
     "lastVerified": "2026-08-10",
     "sourceUrl": "https://www.bankislam.com/personal-banking/cards/credit-card-i/",
     "confidence": "medium",
-    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. RM30 cap is shared across the bonus categories; modelled per-category here, which can overstate combined cashback.",
+    "dataNote": "Newly added Aug 2026 from credible secondary sources (RinggitPlus/CompareHero/iMoney and bank pages via search); not yet confirmed against primary T&C. The RM30 cap is shared across the bonus categories (modelled as one pool).",
     "needsReview": true
   }
 ]

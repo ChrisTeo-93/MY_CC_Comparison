@@ -139,7 +139,9 @@ describe("buildTips — fee-waiver near-miss", () => {
 
 describe("buildTips — scoped to the recommended combo", () => {
   it("still produces tips, and names only cards inside the combo", () => {
-    const spending = { dining: 800, groceries: 900, petrol: 600, online: 700, bills: 500 };
+    // A heavy all-round profile, chosen because it reliably drives at least one
+    // card past a cap — the test is worthless if no tips are generated at all.
+    const spending = { dining: 2000, groceries: 2000, petrol: 1500, online: 2000, ewallet: 800, bills: 800 };
     const result = recommend(spending, PERSONA); // full catalogue
     const tips = buildTips(result, spending);
 

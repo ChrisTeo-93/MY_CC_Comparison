@@ -117,6 +117,22 @@ stays honest about who's charging what. It especially matters for combos: each
 extra card held adds another RM25/year its earnings must clear before it's worth
 adding.
 
+**Monthly caps are pools, not per-category allowances.** A cap belongs to a *rule*,
+not to a spending category, so `engine/score.ts` computes a whole card at once
+(`cardBreakdown`) rather than each category independently. This matters most for a
+`general` omni-rule: scoring categories separately handed a fresh allowance to
+every one it touched, so a card capped at RM50/month paid RM50 on dining *and*
+RM50 on groceries *and* so on. Measured on a fixed RM6,000/month, the same card
+paid RM47.50 when the spend sat in one category and RM85.50 once it was split
+across two — 71% over its own stated ceiling. `EarnRule.capGroup` extends the same
+pooling across *different* rules, for banks that cap a group of categories jointly
+("5% on groceries and dining, RM30/month between them"); five cards carried a
+`dataNote` admitting we approximated this. Within a pool the allowance goes to the
+highest-earning category first, the best case for the user and consistent with the
+optimistic routing modelled elsewhere. `engine/tips.ts` takes its "is this capped?"
+signal from the same breakdown, so a tip can't claim headroom a sibling category
+has already consumed.
+
 **Conditional (restricted) rates:** a headline rate often applies to only part of
 your spend. The most common Malaysian case is weekend-only cashback — Maybank 2
 Gold's "5%" lands on Saturdays and Sundays alone. Modelling that as an

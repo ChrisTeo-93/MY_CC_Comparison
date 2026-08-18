@@ -4,6 +4,7 @@ import type { CategoryKey } from "../src/domain/categories";
 import { CATEGORY_KEYS } from "../src/domain/categories";
 import { govtServiceTax, rmValuePerRM, STANDARD_GOVT_SERVICE_TAX_RM } from "../src/engine/normalize";
 import {
+  cardBreakdown,
   categoryValue,
   effectiveAnnualFee,
   personaMultiplier,
@@ -165,6 +166,95 @@ describe("categoryValue — eligibleShare", () => {
     const headline = categoryValue(restricted(1), "groceries", 2000, 2000).annualValueRM;
     const actual = categoryValue(restricted(0.3), "groceries", 2000, 2000).annualValueRM;
     expect(actual).toBeLessThan(headline * 0.4);
+  });
+});
+
+// --- shared / pooled monthly caps -------------------------------------------
+
+describe("cardBreakdown — a cap is one pool, not one per category", () => {
+  const total = (bs: { annualValueRM: number }[]) => bs.reduce((a, b) => a + b.annualValueRM, 0) / 12;
+
+  it("does not multiply a general rule's cap by the number of categories", () => {
+    // 5% on everything, capped RM50/month. That is the card's monthly ceiling —
+    // not RM50 of dining PLUS RM50 of groceries PLUS RM50 of petrol.
+    const card = makeCard({
+      baseRule: { category: "general", rate: 0, unit: "percent" },
+      earnRules: [{ category: "general", rate: 0.05, unit: "percent", monthlyCap: 50 }],
+    });
+    const spread = cardBreakdown(
+      card,
+      resolveSpending(exactly({ dining: 2000, groceries: 2000, petrol: 2000 })),
+      6000,
+    );
+    expect(total(spread)).toBeCloseTo(50);
+  });
+
+  it("gives the same total however the spend is split across categories", () => {
+    const card = makeCard({
+      baseRule: { category: "general", rate: 0, unit: "percent" },
+      earnRules: [{ category: "general", rate: 0.05, unit: "percent", monthlyCap: 50 }],
+    });
+    const one = cardBreakdown(card, resolveSpending(exactly({ dining: 6000 })), 6000);
+    const six = cardBreakdown(
+      card,
+      resolveSpending(
+        exactly({ dining: 1000, groceries: 1000, groceriesOnline: 1000, petrol: 1000, online: 1000, contactless: 1000 }),
+      ),
+      6000,
+    );
+    expect(total(six)).toBeCloseTo(total(one));
+  });
+
+  it("pools one cap across rules sharing a capGroup", () => {
+    // 5% on groceries and dining, capped RM30/month BETWEEN them.
+    const card = makeCard({
+      baseRule: { category: "general", rate: 0, unit: "percent" },
+      earnRules: [
+        { category: "groceries", rate: 0.05, unit: "percent", monthlyCap: 30, capGroup: "everyday" },
+        { category: "dining", rate: 0.05, unit: "percent", monthlyCap: 30, capGroup: "everyday" },
+      ],
+    });
+    const b = cardBreakdown(card, resolveSpending(exactly({ groceries: 1000, dining: 1000 })), 2000);
+    expect(total(b)).toBeCloseTo(30);
+  });
+
+  it("keeps separate caps separate when no capGroup is set", () => {
+    const card = makeCard({
+      baseRule: { category: "general", rate: 0, unit: "percent" },
+      earnRules: [
+        { category: "groceries", rate: 0.05, unit: "percent", monthlyCap: 30 },
+        { category: "dining", rate: 0.05, unit: "percent", monthlyCap: 30 },
+      ],
+    });
+    const b = cardBreakdown(card, resolveSpending(exactly({ groceries: 1000, dining: 1000 })), 2000);
+    expect(total(b)).toBeCloseTo(60);
+  });
+
+  it("spends a shared pool on the highest-earning category first", () => {
+    const card = makeCard({
+      baseRule: { category: "general", rate: 0, unit: "percent" },
+      earnRules: [
+        { category: "groceries", rate: 0.02, unit: "percent", monthlyCap: 30, capGroup: "g" },
+        { category: "dining", rate: 0.1, unit: "percent", monthlyCap: 30, capGroup: "g" },
+      ],
+    });
+    // Dining at 10% fills the whole RM30 pool from RM300 of its RM1,000; groceries
+    // then earn nothing above base.
+    const b = cardBreakdown(card, resolveSpending(exactly({ groceries: 1000, dining: 1000 })), 2000);
+    const dining = b.find((x) => x.category === "dining")!;
+    const groceries = b.find((x) => x.category === "groceries")!;
+    expect(dining.annualValueRM / 12).toBeCloseTo(30);
+    expect(groceries.annualValueRM / 12).toBeCloseTo(0);
+    expect(total(b)).toBeCloseTo(30);
+  });
+
+  it("leaves uncapped rules alone", () => {
+    const card = makeCard({
+      baseRule: { category: "general", rate: 0, unit: "percent" },
+      earnRules: [{ category: "general", rate: 0.05, unit: "percent" }],
+    });
+    const b = cardBreakdown(card, resolveSpending(exactly({ dining: 2000, groceries: 2000 })), 4000);
+    expect(total(b)).toBeCloseTo(4000 * 0.05);
   });
 });
 

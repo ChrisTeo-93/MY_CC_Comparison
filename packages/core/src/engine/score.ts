@@ -58,7 +58,11 @@ export function ruleForCategory(
   return card.baseRule;
 }
 
-/** Annual RM reward value a card earns on a single category's monthly spend. */
+/**
+ * Annual RM reward value a card earns on ONE category's monthly spend, treating
+ * that category as if it were the only one with spend. Use `cardBreakdown` for a
+ * whole card — this cannot see caps pooled across sibling categories.
+ */
 export function categoryValue(
   card: Card,
   category: CategoryKey,
@@ -98,6 +102,100 @@ export function categoryValue(
     capped,
     rateLabel: rateLabel(rule),
   };
+}
+
+/**
+ * Per-category breakdown for a WHOLE card, with monthly caps pooled correctly.
+ *
+ * A cap belongs to a rule, not to a category. Computing each category on its own
+ * (via `categoryValue`) hands a fresh allowance to every category a rule serves,
+ * which silently multiplies the ceiling: a `general` omni-rule capped at RM50/mo
+ * would pay RM50 on dining AND RM50 on groceries AND so on, when RM50 is the
+ * card's whole monthly bonus. `capGroup` extends the same pooling across
+ * different rules, for banks that cap a group of categories jointly.
+ *
+ * Within a pool the allowance goes to the highest-earning categories first — the
+ * best case for the user, consistent with the optimistic routing modelled
+ * elsewhere in the engine.
+ */
+export function cardBreakdown(
+  card: Card,
+  resolved: Record<CategoryKey, number>,
+  totalMonthly: number,
+): CategoryBreakdown[] {
+  const baseRmPerRM = rmValuePerRM(card, card.baseRule);
+
+  interface Item {
+    category: CategoryKey;
+    rule: EarnRule;
+    rate: number;
+    capRM: number;
+    /** Spend the rate can reach, after any eligibleShare restriction. */
+    eligible: number;
+    /** Spend the restriction excludes — always earns the base rate. */
+    rest: number;
+    order: number;
+  }
+
+  const items: Item[] = [];
+  CATEGORIES.forEach((cat, order) => {
+    const spend = resolved[cat.key] ?? 0;
+    if (spend <= 0) return;
+    const rule = ruleForCategory(card, cat.key, totalMonthly);
+    const share = Math.min(1, Math.max(0, rule.eligibleShare ?? 1));
+    const eligible = spend * share;
+    items.push({
+      category: cat.key,
+      rule,
+      rate: rmValuePerRM(card, rule),
+      capRM: monthlyCapRM(card, rule),
+      eligible,
+      rest: spend - eligible,
+      order,
+    });
+  });
+
+  // One pool per capGroup, else per rule identity (the rule object itself).
+  const pools = new Map<string | EarnRule, Item[]>();
+  for (const it of items) {
+    const key = it.rule.capGroup ?? it.rule;
+    const list = pools.get(key);
+    if (list) list.push(it);
+    else pools.set(key, [it]);
+  }
+
+  const out: (CategoryBreakdown & { order: number })[] = [];
+  for (const members of pools.values()) {
+    // Rules in a group should share one cap; if they disagree, the smallest wins.
+    const capRM = Math.min(...members.map((m) => m.capRM));
+    let remaining = capRM;
+
+    for (const m of [...members].sort((a, b) => b.rate - a.rate)) {
+      const wanted = m.eligible * m.rate;
+      let reward: number;
+      let capped = false;
+      if (wanted <= remaining + 1e-9) {
+        reward = wanted;
+        remaining -= wanted;
+      } else {
+        capped = true;
+        const spendAtBonus = m.rate > 0 ? remaining / m.rate : 0;
+        reward = remaining + Math.max(0, m.eligible - spendAtBonus) * baseRmPerRM;
+        remaining = 0;
+      }
+      out.push({
+        category: m.category,
+        monthlySpend: m.eligible + m.rest,
+        annualValueRM: (reward + m.rest * baseRmPerRM) * 12,
+        capped,
+        rateLabel: rateLabel(m.rule),
+        order: m.order,
+      });
+    }
+  }
+
+  // Restore the canonical category order the UI expects.
+  return out.sort((a, b) => a.order - b.order).map(({ order: _order, ...b }) => b);
 }
 
 /** Effective annual fee after applying the card's waiver logic. */
@@ -167,9 +265,7 @@ export function scoreCard(
   const totalMonthly = Object.values(resolved).reduce((a, b) => a + b, 0);
   const annualSpend = totalMonthly * 12;
 
-  const breakdown = CATEGORIES.map((cat) =>
-    categoryValue(card, cat.key, resolved[cat.key], totalMonthly),
-  ).filter((b) => b.monthlySpend > 0);
+  const breakdown = cardBreakdown(card, resolved, totalMonthly);
 
   const grossAnnualRM = breakdown.reduce((a, b) => a + b.annualValueRM, 0);
   const effFee = effectiveAnnualFee(card, annualSpend);
