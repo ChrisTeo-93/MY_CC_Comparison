@@ -2,7 +2,9 @@ const { chromium } = require("playwright");
 const fs = require("fs");
 const PERSONAS = require("./personas.js");
 const BASE = process.env.BASE || "http://localhost:3210";
-const OUT = __dirname;
+// Run artifacts (screenshots, results.json) — gitignored; see scripts/cohort/.gitignore
+const OUT = process.env.COHORT_OUT || require("path").join(__dirname, "out");
+fs.mkdirSync(OUT, { recursive: true });
 
 const LEGEND = {
   reward: "What kind of reward",
