@@ -117,6 +117,25 @@ stays honest about who's charging what. It especially matters for combos: each
 extra card held adds another RM25/year its earnings must clear before it's worth
 adding.
 
+**Conditional (restricted) rates:** a headline rate often applies to only part of
+your spend. The most common Malaysian case is weekend-only cashback — Maybank 2
+Gold's "5%" lands on Saturdays and Sundays alone. Modelling that as an
+unconditional 5% inflated the card enough to put it in 13 of 18 cohort
+recommendations. An earn rule can now declare `eligibleShare` (0–1, the fraction
+of category spend the rate actually reaches) and `conditionLabel` (what restricts
+it). The eligible portion earns the bonus and is what the monthly cap is measured
+against; the rest falls to the base rate. Weekend rules use **0.3** — Sat+Sun is
+2/7 of days, nudged up because retail and dining skew to the weekend — and the UI
+states the assumption rather than hiding it ("⏱ Only weekends (Sat/Sun) — we
+estimate about 30% of your spend here qualifies"). It also propagates into
+"spend RMx/mo to max this out", which correctly triples when only a third of
+spend qualifies.
+
+The two fields are independent on purpose. Where a restriction is real but its
+impact can't be estimated honestly — Public Bank Visa Signature's RM100
+per-transaction minimum, when we don't model transaction sizes — set
+`conditionLabel` alone: the user is told about it and the engine invents nothing.
+
 **Category exclusions:** banks often advertise a broad "earn on everything" rate
 (modelled as `category: "general"`, an omni-boost applied to every spending
 category) but carve out specific transaction types — e-wallet reloads, bills/

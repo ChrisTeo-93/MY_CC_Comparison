@@ -33,6 +33,28 @@ export interface EarnRule {
    * Excluded categories fall back to the card's baseRule instead.
    */
   excludedCategories?: CategoryKey[];
+  /**
+   * Fraction (0–1) of this category's spend that the rate actually reaches, for
+   * bonuses restricted to a subset of transactions. Weekend-only rates are the
+   * common Malaysian case: a headline "5% cashback" that in fact applies on
+   * Saturdays and Sundays only reaches roughly 30% of a typical month's spend.
+   * Spend outside the restriction falls back to the card's base rate.
+   *
+   * Unset means 1 — the rate applies to every ringgit in the category. Set this
+   * ONLY where the share can be estimated defensibly; for a restriction whose
+   * impact can't be estimated (e.g. a minimum per-transaction amount, where we
+   * don't model transaction sizes), leave it unset and state the restriction in
+   * `conditionLabel` instead, so the user is told about it without the engine
+   * inventing a number.
+   */
+  eligibleShare?: number;
+  /**
+   * Plain-language statement of what restricts this rate — e.g. "weekends only
+   * (Sat/Sun)" or "min RM100 per transaction". Shown in the earning-conditions
+   * panel. Independent of `eligibleShare`: a restriction can be disclosed
+   * without being quantified.
+   */
+  conditionLabel?: string;
   /** Human-readable caveat shown in the UI. */
   notes?: string;
 }
@@ -178,6 +200,10 @@ export interface EarnCondition {
    * every transaction type counts, unlike cards that carve out exclusions.
    */
   excludedLabels?: string[];
+  /** What restricts this rate, when something does (see EarnRule.conditionLabel). */
+  conditionLabel?: string;
+  /** Share of category spend the rate reaches, when restricted (1 = all of it). */
+  eligibleShare?: number;
   note?: string;
 }
 

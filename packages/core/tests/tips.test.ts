@@ -171,12 +171,14 @@ describe("buildTips — scoped to the recommended combo", () => {
       walletPreference: "any",
     };
     const result = recommend({}, persona); // full catalogue, default spending
-    // Premise: RHB Shell ranks well here but does not make the combo.
-    expect(result.single.some((s) => s.card.id === "rhb-shell-visa")).toBe(true);
-    expect(result.combo.members.some((m) => m.card.id === "rhb-shell-visa")).toBe(false);
+    const inCombo = new Set(result.combo.members.map((m) => m.card.id));
+    // Premise, derived rather than hardcoded: some well-ranked card sits outside
+    // the combo. Which card that is shifts as the catalogue changes.
+    const outsider = result.single.slice(0, 6).find((s) => !inCombo.has(s.card.id));
+    expect(outsider, "expected a top-ranked card outside the combo").toBeTruthy();
 
     for (const tip of buildTips(result, {})) {
-      expect(`${tip.title} ${tip.detail}`).not.toContain("RHB Shell");
+      expect(`${tip.title} ${tip.detail}`).not.toContain(outsider!.card.name);
     }
   });
 });

@@ -26,19 +26,29 @@ export function buildConditions(
     const yourSpend =
       rule.category === "general" ? totalMonthly - excludedSpend : resolved[rule.category] ?? 0;
     const unlocked = rule.minMonthlySpend === undefined || totalMonthly >= rule.minMonthlySpend;
-    const yourReward = yourSpend * rmPerRM;
+    // A restricted rate (weekends only, etc.) reaches only part of that spend, so
+    // both the reward and "have you maxed the cap" must be judged on that part.
+    const share = Math.min(1, Math.max(0, rule.eligibleShare ?? 1));
+    const eligibleSpend = yourSpend * share;
+    const yourReward = eligibleSpend * rmPerRM;
+    // Reaching the cap needs enough ELIGIBLE spend, so the category spend
+    // required is correspondingly higher when only a share of it qualifies.
+    const spendToMax =
+      hasCap && rmPerRM > 0 && share > 0 ? capRM / rmPerRM / share : undefined;
 
     return {
       category: rule.category,
       label: rule.category === "general" ? "All spend" : CATEGORY_BY_KEY[rule.category].label,
       rateLabel: rateLabel(rule),
       maxMonthlyRewardRM: hasCap ? capRM : undefined,
-      spendToMaxRM: hasCap && rmPerRM > 0 ? capRM / rmPerRM : undefined,
+      spendToMaxRM: spendToMax,
       minTotalSpendRM: rule.minMonthlySpend,
       yourMonthlySpendRM: yourSpend,
       unlocked,
       hitsCap: hasCap && yourReward >= capRM - 1e-9,
       excludedLabels: excludedCategories.map((cat) => CATEGORY_BY_KEY[cat].label),
+      conditionLabel: rule.conditionLabel,
+      eligibleShare: rule.eligibleShare === undefined ? undefined : share,
       note: rule.notes,
     };
   });

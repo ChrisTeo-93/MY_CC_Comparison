@@ -97,6 +97,15 @@ function EarnRow({ c, totalMonthly }: { c: EarnCondition; totalMonthly: number }
         </Text>
       )}
 
+      {c.conditionLabel && (
+        <Text style={[styles.rowNote, { color: colors.amber700 }]}>
+          {`⏱ Only ${c.conditionLabel}`}
+          {c.eligibleShare !== undefined
+            ? ` — we estimate about ${Math.round(c.eligibleShare * 100)}% of your spend here qualifies; the rest earns the base rate.`
+            : " — spend outside that earns only the base rate."}
+        </Text>
+      )}
+
       {c.note && <Text style={styles.note}>{c.note}</Text>}
     </View>
   );

@@ -123,6 +123,15 @@ function EarnRow({ c, totalMonthly }: { c: EarnCondition; totalMonthly: number }
         </p>
       )}
 
+      {c.conditionLabel && (
+        <p className="mt-1 text-xs text-amber-700">
+          ⏱ Only {c.conditionLabel}
+          {c.eligibleShare !== undefined
+            ? ` — we estimate about ${Math.round(c.eligibleShare * 100)}% of your spend here qualifies; the rest earns the base rate.`
+            : " — spend outside that earns only the base rate."}
+        </p>
+      )}
+
       {c.note && <p className="mt-1 text-xs text-slate-400">{c.note}</p>}
     </li>
   );

@@ -70,16 +70,26 @@ export function categoryValue(
   const baseRmPerRM = rmValuePerRM(card, card.baseRule);
   const capRM = monthlyCapRM(card, rule);
 
-  let monthlyReward = monthlySpend * rmPerRM;
+  // A restricted bonus (weekend-only being the common Malaysian case) reaches
+  // only part of the category's spend; the rest earns the base rate. Unset means
+  // the rate applies to everything, so this is a no-op for unrestricted rules.
+  const share = Math.min(1, Math.max(0, rule.eligibleShare ?? 1));
+  const eligibleSpend = monthlySpend * share;
+  const restrictedOutSpend = monthlySpend - eligibleSpend;
+
+  // The cap applies to the bonus, so it is measured against eligible spend only.
+  let monthlyReward = eligibleSpend * rmPerRM;
   let capped = false;
 
   if (monthlyReward > capRM) {
     capped = true;
     // Spend that earned up to the cap, remainder falls back to base rate.
     const spendAtBonus = rmPerRM > 0 ? capRM / rmPerRM : 0;
-    const overflowSpend = Math.max(0, monthlySpend - spendAtBonus);
+    const overflowSpend = Math.max(0, eligibleSpend - spendAtBonus);
     monthlyReward = capRM + overflowSpend * baseRmPerRM;
   }
+
+  monthlyReward += restrictedOutSpend * baseRmPerRM;
 
   return {
     category,

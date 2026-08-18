@@ -114,6 +114,60 @@ describe("categoryValue", () => {
   });
 });
 
+// --- conditional (restricted) earn rates ------------------------------------
+
+describe("categoryValue — eligibleShare", () => {
+  /** 10% on groceries, but only on part of the spend. */
+  const restricted = (share?: number, cap?: number) =>
+    makeCard({
+      baseRule: { category: "general", rate: 0.005, unit: "percent" },
+      earnRules: [
+        { category: "groceries", rate: 0.1, unit: "percent", eligibleShare: share, monthlyCap: cap },
+      ],
+    });
+
+  it("is a no-op when unset — unrestricted rules are unchanged", () => {
+    const b = categoryValue(restricted(undefined), "groceries", 1000, 1000);
+    expect(b.annualValueRM).toBeCloseTo(1000 * 0.1 * 12);
+  });
+
+  it("applies the bonus to the eligible share and the base rate to the rest", () => {
+    // 30% of RM1,000 earns 10% (RM30); the other RM700 earns the 0.5% base (RM3.50).
+    const b = categoryValue(restricted(0.3), "groceries", 1000, 1000);
+    expect(b.annualValueRM).toBeCloseTo((30 + 3.5) * 12);
+  });
+
+  it("measures the monthly cap against eligible spend, not total spend", () => {
+    // Eligible = RM300 at 10% = RM30, over the RM20 cap. RM200 of eligible spend
+    // reaches the cap; the RM100 of eligible overflow AND the RM700 restricted
+    // out both fall to the 0.5% base = RM4.
+    const b = categoryValue(restricted(0.3, 20), "groceries", 1000, 1000);
+    expect(b.capped).toBe(true);
+    expect(b.annualValueRM).toBeCloseTo((20 + 4) * 12);
+  });
+
+  it("earns only the base rate when nothing qualifies", () => {
+    const b = categoryValue(restricted(0), "groceries", 1000, 1000);
+    expect(b.annualValueRM).toBeCloseTo(1000 * 0.005 * 12);
+  });
+
+  it("clamps an out-of-range share rather than inventing value", () => {
+    expect(categoryValue(restricted(5), "groceries", 1000, 1000).annualValueRM).toBeCloseTo(
+      categoryValue(restricted(1), "groceries", 1000, 1000).annualValueRM,
+    );
+    expect(categoryValue(restricted(-2), "groceries", 1000, 1000).annualValueRM).toBeCloseTo(
+      categoryValue(restricted(0), "groceries", 1000, 1000).annualValueRM,
+    );
+  });
+
+  it("cuts a weekend-only card's value well below its headline rate", () => {
+    // The real-world shape: a 5% "cashback" that only lands on Sat/Sun.
+    const headline = categoryValue(restricted(1), "groceries", 2000, 2000).annualValueRM;
+    const actual = categoryValue(restricted(0.3), "groceries", 2000, 2000).annualValueRM;
+    expect(actual).toBeLessThan(headline * 0.4);
+  });
+});
+
 // --- fee waiver ------------------------------------------------------------
 
 describe("effectiveAnnualFee", () => {

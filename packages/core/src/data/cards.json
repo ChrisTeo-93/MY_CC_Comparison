@@ -26,7 +26,9 @@
           "ewallet",
           "bills"
         ],
-        "notes": "5% weekend (Sat/Sun) cashback on the Amex, capped RM50/month. Excludes govt, utilities and e-wallet reloads (govt payments are typically routed through bill-payment/JomPAY channels, modelled here under Bills & Utilities)."
+        "notes": "5% weekend (Sat/Sun) cashback on the Amex, capped RM50/month. Excludes govt, utilities and e-wallet reloads (govt payments are typically routed through bill-payment/JomPAY channels, modelled here under Bills & Utilities).",
+        "eligibleShare": 0.3,
+        "conditionLabel": "weekends (Sat/Sun)"
       }
     ],
     "perks": [
@@ -112,28 +114,36 @@
         "unit": "percent",
         "monthlyCap": 20,
         "minMonthlySpend": 1000,
-        "notes": "Weekend (Sat/Sun) only, requires ≥RM1,000/month retail. Weekday rate is 0.5%."
+        "notes": "Weekend (Sat/Sun) only, requires ≥RM1,000/month retail. Weekday rate is 0.5%.",
+        "eligibleShare": 0.3,
+        "conditionLabel": "weekends (Sat/Sun)"
       },
       {
         "category": "petrol",
         "rate": 0.1,
         "unit": "percent",
         "monthlyCap": 15,
-        "minMonthlySpend": 1000
+        "minMonthlySpend": 1000,
+        "eligibleShare": 0.3,
+        "conditionLabel": "weekends (Sat/Sun)"
       },
       {
         "category": "groceries",
         "rate": 0.1,
         "unit": "percent",
         "monthlyCap": 15,
-        "minMonthlySpend": 1000
+        "minMonthlySpend": 1000,
+        "eligibleShare": 0.3,
+        "conditionLabel": "weekends (Sat/Sun)"
       },
       {
         "category": "ewallet",
         "rate": 0.1,
         "unit": "percent",
         "monthlyCap": 15,
-        "minMonthlySpend": 1000
+        "minMonthlySpend": 1000,
+        "eligibleShare": 0.3,
+        "conditionLabel": "weekends (Sat/Sun)"
       }
     ],
     "perks": [
@@ -381,7 +391,9 @@
         "category": "general",
         "rate": 5,
         "unit": "pointsPerRM",
-        "notes": "5x TreatsPoints on weekends (the Visa side of the 2-card bundle)."
+        "notes": "5x TreatsPoints on weekends (the Visa side of the 2-card bundle).",
+        "eligibleShare": 0.3,
+        "conditionLabel": "weekends (Sat/Sun)"
       }
     ],
     "perks": [
@@ -907,13 +919,15 @@
         "rate": 0.02,
         "unit": "percent",
         "monthlyCap": 30,
-        "notes": "2% on dining + online, minimum RM100 per transaction; RM30/month combined cap."
+        "notes": "2% on dining + online, minimum RM100 per transaction; RM30/month combined cap.",
+        "conditionLabel": "transactions of RM100 or more"
       },
       {
         "category": "online",
         "rate": 0.02,
         "unit": "percent",
-        "monthlyCap": 30
+        "monthlyCap": 30,
+        "conditionLabel": "transactions of RM100 or more"
       }
     ],
     "perks": [

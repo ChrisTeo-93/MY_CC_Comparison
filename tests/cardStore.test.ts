@@ -111,6 +111,46 @@ describe("validateCard", () => {
     expect(validateCard(validCard({ confidence: "totally" as never })).ok).toBe(false);
   });
 
+  it("accepts a restricted rule with an eligibleShare and label", () => {
+    const r = validateCard(
+      validCard({
+        earnRules: [
+          { category: "dining", rate: 0.05, unit: "percent", eligibleShare: 0.3, conditionLabel: "weekends (Sat/Sun)" },
+        ],
+      }),
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("accepts a conditionLabel with no share — a disclosed but unquantified restriction", () => {
+    expect(
+      validateCard(
+        validCard({
+          earnRules: [
+            { category: "dining", rate: 0.05, unit: "percent", conditionLabel: "transactions of RM100 or more" },
+          ],
+        }),
+      ).ok,
+    ).toBe(true);
+  });
+
+  it("rejects an eligibleShare outside 0–1", () => {
+    for (const bad of [1.5, -0.2]) {
+      const r = validateCard(
+        validCard({ earnRules: [{ category: "dining", rate: 0.05, unit: "percent", eligibleShare: bad }] }),
+      );
+      expect(r.ok, `share ${bad} should be rejected`).toBe(false);
+      if (!r.ok) expect(r.errors.some((e) => e.includes("eligibleShare"))).toBe(true);
+    }
+  });
+
+  it("rejects an empty conditionLabel", () => {
+    const r = validateCard(
+      validCard({ earnRules: [{ category: "dining", rate: 0.05, unit: "percent", conditionLabel: "  " }] }),
+    );
+    expect(r.ok).toBe(false);
+  });
+
   it("accepts an optional needsReview boolean", () => {
     expect(validateCard(validCard({ needsReview: true })).ok).toBe(true);
     expect(validateCard(validCard({ needsReview: false })).ok).toBe(true);

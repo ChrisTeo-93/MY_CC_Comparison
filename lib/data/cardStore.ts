@@ -56,6 +56,14 @@ function validateEarnRule(rule: unknown, label: string, errors: string[]): void 
   if (r.minMonthlySpend !== undefined && (!isFiniteNumber(r.minMonthlySpend) || (r.minMonthlySpend as number) < 0)) {
     errors.push(`${label}: minMonthlySpend must be a number ≥ 0`);
   }
+  if (r.eligibleShare !== undefined) {
+    if (!isFiniteNumber(r.eligibleShare) || (r.eligibleShare as number) < 0 || (r.eligibleShare as number) > 1) {
+      errors.push(`${label}: eligibleShare must be a number between 0 and 1 (omit for an unrestricted rate)`);
+    }
+  }
+  if (r.conditionLabel !== undefined && !isNonEmptyString(r.conditionLabel)) {
+    errors.push(`${label}: conditionLabel must be a non-empty string`);
+  }
   if (r.excludedCategories !== undefined) {
     if (!Array.isArray(r.excludedCategories)) {
       errors.push(`${label}: excludedCategories must be an array of category keys`);
