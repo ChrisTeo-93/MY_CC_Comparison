@@ -16,7 +16,10 @@ The user goes through three steps:
 
 There's also an **"I already have cards"** flow: pick the cards you own and see what
 you currently earn, whether you're leaving value on the table, and which card would
-add the most.
+be worth taking on. Where a suggested card would take over from one you already
+hold rather than supplement it, that's said plainly (`AddSuggestion.replaces`) —
+"add this" and "replace that with this" are different pieces of advice, and the
+displaced card can be cancelled to stop paying its RM25/year govt tax.
 
 The key idea: **cashback, points and miles are all normalised to ringgit value**, so
 different reward types are judged on the same scale.
