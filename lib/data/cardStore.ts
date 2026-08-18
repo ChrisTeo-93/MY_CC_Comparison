@@ -64,6 +64,9 @@ function validateEarnRule(rule: unknown, label: string, errors: string[]): void 
       errors.push(`${label}: eligibleShare must be a number between 0 and 1 (omit for an unrestricted rate)`);
     }
   }
+  if (r.shareSource !== undefined && r.shareSource !== "weekend") {
+    errors.push(`${label}: shareSource must be "weekend" (the only user-answered restriction so far)`);
+  }
   if (r.conditionLabel !== undefined && !isNonEmptyString(r.conditionLabel)) {
     errors.push(`${label}: conditionLabel must be a non-empty string`);
   }

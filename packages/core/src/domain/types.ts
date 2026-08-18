@@ -62,6 +62,13 @@ export interface EarnRule {
    */
   eligibleShare?: number;
   /**
+   * Marks the KIND of restriction, so the eligible share can come from the
+   * user's own answer instead of a card-level estimate. "weekend" resolves from
+   * `Persona.weekendSpending`; `eligibleShare` stays as the fallback for when
+   * that hasn't been answered.
+   */
+  shareSource?: "weekend";
+  /**
    * Plain-language statement of what restricts this rate — e.g. "weekends only
    * (Sat/Sun)" or "min RM100 per transaction". Shown in the earning-conditions
    * panel. Independent of `eligibleShare`: a restriction can be disclosed
@@ -157,6 +164,8 @@ export type IncomeBracket = "under36k" | "36to60k" | "60to100k" | "over100k";
 export type FeeTolerance = "noFee" | "ifWorthIt" | "premiumOk";
 export type TravelFrequency = "never" | "sometimes" | "often";
 export type EffortTolerance = "single" | "multi";
+/** How much of a user's spending lands on Sat/Sun — drives weekend-only rates. */
+export type WeekendSpending = "weekdays" | "mixed" | "weekends";
 /** Which mobile wallet the user pays with — or "any" if they don't mind. */
 export type WalletPreference = MobileWallet | "any";
 
@@ -173,6 +182,13 @@ export interface Persona {
    * filtering) when unset.
    */
   walletPreference?: WalletPreference;
+  /**
+   * How weekend-heavy their spending is. Several Malaysian cards pay their
+   * headline rate on Saturdays and Sundays only, so this materially changes what
+   * those cards are worth. Optional; unset falls back to each rule's own
+   * `eligibleShare` estimate.
+   */
+  weekendSpending?: WeekendSpending;
 }
 
 /** Per-category contribution to a card's annual value. */

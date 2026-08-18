@@ -7,6 +7,7 @@ import type {
 } from "../domain/types";
 import { walletsForCard } from "../domain/wallets";
 import { additionsTo, bestCombo } from "./combo";
+import { applyPersonaShares } from "./shares";
 import { scoreCard } from "./score";
 
 /**
@@ -25,7 +26,12 @@ export function recommend(
   persona: Persona,
   catalogue: Card[] = ACTIVE_CARDS,
 ): RecommendationResult {
-  const scores = catalogue.map((c) => scoreCard(c, spending, persona));
+  // Resolve any rate whose eligible share depends on the user (weekend-only
+  // rates) before anything is scored, so every downstream figure — and the
+  // conditions panel — reflects their own answer rather than a card average.
+  const scores = applyPersonaShares(catalogue, persona).map((c) =>
+    scoreCard(c, spending, persona),
+  );
 
   const ineligible = scores.filter((s) => !s.eligible).map((s) => s.card);
 

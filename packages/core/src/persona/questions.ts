@@ -7,6 +7,7 @@ import type {
   RewardPreference,
   TravelFrequency,
   WalletPreference,
+  WeekendSpending,
 } from "../domain/types";
 import { walletsForCard } from "../domain/wallets";
 import { BRACKET_INCOME } from "../engine/score";
@@ -145,12 +146,37 @@ export const WALLET_QUESTION: PersonaQuestion<"walletPreference"> = {
   ],
 };
 
+export const WEEKEND_QUESTION: PersonaQuestion<"weekendSpending"> = {
+  key: "weekendSpending",
+  title: "When do you do most of your spending?",
+  subtitle:
+    "Several cards pay their headline rate on Saturdays and Sundays only, so this changes what they're really worth to you.",
+  options: [
+    {
+      value: "weekdays" as WeekendSpending,
+      label: "🏢 Mostly weekdays",
+      description: "Commuting, work lunches, errands on the way home.",
+    },
+    {
+      value: "mixed" as WeekendSpending,
+      label: "🗓️ A normal mix",
+      description: "Some during the week, more at the weekend.",
+    },
+    {
+      value: "weekends" as WeekendSpending,
+      label: "🛍️ Mostly weekends",
+      description: "I shop, eat out and fill up mainly on Sat/Sun.",
+    },
+  ],
+};
+
 /** Ordered list of persona questions for the wizard. */
 export const PERSONA_QUESTIONS: PersonaQuestion[] = [
   REWARD_QUESTION as PersonaQuestion,
   INCOME_QUESTION as PersonaQuestion,
   FEE_QUESTION as PersonaQuestion,
   TRAVEL_QUESTION as PersonaQuestion,
+  WEEKEND_QUESTION as PersonaQuestion,
   WALLET_QUESTION as PersonaQuestion,
   EFFORT_QUESTION as PersonaQuestion,
 ];
@@ -162,4 +188,5 @@ export const DEFAULT_PERSONA: Persona = {
   travelFrequency: "sometimes",
   effortTolerance: "multi",
   walletPreference: "any",
+  weekendSpending: "mixed",
 };

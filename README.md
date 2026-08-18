@@ -147,6 +147,16 @@ estimate about 30% of your spend here qualifies"). It also propagates into
 "spend RMx/mo to max this out", which correctly triples when only a third of
 spend qualifies.
 
+Where the share depends on the person rather than the card, the user is asked.
+A rule marked `shareSource: "weekend"` takes its share from their own answer to
+"when do you do most of your spending?" (`Persona.weekendSpending` — 15% / 30% /
+50%), resolved once at the entry points by `applyPersonaShares` so nothing
+downstream needs to know, and `eligibleShare` stays as the fallback for an
+unanswered persona. It matters: on identical spending, Maybank 2 Gold is worth
+RM323/yr to a weekday spender and RM646/yr to a weekend one, and the spend needed
+to max its cap moves from RM6,667/mo to RM2,000/mo. All three figures are quoted
+back to the user in the conditions panel.
+
 The two fields are independent on purpose. Where a restriction is real but its
 impact can't be estimated honestly — Public Bank Visa Signature's RM100
 per-transaction minimum, when we don't model transaction sizes — set

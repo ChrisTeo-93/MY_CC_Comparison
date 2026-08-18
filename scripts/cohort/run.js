@@ -11,6 +11,7 @@ const LEGEND = {
   income: "What's your annual income",
   fee: "How do you feel about annual fees",
   travel: "How often do you travel",
+  weekend: "When do you do most of your spending",
   wallet: "How do you tap to pay",
   effort: "How many cards are you willing",
 };

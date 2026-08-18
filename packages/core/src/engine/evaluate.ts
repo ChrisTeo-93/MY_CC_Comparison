@@ -8,6 +8,7 @@ import type {
   SpendingProfile,
 } from "../domain/types";
 import { bestCombo } from "./combo";
+import { applyPersonaShares } from "./shares";
 import { recommend } from "./recommend";
 import { scoreCard } from "./score";
 import { buildTips, type MaxTip } from "./tips";
@@ -47,7 +48,10 @@ export function evaluateOwned(
   persona: Persona,
   ownedIds: string[],
 ): Evaluation {
-  const ownedCards = ownedIds.map((id) => CARD_BY_ID[id]).filter(Boolean) as Card[];
+  const ownedCards = applyPersonaShares(
+    ownedIds.map((id) => CARD_BY_ID[id]).filter(Boolean) as Card[],
+    persona,
+  );
   const ownedScores = ownedCards
     .map((c) => scoreOwned(c, spending, persona))
     .sort((a, b) => b.netAnnualRM - a.netAnnualRM);
@@ -67,7 +71,8 @@ export function evaluateOwned(
   );
   const suggestions: AddSuggestion[] = candidates
     .map((card) => {
-      const combo = bestCombo([...ownedScores, scoreOwned(card, spending, persona)], spending, persona);
+      const [adjusted] = applyPersonaShares([card], persona);
+      const combo = bestCombo([...ownedScores, scoreOwned(adjusted, spending, persona)], spending, persona);
       return { card, addedAnnualRM: combo.netAnnualRM - currentNetAnnualRM };
     })
     .filter((s) => s.addedAnnualRM >= NEGLIGIBLE)

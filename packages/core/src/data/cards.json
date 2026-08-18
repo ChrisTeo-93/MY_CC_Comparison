@@ -28,7 +28,8 @@
         ],
         "notes": "5% weekend (Sat/Sun) cashback on the Amex, capped RM50/month. Excludes govt, utilities and e-wallet reloads (govt payments are typically routed through bill-payment/JomPAY channels, modelled here under Bills & Utilities).",
         "eligibleShare": 0.3,
-        "conditionLabel": "weekends (Sat/Sun)"
+        "conditionLabel": "weekends (Sat/Sun)",
+        "shareSource": "weekend"
       }
     ],
     "perks": [
@@ -119,7 +120,8 @@
         "minMonthlySpend": 1000,
         "notes": "Weekend (Sat/Sun) only, requires ≥RM1,000/month retail. Weekday rate is 0.5%.",
         "eligibleShare": 0.3,
-        "conditionLabel": "weekends (Sat/Sun)"
+        "conditionLabel": "weekends (Sat/Sun)",
+        "shareSource": "weekend"
       },
       {
         "category": "petrol",
@@ -128,7 +130,8 @@
         "monthlyCap": 15,
         "minMonthlySpend": 1000,
         "eligibleShare": 0.3,
-        "conditionLabel": "weekends (Sat/Sun)"
+        "conditionLabel": "weekends (Sat/Sun)",
+        "shareSource": "weekend"
       },
       {
         "category": "groceries",
@@ -137,7 +140,8 @@
         "monthlyCap": 15,
         "minMonthlySpend": 1000,
         "eligibleShare": 0.3,
-        "conditionLabel": "weekends (Sat/Sun)"
+        "conditionLabel": "weekends (Sat/Sun)",
+        "shareSource": "weekend"
       },
       {
         "category": "ewallet",
@@ -146,7 +150,8 @@
         "monthlyCap": 15,
         "minMonthlySpend": 1000,
         "eligibleShare": 0.3,
-        "conditionLabel": "weekends (Sat/Sun)"
+        "conditionLabel": "weekends (Sat/Sun)",
+        "shareSource": "weekend"
       }
     ],
     "perks": [
@@ -396,7 +401,8 @@
         "unit": "pointsPerRM",
         "notes": "5x TreatsPoints on weekends (the Visa side of the 2-card bundle).",
         "eligibleShare": 0.3,
-        "conditionLabel": "weekends (Sat/Sun)"
+        "conditionLabel": "weekends (Sat/Sun)",
+        "shareSource": "weekend"
       }
     ],
     "perks": [
