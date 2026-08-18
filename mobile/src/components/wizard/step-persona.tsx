@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import type { Persona } from "@kadcompare/core";
-import { PERSONA_QUESTIONS } from "@kadcompare/core";
+import { ACTIVE_CARDS, PERSONA_QUESTIONS } from "@kadcompare/core";
 import { colors, spacing } from "@/constants/theme";
 import { OptionCard } from "@/components/ui/option-card";
 import { Button } from "@/components/ui/button";
@@ -31,15 +31,33 @@ export function StepPersona({ persona, onChange, onNext }: StepPersonaProps) {
             <Text style={styles.qTitle}>{q.title}</Text>
             <Text style={styles.qSubtitle}>{q.subtitle}</Text>
             <View style={styles.grid}>
-              {q.options.map((opt) => (
+              {q.options.map((opt) => {
+                // Only the questions that narrow the catalogue report a count.
+                const left = q.eligibleCount?.(opt.value, ACTIVE_CARDS);
+                return (
                 <OptionCard
                   key={opt.value}
                   label={opt.label}
                   description={opt.description}
+                  footnote={
+                    left === undefined
+                      ? undefined
+                      : left === 0
+                        ? "No cards available"
+                        : `${left} of ${ACTIVE_CARDS.length} cards available`
+                  }
+                  footnoteTone={
+                    left === undefined || left >= ACTIVE_CARDS.length / 3
+                      ? "neutral"
+                      : left === 0
+                        ? "bad"
+                        : "warn"
+                  }
                   selected={selected === opt.value}
                   onPress={() => onChange({ [q.key]: opt.value } as Partial<Persona>)}
                 />
-              ))}
+                );
+              })}
             </View>
           </View>
         );

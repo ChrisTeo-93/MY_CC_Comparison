@@ -1,4 +1,5 @@
 import type {
+  Card,
   EffortTolerance,
   FeeTolerance,
   IncomeBracket,
@@ -7,6 +8,8 @@ import type {
   TravelFrequency,
   WalletPreference,
 } from "../domain/types";
+import { walletsForCard } from "../domain/wallets";
+import { BRACKET_INCOME } from "../engine/score";
 
 export interface QuestionOption<T extends string> {
   value: T;
@@ -18,6 +21,13 @@ export interface PersonaQuestion<K extends keyof Persona = keyof Persona> {
   key: K;
   title: string;
   subtitle: string;
+  /**
+   * How many cards in the catalogue an answer leaves selectable, for the two
+   * questions that actually narrow the field (income and wallet). Shown beside
+   * each option so a dead end is visible at the moment of choosing, rather than
+   * after the user has answered everything and entered their spending.
+   */
+  eligibleCount?: (value: NonNullable<Persona[K]>, catalogue: Card[]) => number;
   // NonNullable because some persona keys (e.g. walletPreference) are optional,
   // so Persona[K] would otherwise include `undefined`, which isn't a valid
   // option value.
@@ -56,6 +66,8 @@ export const INCOME_QUESTION: PersonaQuestion<"incomeBracket"> = {
   key: "incomeBracket",
   title: "What's your annual income?",
   subtitle: "Used only to filter out cards you wouldn't qualify for.",
+  eligibleCount: (value, catalogue) =>
+    catalogue.filter((c) => BRACKET_INCOME[value] >= c.minAnnualIncome).length,
   options: [
     { value: "under36k" as IncomeBracket, label: "Below RM36k", description: "Under RM3,000/month." },
     { value: "36to60k" as IncomeBracket, label: "RM36k – RM60k", description: "RM3,000 – RM5,000/month." },
@@ -100,6 +112,10 @@ export const WALLET_QUESTION: PersonaQuestion<"walletPreference"> = {
   key: "walletPreference",
   title: "How do you tap to pay?",
   subtitle: "We'll hide cards that don't work with your phone's wallet.",
+  eligibleCount: (value, catalogue) =>
+    value === "any"
+      ? catalogue.length
+      : catalogue.filter((c) => walletsForCard(c).includes(value)).length,
   options: [
     {
       value: "any" as WalletPreference,

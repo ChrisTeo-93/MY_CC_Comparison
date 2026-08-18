@@ -13,7 +13,7 @@ import { govtServiceTax, monthlyCapRM, rateLabel, rmValuePerRM } from "./normali
 import { buildConditions } from "./conditions";
 
 /** Representative qualifying income (RM/year) for each bracket. */
-const BRACKET_INCOME: Record<IncomeBracket, number> = {
+export const BRACKET_INCOME: Record<IncomeBracket, number> = {
   under36k: 30000,
   "36to60k": 48000,
   "60to100k": 78000,

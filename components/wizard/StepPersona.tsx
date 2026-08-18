@@ -1,7 +1,7 @@
 "use client";
 
 import type { Persona } from "@kadcompare/core";
-import { PERSONA_QUESTIONS } from "@kadcompare/core";
+import { ACTIVE_CARDS, PERSONA_QUESTIONS } from "@kadcompare/core";
 
 interface StepPersonaProps {
   persona: Partial<Persona>;
@@ -30,6 +30,8 @@ export function StepPersona({ persona, onChange, onNext }: StepPersonaProps) {
             <div className="grid gap-3 sm:grid-cols-2">
               {q.options.map((opt) => {
                 const isOn = selected === opt.value;
+                // Only the questions that narrow the catalogue report a count.
+                const left = q.eligibleCount?.(opt.value, ACTIVE_CARDS);
                 return (
                   <button
                     key={opt.value}
@@ -44,6 +46,22 @@ export function StepPersona({ persona, onChange, onNext }: StepPersonaProps) {
                   >
                     <div className="font-medium text-slate-900">{opt.label}</div>
                     <div className="mt-1 text-sm text-slate-500">{opt.description}</div>
+                    {left !== undefined && (
+                      <div
+                        className={[
+                          "mt-2 text-xs font-medium",
+                          left === 0
+                            ? "text-red-600"
+                            : left < ACTIVE_CARDS.length / 3
+                              ? "text-amber-700"
+                              : "text-slate-400",
+                        ].join(" ")}
+                      >
+                        {left === 0
+                          ? "No cards available"
+                          : `${left} of ${ACTIVE_CARDS.length} cards available`}
+                      </div>
+                    )}
                   </button>
                 );
               })}

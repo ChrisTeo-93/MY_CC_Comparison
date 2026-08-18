@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, govtServiceTax, walletsForCard, WALLET_META } from "@kadcompare/core";
-import type { Persona, RecommendationResult, SpendingProfile } from "@kadcompare/core";
+import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, explainOmissions, govtServiceTax, incomeUpside, walletsForCard, WALLET_META } from "@kadcompare/core";
+import type { CardOmission, Persona, RecommendationResult, SpendingProfile } from "@kadcompare/core";
 import { colors, radii, spacing } from "@/constants/theme";
 import { CardResultCard } from "@/components/results/card-result-card";
 import { FreshnessBadge } from "@/components/results/freshness-badge";
@@ -37,6 +37,8 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
   // Every card carries the RM25 govt tax, so at very low spend the best card can
   // still be a net loss. Saying so is more useful than ranking losses.
   const nothingPaysOff = single.length > 0 && single[0].netAnnualRM <= 0;
+  const omissions = explainOmissions(result, spending);
+  const upside = incomeUpside(spending, persona);
 
   const comboMembers = comboAvailable
     ? combo.members
@@ -196,6 +198,22 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
         <WalletFilteredDisclosure cards={walletFiltered} walletLabel={walletLabel} />
       )}
 
+      {omissions.length > 0 && <OmissionsDisclosure omissions={omissions} />}
+
+      {upside && (
+        <View style={styles.upsideBox}>
+          <Text style={styles.upsideText}>
+            <Text style={styles.upsideStrong}>
+              Earning {upside.nextBracketLabel} would open up {upside.unlocks} more card
+              {upside.unlocks === 1 ? "" : "s"}.
+            </Text>{" "}
+            {upside.extraAnnualRM > 0
+              ? `On the spending you entered, the best setup there is worth about ${rm(upside.extraAnnualRM)}/yr more than what you can get today.`
+              : "On the spending you entered they wouldn't beat what you can already get, so you're not missing out yet."}
+          </Text>
+        </View>
+      )}
+
       {ineligible.length > 0 && (
         <IneligibleDisclosure cards={ineligible} />
       )}
@@ -228,6 +246,34 @@ function IneligibleDisclosure({ cards }: { cards: RecommendationResult["ineligib
             <Text key={c.id} style={styles.ineligibleItem}>
               {c.name} — needs {rm(c.minAnnualIncome)}/year
             </Text>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+
+function OmissionsDisclosure({ omissions }: { omissions: CardOmission[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <View style={styles.ineligibleBox}>
+      <Pressable onPress={() => setOpen((o) => !o)}>
+        <Text style={styles.ineligibleSummary}>Why not these cards? {open ? "▲" : "▼"}</Text>
+      </Pressable>
+      {open && (
+        <View style={{ marginTop: spacing.sm, gap: spacing.sm }}>
+          <Text style={styles.walletHint}>
+            You qualify for these — here&apos;s what specifically cost them against your
+            spending.
+          </Text>
+          {omissions.map((o) => (
+            <View key={o.card.id} style={{ flexDirection: "row", gap: spacing.sm }}>
+              <View style={[styles.omitAccent, { backgroundColor: o.card.color }]} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.omitName}>{o.card.name}</Text>
+                <Text style={styles.ineligibleItem}>{o.reason}</Text>
+              </View>
+            </View>
           ))}
         </View>
       )}
@@ -347,5 +393,16 @@ const styles = StyleSheet.create({
   ineligibleSummary: { fontSize: 13, fontWeight: "600", color: colors.slate700 },
   ineligibleItem: { fontSize: 12, color: colors.slate500 },
   walletHint: { fontSize: 11, color: colors.slate400 },
+  omitAccent: { width: 3, borderRadius: radii.full, marginTop: 2 },
+  omitName: { fontSize: 13, fontWeight: "600", color: colors.slate900 },
+  upsideBox: {
+    borderRadius: radii.md,
+    borderWidth: 1,
+    borderColor: colors.brandLight,
+    backgroundColor: "#f0fdfa",
+    padding: spacing.md,
+  },
+  upsideText: { fontSize: 13, color: colors.slate700 },
+  upsideStrong: { fontWeight: "700", color: colors.slate900 },
   disclaimer: { fontSize: 11, color: colors.slate400, textAlign: "center", paddingHorizontal: spacing.md },
 });

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, govtServiceTax, walletsForCard, WALLET_META } from "@kadcompare/core";
+import { CATEGORY_BY_KEY, rm, resolveSpending, buildConditions, buildTips, explainOmissions, govtServiceTax, incomeUpside, walletsForCard, WALLET_META } from "@kadcompare/core";
 import type { Persona, RecommendationResult, SpendingProfile } from "@kadcompare/core";
 import { CardResultCard } from "@/components/results/CardResultCard";
 import { FreshnessBadge } from "@/components/results/FreshnessBadge";
@@ -38,6 +38,8 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
   // Every card carries the RM25 govt tax, so at very low spend the best card can
   // still be a net loss. Saying so is more useful than ranking losses.
   const nothingPaysOff = single.length > 0 && single[0].netAnnualRM <= 0;
+  const omissions = explainOmissions(result, spending);
+  const upside = incomeUpside(spending, persona);
 
   return (
     <div className="space-y-8">
@@ -255,6 +257,45 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
             ))}
           </ul>
         </details>
+      )}
+
+      {omissions.length > 0 && (
+        <details className="rounded-xl border border-slate-200 bg-white p-4 text-sm">
+          <summary className="cursor-pointer font-medium text-slate-700">
+            Why not these cards?
+          </summary>
+          <p className="mt-2 text-xs text-slate-400">
+            You qualify for these — here&apos;s what specifically cost them against your
+            spending.
+          </p>
+          <ul className="mt-3 space-y-2">
+            {omissions.map((o) => (
+              <li key={o.card.id} className="flex gap-3">
+                <span
+                  className="mt-1 h-8 w-1 shrink-0 rounded-full"
+                  style={{ backgroundColor: o.card.color }}
+                  aria-hidden
+                />
+                <span>
+                  <span className="block font-medium text-slate-800">{o.card.name}</span>
+                  <span className="block text-slate-500">{o.reason}</span>
+                </span>
+              </li>
+            ))}
+          </ul>
+        </details>
+      )}
+
+      {upside && (
+        <div className="rounded-xl border border-brand-dark/25 bg-brand/5 p-4 text-sm text-slate-700">
+          <span className="font-semibold text-slate-900">
+            Earning {upside.nextBracketLabel} would open up {upside.unlocks} more card
+            {upside.unlocks === 1 ? "" : "s"}.
+          </span>{" "}
+          {upside.extraAnnualRM > 0
+            ? `On the spending you entered, the best setup there is worth about ${rm(upside.extraAnnualRM)}/yr more than what you can get today.`
+            : "On the spending you entered they wouldn't beat what you can already get, so you're not missing out yet."}
+        </div>
       )}
 
       {ineligible.length > 0 && (

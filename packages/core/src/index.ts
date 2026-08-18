@@ -10,6 +10,7 @@ export * from "./engine/score";
 export * from "./engine/combo";
 export * from "./engine/conditions";
 export * from "./engine/tips";
+export * from "./engine/omissions";
 export * from "./engine/evaluate";
 export * from "./engine/recommend";
 

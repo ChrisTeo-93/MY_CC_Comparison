@@ -271,6 +271,25 @@ available to the mobile app on its next build/OTA update too.
   from the real `redis` package, proving structural compatibility — but the actual
   network round-trip should be sanity-checked once `REDIS_URL` is set.
 
+**Showing the user where they stand.** Three things the cohort run showed were
+missing, all about not leaving someone at a dead end:
+
+- **Counts on the narrowing questions.** Income and wallet are the only answers
+  that shrink the catalogue, so each of their options reports how many cards it
+  leaves (`PersonaQuestion.eligibleCount`, rendered by both apps from one
+  definition). Picking Huawei Pay now reads "No cards available" at the moment of
+  choosing, rather than after six questions and a spending form.
+- **"Why not these cards?"** (`engine/omissions.ts`) gives each near miss a
+  specific reason — a fee it can't cover, a min-spend gate it can't reach, a cap
+  the user's spending blows past, or simply the margin it lost by. A comparison
+  tool that only ever surfaces the same few cards invites the suspicion it isn't
+  really comparing; naming the runners-up and what cost them is the evidence that
+  it is, and each reason doubles as something the reader can act on.
+- **What the next income bracket is worth** (`incomeUpside`). Low earners are a
+  large share of this market and previously saw mostly a list of what they can't
+  have — "18 cards hidden". They now also see what moving up a rung unlocks and
+  what it would be worth per year, which turns a wall into a goal.
+
 ## Persona cohort smoke test
 
 `npm run cohort` drives **20 simulated Malaysian tester personas** through the real
