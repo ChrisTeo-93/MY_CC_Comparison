@@ -66,4 +66,20 @@ module.exports = [
     reward: "Air miles", income: "Above RM100k", fee: "Premium is fine", travel: "Frequently", wallet: "Doesn't matter", effort: "A few is fine",
     spend: [800, 500, 200, 700, 900, 400, 2000, 400, 500, 400],
     own: ["Public Bank Quantum", "RHB Cash Back", "UOB ONE"] },
+  // --- narrow phones + interaction paths -----------------------------------
+  // The product is heading for the app stores, so a 360px phone matters more
+  // than the 900px desktop the runs above use.
+  { id: 21, name: "Aisyah — small Android phone (360px)", flow: "recommend", viewport: { width: 360, height: 900 },
+    reward: "Cash back", income: "RM36k – RM60k", fee: "No fees", travel: "Rarely", weekend: "A normal mix", wallet: "Google Pay", effort: "A few is fine",
+    spend: [500, 700, 200, 400, 600, 400, 0, 200, 300, 200] },
+  { id: 22, name: "Bala — small phone, heavy spender (360px)", flow: "recommend", viewport: { width: 360, height: 900 },
+    reward: "Air miles", income: "Above RM100k", fee: "Premium is fine", travel: "Frequently", weekend: "Mostly weekends", wallet: "Doesn't matter", effort: "A few is fine",
+    spend: [3000, 3000, 800, 1500, 2500, 600, 5000, 1000, 1200, 1500] },
+  { id: 23, name: "Farah — changes her mind halfway", flow: "recommend", backtrack: true,
+    reward: "Reward points", income: "RM60k – RM100k", fee: "Fine if it pays off", travel: "A few times", weekend: "Mostly weekdays", wallet: "Apple Pay", effort: "Just one",
+    spend: [600, 800, 300, 400, 500, 300, 400, 300, 300, 200] },
+  { id: 24, name: "Lokman — owns six cards, small phone", flow: "evaluate", viewport: { width: 360, height: 900 },
+    reward: "Cash back", income: "Above RM100k", fee: "Fine if it pays off", travel: "A few times", weekend: "A normal mix", wallet: "Doesn't matter", effort: "A few is fine",
+    spend: [900, 1100, 400, 700, 900, 400, 600, 400, 500, 400],
+    own: ["Maybank 2 Gold", "CIMB Cash Rebate", "Public Bank Quantum", "UOB ONE", "HSBC TravelOne", "RHB Cash Back"] },
 ];

@@ -318,8 +318,11 @@ BASE=http://localhost:3000 npm run cohort
 
 It exits non-zero on any of: a JS/console error, a persona that never reaches
 results, a combo whose headline value doesn't reconcile against what its member
-cards are shown to earn, or a "here's that card" message rendering no card. Edit
-`scripts/cohort/personas.js` to add segments.
+cards are shown to earn, a "here's that card" message rendering no card, or a
+page that scrolls sideways at its viewport width. Personas can set their own
+`viewport` (several run at 360px, since this is heading for phones) and a
+`backtrack` flag that goes back mid-flow, changes an answer and checks nothing
+was silently reset. Edit `scripts/cohort/personas.js` to add segments.
 
 These are **simulated personas, not real users** — the harness finds broken flows,
 dead ends and numbers that don't add up, but it is not a substitute for real user

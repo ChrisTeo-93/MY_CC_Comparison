@@ -69,7 +69,7 @@ async function captureArticles(page) {
 
 async function runTester(browser, p) {
   const r = { id: p.id, name: p.name, flow: p.flow, errors: [], log: [], ok: false };
-  const page = await browser.newPage({ viewport: { width: 900, height: 2000 } });
+  const page = await browser.newPage({ viewport: p.viewport ?? { width: 900, height: 2000 } });
   page.on("pageerror", (e) => r.errors.push("pageerror: " + e.message));
   page.on("console", (m) => { if (m.type() === "error") r.errors.push("console: " + m.text().slice(0, 200)); });
   const t0 = Date.now();
@@ -84,6 +84,30 @@ async function runTester(browser, p) {
 
     await fillSpending(page, p, r.log);
     await page.waitForTimeout(150);
+
+    if (p.backtrack) {
+      // Go back to the quiz, change an answer, and come forward again. State
+      // that silently resets here would be invisible to a straight-through run.
+      const back = page.getByRole("button", { name: /← Back/ });
+      if ((await back.count()) === 0) throw new Error("no Back button on the spending step");
+      await back.click();
+      await page.waitForTimeout(300);
+      const fsel = page.locator("fieldset");
+      if ((await fsel.count()) === 0) throw new Error("Back did not return to the persona step");
+      // Flip the effort answer, then verify the earlier answers survived.
+      const effort = fsel.nth((await fsel.count()) - 1);
+      await effort.locator("button", { hasText: "A few is fine" }).first().click();
+      const stillAnswered = await page
+        .getByRole("button", { name: /Next: my spending/ })
+        .isEnabled();
+      if (!stillAnswered) throw new Error("going back cleared previously-given answers");
+      await page.getByRole("button", { name: /Next: my spending/ }).click();
+      await page.waitForTimeout(300);
+      const kept = await page.locator('input[type="number"]').first().inputValue();
+      if (p.spend[0] !== null && kept !== String(p.spend[0])) {
+        r.log.push(`spending was not retained across Back (expected ${p.spend[0]}, saw "${kept}")`);
+      }
+    }
 
     if (p.flow === "recommend") {
       await page.getByRole("button", { name: /See my recommendations/ }).click();
@@ -113,6 +137,9 @@ async function runTester(browser, p) {
       r.tipsEmpty = /no worthwhile way to shift spend/.test(comboText);
       r.hiddenIncome = (comboText.match(/(\d+) cards? hidden \(income requirement not met\)/) || [null, null])[1];
       r.hiddenWallet = (comboText.match(/(\d+) cards? hidden \(no ([^)]+) support\)/) || [null, null])[1];
+      r.overflowPx = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
       await page.screenshot({ path: `${OUT}/shot-${String(p.id).padStart(2, "0")}.png`, fullPage: true });
     } else {
       // evaluate: advance to owned-card picker
@@ -138,6 +165,9 @@ async function runTester(browser, p) {
       r.reachedResults = !/Which cards do you already have/.test(body);
       r.evalText = body.slice(0, 1400);
       r.upside = (body.match(/RM[\d,]+/g) || []).slice(0, 6);
+      r.overflowPx = await page.evaluate(
+        () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      );
       await page.screenshot({ path: `${OUT}/shot-${String(p.id).padStart(2, "0")}.png`, fullPage: true });
     }
     r.ok = true;
@@ -175,6 +205,12 @@ async function runTester(browser, p) {
   for (const r of results) {
     if (r.fatal) fail.push(`[${r.id}] ${r.name}: fatal — ${r.fatal}`);
     for (const e of r.errors) fail.push(`[${r.id}] ${r.name}: ${e}`);
+    for (const l of r.log) fail.push(`[${r.id}] ${r.name}: ${l}`);
+    // Anything wider than the viewport means the page scrolls sideways, which on
+    // a phone is a real defect rather than a cosmetic one.
+    if ((r.overflowPx ?? 0) > 1) {
+      fail.push(`[${r.id}] ${r.name}: page overflows its viewport by ${r.overflowPx}px (horizontal scroll)`);
+    }
     if (r.flow !== "recommend") continue;
     // The combo headline must equal the sum of what each member is shown to earn,
     // net of the fees and govt tax the same box reports.

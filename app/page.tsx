@@ -85,6 +85,12 @@ export default function HomePage() {
         Card data is representative and may change. Every recommendation shows when its
         data was last verified. This tool is for comparison only, not financial advice.
       </p>
+      <p className="mt-3 text-center text-xs text-slate-400">
+        Your answers never leave your device —{" "}
+        <Link href="/privacy" className="underline hover:text-slate-600">
+          privacy policy
+        </Link>
+      </p>
     </main>
   );
 }

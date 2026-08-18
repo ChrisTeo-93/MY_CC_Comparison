@@ -204,9 +204,9 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
                         aria-hidden
                       />
                       <span className="min-w-0">
-                        <span className="block truncate font-medium text-slate-900">
-                          {a.card.name}
-                        </span>
+                        {/* Wraps rather than truncates: "Maybank Islam…" and
+                            "Hong Leong Sut…" are not identifiable cards. */}
+                        <span className="block font-medium text-slate-900">{a.card.name}</span>
                         <span className="block text-xs text-slate-500">
                           {a.card.bank} · {a.card.network}
                         </span>
