@@ -31,6 +31,13 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
   const comboAvailable = combo.members.length > 1;
   const walletPref = persona.walletPreference ?? "any";
   const walletLabel = walletPref === "any" ? null : WALLET_META[walletPref].label;
+  const emptyMessage =
+    walletLabel && walletFiltered.length > 0
+      ? `No cards support ${walletLabel} for your income bracket. Try “Doesn’t matter” for the wallet question, or adjust your answers.`
+      : "No eligible cards for your income bracket. Try adjusting your answers.";
+  // Every card carries the RM25 govt tax, so at very low spend the best card can
+  // still be a net loss. Saying so is more useful than ranking losses.
+  const nothingPaysOff = single.length > 0 && single[0].netAnnualRM <= 0;
 
   return (
     <div className="space-y-8">
@@ -72,17 +79,21 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
         </div>
       </div>
 
-      {single.length > 0 && <TipsPanel tips={tips} />}
+      {nothingPaysOff && (
+        <div className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+          <strong className="font-semibold">At this spending level, no card pays for itself.</strong>{" "}
+          Every Malaysian credit card carries a mandatory RM25/year government service tax,
+          and on the spending you entered none of these earn that back. If that&apos;s
+          really how much you spend, you&apos;re better off without one — otherwise go back
+          and check the amounts.
+        </div>
+      )}
+
+      {single.length > 0 && !nothingPaysOff && <TipsPanel tips={tips} />}
 
       {view === "single" && (
         <div className="space-y-4">
-          {single.length === 0 && (
-            <p className="text-center text-slate-500">
-              {walletLabel && walletFiltered.length > 0
-                ? `No cards support ${walletLabel} for your income bracket. Try “Doesn’t matter” for the wallet question, or adjust your answers.`
-                : "No eligible cards for your income bracket. Try adjusting your answers."}
-            </p>
-          )}
+          {single.length === 0 && <p className="text-center text-slate-500">{emptyMessage}</p>}
           {single.slice(0, 5).map((s, i) => (
             <CardResultCard key={s.card.id} score={s} rank={i + 1} highlight={i === 0} />
           ))}
@@ -91,7 +102,9 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
 
       {view === "combo" && (
         <div className="space-y-4">
-          {!comboAvailable ? (
+          {single.length === 0 ? (
+            <p className="text-center text-slate-500">{emptyMessage}</p>
+          ) : !comboAvailable ? (
             <div className="rounded-xl bg-slate-100 p-4 text-center text-sm text-slate-600">
               For your spending, a single card is hard to beat — adding more cards
               wouldn&apos;t earn enough to justify it. Here&apos;s that card:
@@ -113,7 +126,7 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
             </div>
           )}
 
-          {(comboAvailable ? combo.members : single.slice(0, 1).map((s) => ({
+          {single.length > 0 && (comboAvailable ? combo.members : single.slice(0, 1).map((s) => ({
             card: s.card,
             assignedCategories: s.breakdown.map((b) => b.category),
             contributionRM: s.netAnnualRM,
@@ -133,7 +146,12 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
                       </p>
                     </div>
                     <div className="text-right">
-                      <div className="text-xl font-bold text-brand-dark">
+                      <div
+                        className={[
+                          "text-xl font-bold",
+                          m.contributionRM < 0 ? "text-red-600" : "text-brand-dark",
+                        ].join(" ")}
+                      >
                         {rm(m.contributionRM)}
                       </div>
                       <div className="text-xs text-slate-500">/ year</div>

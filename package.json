@@ -15,7 +15,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "typecheck:all": "npm run typecheck && npm run typecheck --workspace=@kadcompare/core && npm run typecheck --workspace=@kadcompare/mobile",
-    "mobile": "npm run start --workspace=@kadcompare/mobile"
+    "mobile": "npm run start --workspace=@kadcompare/mobile",
+    "cohort": "node scripts/cohort/run.js"
   },
   "dependencies": {
     "@kadcompare/core": "*",

@@ -52,7 +52,14 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
               </p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-brand-dark">
+              <div
+                className={[
+                  "text-2xl font-bold",
+                  // A negative net is a loss; showing it in the same brand green as a
+                  // gain reads as good news at a glance.
+                  score.netAnnualRM < 0 ? "text-red-600" : "text-brand-dark",
+                ].join(" ")}
+              >
                 {rm(score.netAnnualRM)}
               </div>
               <div className="text-xs text-slate-500">net value / year</div>

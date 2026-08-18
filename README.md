@@ -236,6 +236,28 @@ available to the mobile app on its next build/OTA update too.
   from the real `redis` package, proving structural compatibility — but the actual
   network round-trip should be sanity-checked once `REDIS_URL` is set.
 
+## Persona cohort smoke test
+
+`npm run cohort` drives **20 simulated Malaysian tester personas** through the real
+app in a real browser (Playwright) against a running server — fresh grad, e-hailing
+driver, retiree, frequent traveller, Huawei-phone user, someone who enters nothing,
+someone who enters zero everywhere, two existing cardholders using the evaluate
+flow, and so on. Start the app first, then point the harness at it:
+
+```bash
+npm run build && npm run start &          # or: npm run dev
+BASE=http://localhost:3000 npm run cohort
+```
+
+It exits non-zero on any of: a JS/console error, a persona that never reaches
+results, a combo whose headline value doesn't reconcile against what its member
+cards are shown to earn, or a "here's that card" message rendering no card. Edit
+`scripts/cohort/personas.js` to add segments.
+
+These are **simulated personas, not real users** — the harness finds broken flows,
+dead ends and numbers that don't add up, but it is not a substitute for real user
+research and should never be reported as such.
+
 ## Develop
 
 ```bash

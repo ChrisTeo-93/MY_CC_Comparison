@@ -1,0 +1,857 @@
+[
+  {
+    "id": 1,
+    "name": "Aina — fresh grad, KL",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Hong Leong WISE Card",
+        "value": "RM602"
+      },
+      {
+        "name": "CIMB Cash Rebate Platinum",
+        "value": "RM17"
+      },
+      {
+        "name": "RHB Cash Back Credit Card",
+        "value": "RM17"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": null,
+    "comboMembers": [
+      {
+        "name": "Hong Leong WISE Card",
+        "value": "RM602"
+      }
+    ],
+    "singleCardFallback": true,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": true,
+    "hiddenIncome": "18",
+    "hiddenWallet": "1",
+    "ms": 4171
+  },
+  {
+    "id": 2,
+    "name": "Wei Jie — young professional",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,729"
+      },
+      {
+        "name": "Bank Islam Platinum Credit Card-i",
+        "value": "RM1,121"
+      },
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": "RM1,101"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 2,
+      "netRM": 1920,
+      "feesRM": 0,
+      "taxRM": 50
+    },
+    "comboMembers": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,394"
+      },
+      {
+        "name": "Maybank Islamic Ikhwan Amex Platinum Card-i",
+        "value": "RM576"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": true,
+    "hiddenIncome": "10",
+    "hiddenWallet": null,
+    "ms": 4118
+  },
+  {
+    "id": 3,
+    "name": "Siti & Farid — young family",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,993"
+      },
+      {
+        "name": "Bank Islam Platinum Credit Card-i",
+        "value": "RM1,294"
+      },
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": "RM1,158"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 3,
+      "netRM": 2235,
+      "feesRM": 0,
+      "taxRM": 75
+    },
+    "comboMembers": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,695"
+      },
+      {
+        "name": "Maybank Islamic Ikhwan Amex Platinum Card-i",
+        "value": "RM480"
+      },
+      {
+        "name": "Maybank 2 Platinum Card (Visa)",
+        "value": "RM135"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": true,
+    "tipsEmpty": false,
+    "hiddenIncome": "6",
+    "hiddenWallet": null,
+    "ms": 3821
+  },
+  {
+    "id": 4,
+    "name": "Ravi — frequent business traveller",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM5,335"
+      },
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM2,936"
+      },
+      {
+        "name": "Standard Chartered Journey",
+        "value": "RM1,433"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 3,
+      "netRM": 6591,
+      "feesRM": 0,
+      "taxRM": 75
+    },
+    "comboMembers": [
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM4,861"
+      },
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,200"
+      },
+      {
+        "name": "Maybank Islamic Ikhwan Amex Platinum Card-i",
+        "value": "RM605"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": true,
+    "tipsEmpty": false,
+    "hiddenIncome": null,
+    "hiddenWallet": null,
+    "ms": 4161
+  },
+  {
+    "id": 5,
+    "name": "Hafiz — e-hailing driver",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": "RM895"
+      },
+      {
+        "name": "CIMB Cash Rebate Platinum",
+        "value": "RM657"
+      },
+      {
+        "name": "Hong Leong WISE Card",
+        "value": "RM720"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": null,
+    "comboMembers": [
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": "RM895"
+      }
+    ],
+    "singleCardFallback": true,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": true,
+    "hiddenIncome": "18",
+    "hiddenWallet": "1",
+    "ms": 3564
+  },
+  {
+    "id": 6,
+    "name": "Mdm Lim — retiree",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM647"
+      },
+      {
+        "name": "Hong Leong WISE Card",
+        "value": "RM444"
+      },
+      {
+        "name": "CIMB Cash Rebate Platinum",
+        "value": "RM11"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": null,
+    "comboMembers": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM647"
+      }
+    ],
+    "singleCardFallback": true,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": true,
+    "hiddenIncome": "18",
+    "hiddenWallet": null,
+    "ms": 3708
+  },
+  {
+    "id": 7,
+    "name": "Datuk Chong — senior exec",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM7,853"
+      },
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM4,802"
+      },
+      {
+        "name": "Standard Chartered Journey",
+        "value": "RM2,999"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 3,
+      "netRM": 9763,
+      "feesRM": 0,
+      "taxRM": 75
+    },
+    "comboMembers": [
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM6,061"
+      },
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM3,396"
+      },
+      {
+        "name": "Bank Islam Platinum Credit Card-i",
+        "value": "RM382"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": true,
+    "tipsEmpty": false,
+    "hiddenIncome": null,
+    "hiddenWallet": null,
+    "ms": 4001
+  },
+  {
+    "id": 8,
+    "name": "Nurul — student, minimal spend",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM221"
+      },
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": null
+      },
+      {
+        "name": "CIMB Cash Rebate Platinum",
+        "value": null
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": null,
+    "comboMembers": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM221"
+      }
+    ],
+    "singleCardFallback": true,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": true,
+    "hiddenIncome": "18",
+    "hiddenWallet": null,
+    "ms": 3980
+  },
+  {
+    "id": 9,
+    "name": "Jason — online shopping heavy",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,691"
+      },
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": "RM1,113"
+      },
+      {
+        "name": "Bank Islam Platinum Credit Card-i",
+        "value": "RM900"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 2,
+      "netRM": 1899,
+      "feesRM": 98,
+      "taxRM": 50
+    },
+    "comboMembers": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,251"
+      },
+      {
+        "name": "Hong Leong WISE Card",
+        "value": "RM796"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": true,
+    "tipsEmpty": false,
+    "hiddenIncome": "10",
+    "hiddenWallet": null,
+    "ms": 3937
+  },
+  {
+    "id": 10,
+    "name": "Mei Ling — foodie",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM3,031"
+      },
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM2,192"
+      },
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": "RM1,037"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 3,
+      "netRM": 4011,
+      "feesRM": 0,
+      "taxRM": 75
+    },
+    "comboMembers": [
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM2,682"
+      },
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,020"
+      },
+      {
+        "name": "Maybank Islamic Ikhwan Amex Platinum Card-i",
+        "value": "RM384"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": true,
+    "tipsEmpty": false,
+    "hiddenIncome": "6",
+    "hiddenWallet": null,
+    "ms": 3559
+  },
+  {
+    "id": 11,
+    "name": "Puan Zainab — homemaker",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,769"
+      },
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": "RM1,133"
+      },
+      {
+        "name": "Bank Islam Platinum Credit Card-i",
+        "value": "RM1,125"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 3,
+      "netRM": 1933,
+      "feesRM": 0,
+      "taxRM": 75
+    },
+    "comboMembers": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM969"
+      },
+      {
+        "name": "Maybank Islamic Ikhwan Amex Platinum Card-i",
+        "value": "RM288"
+      },
+      {
+        "name": "Bank Islam Platinum Credit Card-i",
+        "value": "RM751"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": true,
+    "tipsEmpty": false,
+    "hiddenIncome": "10",
+    "hiddenWallet": null,
+    "ms": 3720
+  },
+  {
+    "id": 12,
+    "name": "Chee Keong — Huawei phone user",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [],
+    "singleEmpty": true,
+    "emptyStateMsg": "No cards support Huawei Pay for your income bracket. Try “Doesn’t matter” for the wallet question, or adjust your answers.",
+    "combo": null,
+    "comboMembers": [],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": false,
+    "hiddenIncome": "6",
+    "hiddenWallet": "17",
+    "ms": 3542
+  },
+  {
+    "id": 13,
+    "name": "Priya — iPhone, Apple Pay only",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM2,333"
+      },
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM1,861"
+      },
+      {
+        "name": "Bank Islam Platinum Credit Card-i",
+        "value": "RM1,321"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 3,
+      "netRM": 3132,
+      "feesRM": 0,
+      "taxRM": 75
+    },
+    "comboMembers": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,200"
+      },
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM1,405"
+      },
+      {
+        "name": "Maybank Islamic Ikhwan Amex Platinum Card-i",
+        "value": "RM602"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": true,
+    "tipsEmpty": false,
+    "hiddenIncome": "6",
+    "hiddenWallet": null,
+    "ms": 3699
+  },
+  {
+    "id": 14,
+    "name": "Amir — skips all spending inputs",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,729"
+      },
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": "RM1,101"
+      },
+      {
+        "name": "Bank Islam Platinum Credit Card-i",
+        "value": "RM1,006"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 2,
+      "netRM": 1848,
+      "feesRM": 0,
+      "taxRM": 50
+    },
+    "comboMembers": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,514"
+      },
+      {
+        "name": "Maybank Islamic Ikhwan Amex Platinum Card-i",
+        "value": "RM384"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": true,
+    "hiddenIncome": "10",
+    "hiddenWallet": null,
+    "ms": 3071
+  },
+  {
+    "id": 15,
+    "name": "Kevin — enters zero everywhere",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "CIMB Visa Signature",
+        "value": null
+      },
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": null
+      },
+      {
+        "name": "CIMB Cash Rebate Platinum",
+        "value": null
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": null,
+    "comboMembers": [
+      {
+        "name": "CIMB Visa Signature",
+        "value": null
+      }
+    ],
+    "singleCardFallback": true,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": false,
+    "hiddenIncome": "10",
+    "hiddenWallet": null,
+    "ms": 3548
+  },
+  {
+    "id": 16,
+    "name": "Sarah — very high spender",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM11,435"
+      },
+      {
+        "name": "Maybank 2 Platinum Card (Visa)",
+        "value": "RM6,905"
+      },
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM5,690"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 3,
+      "netRM": 12503,
+      "feesRM": 0,
+      "taxRM": 75
+    },
+    "comboMembers": [
+      {
+        "name": "HSBC TravelOne",
+        "value": "RM9,233"
+      },
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,905"
+      },
+      {
+        "name": "AmBank BonusLink Visa Signature",
+        "value": "RM1,440"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": true,
+    "additionEntries": [
+      "58"
+    ],
+    "tipsShown": true,
+    "tipsEmpty": false,
+    "hiddenIncome": null,
+    "hiddenWallet": null,
+    "ms": 3769
+  },
+  {
+    "id": 17,
+    "name": "Daniel — low income + Huawei (worst case)",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [],
+    "singleEmpty": true,
+    "emptyStateMsg": "No cards support Huawei Pay for your income bracket. Try “Doesn’t matter” for the wallet question, or adjust your answers.",
+    "combo": null,
+    "comboMembers": [],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": false,
+    "hiddenIncome": "18",
+    "hiddenWallet": "5",
+    "ms": 3702
+  },
+  {
+    "id": 18,
+    "name": "Yusof — no-fee purist",
+    "flow": "recommend",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "single": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,919"
+      },
+      {
+        "name": "RHB Shell Visa Credit Card",
+        "value": "RM1,231"
+      },
+      {
+        "name": "Bank Islam Platinum Credit Card-i",
+        "value": "RM1,165"
+      }
+    ],
+    "singleEmpty": false,
+    "emptyStateMsg": null,
+    "combo": {
+      "cards": 3,
+      "netRM": 2133,
+      "feesRM": 0,
+      "taxRM": 75
+    },
+    "comboMembers": [
+      {
+        "name": "Maybank 2 Gold Cards (Amex)",
+        "value": "RM1,680"
+      },
+      {
+        "name": "Maybank Islamic Ikhwan Amex Platinum Card-i",
+        "value": "RM384"
+      },
+      {
+        "name": "Maybank 2 Platinum Card (Visa)",
+        "value": "RM144"
+      }
+    ],
+    "singleCardFallback": false,
+    "additions": false,
+    "additionEntries": [],
+    "tipsShown": false,
+    "tipsEmpty": true,
+    "hiddenIncome": "6",
+    "hiddenWallet": null,
+    "ms": 3638
+  },
+  {
+    "id": 19,
+    "name": "Grace — already owns 2 cards",
+    "flow": "evaluate",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "evalText": "← KadCompare\n✓\nPersona\n✓\nSpending\n✓\nYour cards\n4\nEvaluation\nYour current cards, evaluated\n\nWhat your 2 cards earn on your spending — and where there's more to capture.\n\nUsing your cards optimally, you earn about\nRM2,216 / year\n\nThe best possible setup for your spending earns RM2,793/yr — you're leaving about RM577/yr on the table.\n\nWhat each card earns you\nBest match\n#1\nMaybank 2 Gold Cards (Amex)\nhigh confidence\n\nMaybank · Amex · Cashback\n\nRM2,216\nnet value / year\n✓\nEarns ~RM540/yr on your groceries (in-store) (5% cashback).\n✓\nNo annual fee.\n✓\nMatches your cashback preference.\n🛒 Groceries (in-store): RM540\n🍽️ Dining & Restaurants: RM360\n🛍️ Online Shopping: RM360\nMobile wallets:\nApple Pay\nSamsung Pay\nHow you earn this\n▼\nNo annual fee · +RM25 govt tax/yr\n🕒 Verified 1 month ago\n#2\nCIMB Cash Rebate Platinum\nmedium confidence\n\nCIMB · Mastercard · Cashback\n\nRM887\nnet value / year\n✓\nEarns ~RM367/yr on your groceries (in-store) (5% cashback).\n✓\nNo annual fee.\n✓\nMatches your cashback preference.\n🛒 Groceries (in-store): RM367 (capped)\n⛽ Petrol: RM240\n🧾 Bills & Utilities: RM240\nMobile wallets:\nApple Pay\nGoogle Pay\nSamsung Pay\nHow you earn this\n▼\n\nⓘ Corrected: the previously-modelled 8% petrol does not exist (that's a different CIMB card). Shared RM30 cap is approximated per-category here.\n\nNo annual fee · +RM25 govt tax/yr\n🕒 Verified 1 month ago\nAdding one of these would earn you ",
+    "upside": [
+      "RM2,216",
+      "RM2,793",
+      "RM577",
+      "RM2,216",
+      "RM540",
+      "RM540"
+    ],
+    "ms": 4082
+  },
+  {
+    "id": 20,
+    "name": "Rajesh — owns 3 mismatched cards",
+    "flow": "evaluate",
+    "errors": [],
+    "log": [],
+    "ok": true,
+    "reachedResults": true,
+    "evalText": "← KadCompare\n✓\nPersona\n✓\nSpending\n✓\nYour cards\n4\nEvaluation\nYour current cards, evaluated\n\nWhat your 3 cards earn on your spending — and where there's more to capture.\n\nUsing your cards optimally, you earn about\nRM1,065 / year\n\nThe best possible setup for your spending earns RM5,619/yr — you're leaving about RM4,554/yr on the table.\n\nGet more from what you have\n💡 Maximize your gains\nup to +RM348/yr\n\nSmall ways to use your recommended cards together so no spend is wasted.\n\nSplit your dining & restaurants across two cards\n+RM118/yr\n\nYou spend about RM800/mo on dining & restaurants. UOB ONE Platinum Card (10% cashback) maxes out around RM150/mo here — beyond that it drops to its base rate. Put the extra ~RM100/mo on RHB Cash Back Credit Card (10% cashback) instead.\n\nSplit your groceries (in-store) across two cards\n+RM115/yr\n\nYou spend about RM500/mo on groceries (in-store). UOB ONE Platinum Card (10% cashback) maxes out around RM150/mo here — beyond that it drops to its base rate. Put the extra ~RM200/mo on RHB Cash Back Credit Card (5% cashback) instead.\n\nSplit your petrol across two cards\n+RM115/yr\n\nYou spend about RM700/mo on petrol. UOB ONE Platinum Card (10% cashback) maxes out around RM150/mo here — beyond that it drops to its base rate. Put the extra ~RM200/mo on RHB Cash Back Credit Card (5% cashback) instead.\n\nEstimates based on your inputs and current cap/threshold data",
+    "upside": [
+      "RM1,065",
+      "RM5,619",
+      "RM4,554",
+      "RM348",
+      "RM118",
+      "RM800"
+    ],
+    "ms": 4482
+  }
+]

@@ -46,7 +46,9 @@ export function CardResultCard({ score, rank, highlight }: CardResultCardProps) 
             </Text>
           </View>
           <View style={styles.valueBox}>
-            <Text style={styles.value}>{rm(score.netAnnualRM)}</Text>
+            <Text style={[styles.value, score.netAnnualRM < 0 && styles.valueNegative]}>
+              {rm(score.netAnnualRM)}
+            </Text>
             <Text style={styles.valueLabel}>net value / year</Text>
           </View>
         </View>
@@ -139,6 +141,7 @@ const styles = StyleSheet.create({
   meta: { fontSize: 13, color: colors.slate500, marginTop: 2 },
   valueBox: { alignItems: "flex-end" },
   value: { fontSize: 20, fontWeight: "800", color: colors.brandDark },
+  valueNegative: { color: colors.red500 },
   valueLabel: { fontSize: 11, color: colors.slate500 },
   reason: { fontSize: 13, color: colors.slate700 },
   catRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.md },

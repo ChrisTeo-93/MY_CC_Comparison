@@ -30,6 +30,13 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
   const comboAvailable = combo.members.length > 1;
   const walletPref = persona.walletPreference ?? "any";
   const walletLabel = walletPref === "any" ? null : WALLET_META[walletPref].label;
+  const emptyMessage =
+    walletLabel && walletFiltered.length > 0
+      ? `No cards support ${walletLabel} for your income bracket. Try “Doesn’t matter” for the wallet question, or adjust your answers.`
+      : "No eligible cards for your income bracket. Try adjusting your answers.";
+  // Every card carries the RM25 govt tax, so at very low spend the best card can
+  // still be a net loss. Saying so is more useful than ranking losses.
+  const nothingPaysOff = single.length > 0 && single[0].netAnnualRM <= 0;
 
   const comboMembers = comboAvailable
     ? combo.members
@@ -65,17 +72,23 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
         </Pressable>
       </View>
 
-      {single.length > 0 && <TipsPanel tips={tips} />}
+      {nothingPaysOff && (
+        <View style={styles.warnBox}>
+          <Text style={styles.warnText}>
+            <Text style={styles.warnStrong}>At this spending level, no card pays for itself.</Text>{" "}
+            Every Malaysian credit card carries a mandatory RM25/year government service
+            tax, and on the spending you entered none of these earn that back. If
+            that&apos;s really how much you spend, you&apos;re better off without one —
+            otherwise go back and check the amounts.
+          </Text>
+        </View>
+      )}
+
+      {single.length > 0 && !nothingPaysOff && <TipsPanel tips={tips} />}
 
       {view === "single" && (
         <View style={{ gap: spacing.md }}>
-          {single.length === 0 && (
-            <Text style={styles.empty}>
-              {walletLabel && walletFiltered.length > 0
-                ? `No cards support ${walletLabel} for your income bracket. Try “Doesn’t matter” for the wallet question, or adjust your answers.`
-                : "No eligible cards for your income bracket. Try adjusting your answers."}
-            </Text>
-          )}
+          {single.length === 0 && <Text style={styles.empty}>{emptyMessage}</Text>}
           {single.slice(0, 5).map((s, i) => (
             <CardResultCard key={s.card.id} score={s} rank={i + 1} highlight={i === 0} />
           ))}
@@ -84,7 +97,9 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
 
       {view === "combo" && (
         <View style={{ gap: spacing.md }}>
-          {!comboAvailable ? (
+          {single.length === 0 ? (
+            <Text style={styles.empty}>{emptyMessage}</Text>
+          ) : !comboAvailable ? (
             <View style={styles.comboNote}>
               <Text style={styles.comboNoteText}>
                 For your spending, a single card is hard to beat — adding more cards
@@ -104,7 +119,7 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
             </View>
           )}
 
-          {comboMembers.map((m) => (
+          {single.length > 0 && comboMembers.map((m) => (
             <View key={m.card.id} style={styles.memberCard}>
               <View style={[styles.memberAccent, { backgroundColor: m.card.color }]} />
               <View style={styles.memberContent}>
@@ -116,7 +131,9 @@ export function StepResults({ result, persona, spending, onRestart }: StepResult
                     </Text>
                   </View>
                   <View style={{ alignItems: "flex-end" }}>
-                    <Text style={styles.memberValue}>{rm(m.contributionRM)}</Text>
+                    <Text style={[styles.memberValue, m.contributionRM < 0 && styles.valueNegative]}>
+                      {rm(m.contributionRM)}
+                    </Text>
                     <Text style={styles.memberValueUnit}>/ year</Text>
                   </View>
                 </View>
@@ -284,6 +301,16 @@ const styles = StyleSheet.create({
   memberName: { fontSize: 16, fontWeight: "800", color: colors.slate900 },
   memberMeta: { fontSize: 13, color: colors.slate500 },
   memberValue: { fontSize: 18, fontWeight: "800", color: colors.brandDark },
+  valueNegative: { color: colors.red500 },
+  warnBox: {
+    borderRadius: radii.lg,
+    borderWidth: 1,
+    borderColor: colors.amber600,
+    backgroundColor: colors.amber50,
+    padding: spacing.md,
+  },
+  warnText: { fontSize: 13, color: colors.amber800 },
+  warnStrong: { fontWeight: "700" },
   memberValueUnit: { fontSize: 11, color: colors.slate500 },
   memberUseLabel: { fontSize: 10, fontWeight: "700", color: colors.slate400, textTransform: "uppercase", marginTop: spacing.sm },
   memberCatRow: { flexDirection: "row", flexWrap: "wrap", gap: spacing.sm, marginTop: spacing.xs },
